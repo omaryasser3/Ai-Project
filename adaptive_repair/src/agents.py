@@ -15,7 +15,31 @@ def call_llm(model_name, prompt, temp=0.2):
             model = genai.GenerativeModel(model_name)
             response = model.generate_content(prompt,generation_config=genai.types.GenerationConfig(temperature=temp))
             return response.text
-            
+
+def translater_agent(code_snippet, src_lang, trg_lang=None, decide=True):
+    model_name = config['models']['complex_translater']
+
+    if (decide):
+        prompt = f"""
+        You are an expert program repair system. 
+        You need to analyze the given bug and decide which programming language to translate it to for the next repair iteration. You should make the analysis step by step. 
+        Code: {code_snippet}
+        Task 1 Description: The task is to translate the bugs that cannot be fixed in one programming language to another programming language. 
+            You need to analyze the current bug and decide which programming language to translate it to for the next repair iteration.
+            Provide a justification for your decision step by step.
+        Task 2 Description: Translate the code from {src_lang} to your chosen programming lanaguge. Do not output any extra description or tokens other than the translated code.
+        Output style: Formate the output in a JSON file as such: \{"language":"the language you decided to translate to", "translated_code":"your translation of the code\}
+        """
+        return call_llm(model_name, prompt)
+
+    else:
+        prompt = f"""
+        You are an expert code translater.
+        Code = {code_snippet}
+        Task Description: Here is code in {src_lang} programming lanaguge. Translate the code from {src_lang} to {trg_lang} programming lanaguge. 
+            Do not output any extra description or tokens other than the translated code. 
+        """
+
 def analyzer_agent(code_snippet, language):
     model_name = config['models']['complex_analyzer']
     
