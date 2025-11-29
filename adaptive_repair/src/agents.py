@@ -28,7 +28,7 @@ def translator_agent(code_snippet, src_lang, trg_lang=None, decide=True):
             You need to analyze the current bug and decide which programming language to translate it to for the next repair iteration.
             Provide a justification for your decision step by step.
         Task 2 Description: Translate the code from {src_lang} to your chosen programming lanaguge. Do not output any extra description or tokens other than the translated code.
-        Output style: Formate the output in a JSON file as such: {"language":"the language you decided to translate to", "translated_code":"your translation of the code}
+        Output style: Formate the output in a JSON file as such: {"language":"the language you decided to translate to", "translated_code":"your translation of the code"}
         """
         return call_llm(model_name, prompt)
 
