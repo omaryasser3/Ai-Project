@@ -39,6 +39,7 @@ def translator_agent(code_snippet, src_lang, trg_lang=None, decide=True):
         Task Description: Here is code in {src_lang} programming lanaguge. Translate the code from {src_lang} to {trg_lang} programming lanaguge. 
             Do not output any extra description or tokens other than the translated code. 
         """
+        return call_llm(model_name, prompt)
 
 def analyzer_agent(code_snippet, language):
     model_name = config['models']['complex_analyzer']
