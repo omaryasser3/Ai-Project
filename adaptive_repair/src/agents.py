@@ -7,22 +7,17 @@ import time
 CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.yaml")
 if not os.path.exists(CONFIG_PATH):
     CONFIG_PATH = "config.yaml"
-
 with open(CONFIG_PATH, "r") as f:
     config = yaml.safe_load(f)
-
-api_key = os.environ.get("GEMINI_API_KEY")
-
+api_key = "AIzaSyDv_t2MopcX0IqrRIBfFeWjhN6yTKZSfb0"
 genai.configure(api_key=api_key)
-
-
 def call_llm(model_name, prompt, temp=0.2):
             model = genai.GenerativeModel(model_name)
             response = model.generate_content(prompt,generation_config=genai.types.GenerationConfig(temperature=temp))
             return response.text
-
+            
 def analyzer_agent(code_snippet, language):
-    model_name = config['models'].get('complex_fixer', 'gemini-2.5-flash-preview-09-2025')
+    model_name = config['models']['complex_analyzer']
     
     prompt = f"""
     You are an expert code analyzer.
@@ -40,8 +35,7 @@ def analyzer_agent(code_snippet, language):
     return call_llm(model_name, prompt)
 
 def fixer_agent(code_snippet, language, analysis):
-    # Use the 'simple_fixer' or 'complex_fixer' model from config, or default to a standard one
-    model_name = config['models'].get('complex_fixer', 'gemini-2.5-flash-preview-09-2025')
+    model_name = config['models']['complex_fixer']
     
     prompt = f"""
     You are an expert software engineer.
