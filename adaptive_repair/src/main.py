@@ -11,12 +11,12 @@ app = create_graph()
 
 def run_repair_system(bug_id, code, language):
     print(f"--- Processing Bug {bug_id} ({language}) ---")
-    initial_state = {"bug_id": bug_id, "code": code, "language": language}
+    initial_state = {"bug_id": bug_id, "code": code, "src_lang": language}
     result = app.invoke(initial_state)
     analysis = result.get("analysis")
     final_fix = result.get("fix")
     log_experiment(bug_id, "Analyzer", code, analysis, True)
-    print(f"Analysis:\n{analysis}\n")
+    # print(f"Analysis:\n{analysis}\n")
     print(f"Fix generated.")
     return final_fix, "LangGraph_Analyzer_Fixer"
 def load_data():
