@@ -1,0 +1,11 @@
+models:
+  router: "gemini-2.5-flash"     # Using 2.5 Flash Preview
+  simple_fixer: "gemini-2.5-flash" # Using 2.5 Flash Preview
+  complex_fixer: "gemini-2.5-flash"     # Using 2.5 Flash Preview
+  translator: "gemini-2.5-flash"        # Using 2.5 Flash Preview
+  planner: "gemini-2.5-flash"       # Using 2.5 Flash Preview
+  worker: "gemini-2.5-flash"      # Using 2.5 Flash Preview
+  expert_worker: "gemini-2.5-flash" # Using 2.5 Flash Preview
+
+parameters:
+  temperature: 0.2
