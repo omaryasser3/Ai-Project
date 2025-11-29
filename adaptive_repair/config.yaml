@@ -1,7 +1,8 @@
 models:
   router: "gemini-2.5-flash"     
   simple_fixer: "gemini-2.5-flash" 
-  complex_fixer: "gemini-2.5-flash"    
+  complex_fixer: "gemini-2.5-flash"  
+  complex_analyzer: "gemini-2.5-flash"  
   translator: "gemini-2.5-flash"     
   planner: "gemini-2.5-flash"
   worker: "gemini-2.5-flash"
