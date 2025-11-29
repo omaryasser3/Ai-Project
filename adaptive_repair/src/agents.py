@@ -16,8 +16,8 @@ def call_llm(model_name, prompt, temp=0.2):
             response = model.generate_content(prompt,generation_config=genai.types.GenerationConfig(temperature=temp))
             return response.text
 
-def translater_agent(code_snippet, src_lang, trg_lang=None, decide=True):
-    model_name = config['models']['complex_translater']
+def translator_agent(code_snippet, src_lang, trg_lang=None, decide=True):
+    model_name = config['models']['translator']
 
     if (decide):
         prompt = f"""
@@ -34,7 +34,7 @@ def translater_agent(code_snippet, src_lang, trg_lang=None, decide=True):
 
     else:
         prompt = f"""
-        You are an expert code translater.
+        You are an expert code translator.
         Code = {code_snippet}
         Task Description: Here is code in {src_lang} programming lanaguge. Translate the code from {src_lang} to {trg_lang} programming lanaguge. 
             Do not output any extra description or tokens other than the translated code. 
