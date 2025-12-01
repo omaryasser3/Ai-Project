@@ -14,7 +14,7 @@ def run_repair_system(bug_id, code, language):
     initial_state = {"bug_id": bug_id, "code": code, "src_lang": language}
     result = app.invoke(initial_state)
     analysis = result.get("analysis")
-    final_fix = result.get("fix")
+    final_fix = result.get("fixed_code")
     log_experiment(bug_id, "Analyzer", code, analysis, True)
     # print(f"Analysis:\n{analysis}\n")
     print(f"Fix generated.")

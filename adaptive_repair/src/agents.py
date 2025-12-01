@@ -9,6 +9,18 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import time
 
+try:
+    from dotenv import load_dotenv
+    # Load from current directory or parents
+    load_dotenv()
+    # Also try explicit path if running from src
+    env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+    if os.path.exists(env_path):
+        load_dotenv(dotenv_path=env_path)
+except ImportError:
+    pass
+
+
 
 # ---------------------------------------------------------------------------
 # Configuration & Logging
