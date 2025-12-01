@@ -161,10 +161,14 @@ class RepairPlan:
 
     - translate: whether to translate to another language before repairing
     - target_language: language to translate to (e.g., "Java"), if translate is True
+    - detected_language: language inferred from the actual code snippet
+    - language_match: whether detected_language matches the declared src_language
     """
 
     translate: bool
     target_language: Optional[str] = None
+    detected_language: Optional[str] = None
+    language_match: Optional[bool] = None
 
 
 class BaseAgent:
@@ -174,7 +178,7 @@ class BaseAgent:
         self.model_name = model_name or config["models"].get("worker", "gemini-2.5-flash")
         self.temperature = temperature
 
-    def repair(self, code: str, issue: Issue) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
         """Subclasses must implement this to perform the actual repair."""
         raise NotImplementedError
 
@@ -182,28 +186,28 @@ class BaseAgent:
 class SyntaxAgent(BaseAgent):
     """Agent focused on resolving syntax and parsing errors."""
 
-    def repair(self, code: str, issue: Issue) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
         prompt = f"""
-        You are an expert Python compiler and code fixer.
+        You are an expert {language} compiler and code fixer.
 
-        Your task is to fix ONLY the syntax or parsing issues in the following Python code.
+        Your task is to fix ONLY the syntax or parsing issues in the following {language} code.
 
         Issue description:
         {issue.description}
 
         Current code:
-        ```python
+        ```{language}
         {code}
         ```
 
         Requirements:
-        - Return valid, executable Python code that is syntactically correct.
+        - Return valid, executable {language} code that is syntactically correct.
         - Do NOT change the overall logic beyond what is required to fix syntax.
         - After the code, provide a short explanation (2–4 sentences) of what you changed and why.
 
         Output format (JSON):
         {{
-          "fixed_code": "<fixed python code>",
+          "fixed_code": "<fixed {language} code>",
           "explanation": "<short explanation of the changes>"
         }}
 
@@ -230,17 +234,17 @@ class SyntaxAgent(BaseAgent):
 class LogicAgent(BaseAgent):
     """Agent focused on fixing logical/semantic bugs."""
 
-    def repair(self, code: str, issue: Issue) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
         prompt = f"""
-        You are an expert Python software engineer.
+        You are an expert {language} software engineer.
 
-        The following code has a LOGICAL or SEMANTIC bug, not just syntax.
+        The following {language} code has a LOGICAL or SEMANTIC bug, not just syntax.
 
         Issue description:
         {issue.description}
 
         Buggy code:
-        ```python
+        ```{language}
         {code}
         ```
 
@@ -250,7 +254,7 @@ class LogicAgent(BaseAgent):
 
         Output format (JSON):
         {{
-          "fixed_code": "<corrected python code>",
+          "fixed_code": "<corrected {language} code>",
           "explanation": "<short explanation of what was wrong and how you fixed it>"
         }}
 
@@ -276,18 +280,18 @@ class LogicAgent(BaseAgent):
 class OptimizationAgent(BaseAgent):
     """Agent focused on performance and efficiency improvements."""
 
-    def repair(self, code: str, issue: Issue) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
         prompt = f"""
-        You are an expert Python performance engineer.
+        You are an expert {language} performance engineer.
 
-        Optimize the following Python code for better performance and/or memory efficiency,
+        Optimize the following {language} code for better performance and/or memory efficiency,
         while preserving its external behavior.
 
         Performance issue description:
         {issue.description}
 
         Original code:
-        ```python
+        ```{language}
         {code}
         ```
 
@@ -297,7 +301,7 @@ class OptimizationAgent(BaseAgent):
 
         Output format (JSON):
         {{
-          "fixed_code": "<optimized python code>",
+          "fixed_code": "<optimized {language} code>",
           "explanation": "<short explanation of the optimizations>"
         }}
 
@@ -357,8 +361,10 @@ class MainAgent(BaseAgent):
         You are a senior multi-language code reviewer and bug triage expert.
 
         Your job is to:
-        1) Analyze the given code in its ORIGINAL language to identify issues.
-        2) Decide whether temporarily translating the code to another language
+        1) Inspect the code and determine which programming language it is ACTUALLY written in.
+           Compare this with the declared source language and note whether they match.
+        2) Analyze the code (respecting its true language) to identify issues.
+        3) Decide whether temporarily translating the code to another language
            would make the bug easier to analyze and repair with AI tools.
 
         Possible issue categories (types):
@@ -379,8 +385,10 @@ class MainAgent(BaseAgent):
         Output format (JSON):
         {
           "plan": {
+            "detected_language": "Java",
+            "language_match": false,
             "translate": true,
-            "target_language": "Java"
+            "target_language": "Python"
           },
           "issues": [
             {
@@ -395,6 +403,8 @@ class MainAgent(BaseAgent):
         If no issues are found, return:
         {
           "plan": {
+            "detected_language": "Python",
+            "language_match": true,
             "translate": false,
             "target_language": null
           },
@@ -438,11 +448,33 @@ class MainAgent(BaseAgent):
         plan_data = data.get("plan") or {}
         translate_flag = bool(plan_data.get("translate", False))
         target_language = plan_data.get("target_language")
-        # Normalize empty strings to None
-        if isinstance(target_language, str) and not target_language.strip():
-            target_language = None
+        detected_language = plan_data.get("detected_language")
+        language_match = plan_data.get("language_match")
 
-        plan = RepairPlan(translate=translate_flag, target_language=target_language)
+        # Normalize string fields
+        if isinstance(target_language, str):
+            target_language = target_language.strip() or None
+        if isinstance(detected_language, str):
+            detected_language = detected_language.strip() or None
+
+        # Normalize language_match to bool or None
+        if isinstance(language_match, str):
+            lowered = language_match.strip().lower()
+            if lowered in ("true", "yes"):
+                language_match = True
+            elif lowered in ("false", "no"):
+                language_match = False
+            else:
+                language_match = None
+        elif not isinstance(language_match, bool):
+            language_match = None
+
+        plan = RepairPlan(
+            translate=translate_flag,
+            target_language=target_language,
+            detected_language=detected_language,
+            language_match=language_match,
+        )
         return issues, plan
 
     def analyze_code(self, code: str, src_language: str = "Python") -> List[Issue]:
@@ -496,7 +528,7 @@ def add_numbers(a, b)
         first_issue = issues[0]
         agents_for_issues = main_agent.create_specialized_agents([first_issue])
         specialized_agent = agents_for_issues[0]
-        repair_result = specialized_agent.repair(sample_buggy_code, first_issue)
+        repair_result = specialized_agent.repair(sample_buggy_code, first_issue, "Python")
 
         print("\\n--- Fixed Code ---")
         print(repair_result.fixed_code)

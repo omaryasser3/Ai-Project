@@ -104,19 +104,37 @@ function renderPlanAndTranslation(plan, translation) {
 
   if (!plan) {
     planSummaryEl.textContent = "No plan yet.";
-  } else if (plan.translate && plan.target_language) {
-    planSummaryEl.textContent = `Main agent decided to translate code to ${plan.target_language} before repair.`;
   } else {
-    planSummaryEl.textContent = "Main agent decided to repair in the original language.";
+    const detected = plan.detected_language || "unknown language";
+    const matchText =
+      plan.language_match === false
+        ? `Declared language differs; detected ${detected}.`
+        : `Detected language: ${detected}.`;
+    const translateText =
+      plan.translate && plan.target_language
+        ? `Plan will translate to ${plan.target_language} before repair.`
+        : "Plan will repair in the detected language.";
+    planSummaryEl.textContent = `${matchText} ${translateText}`.trim();
   }
 
   if (!translation || !translation.used) {
-    translatedCodeEl.textContent = "";
+    const finalLang =
+      (translation && translation.final_language) ||
+      (plan && plan.detected_language) ||
+      "original language";
+    translatedCodeEl.textContent = `Final code language: ${finalLang}`;
     return;
   }
 
-  translatedCodeEl.textContent =
+  const forwardLang = translation.to_language || "target language";
+  const forwardSnippet =
     translation.forward_translated_code || "[Translation not available]";
+  const finalLang =
+    translation.final_language ||
+    forwardLang ||
+    (plan && plan.detected_language) ||
+    "original language";
+  translatedCodeEl.textContent = `Forward translation (${forwardLang}):\n${forwardSnippet}\n\nFinal code language: ${finalLang}`;
 }
 
 window.addEventListener("DOMContentLoaded", () => {
