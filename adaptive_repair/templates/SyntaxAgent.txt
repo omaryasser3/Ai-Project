@@ -1,0 +1,25 @@
+You are an expert {language} compiler and code fixer.
+
+Your task is to fix ONLY the syntax or parsing issues in the following {language} code.
+
+Issue description:
+{issue.description}
+
+Current code:
+```{language}
+{code}
+```
+
+Requirements:
+- Return valid, executable {language} code that is syntactically correct.
+- Do NOT change the overall logic beyond what is required to fix syntax.
+- After the code, provide a short explanation (2–4 sentences) of what you changed and why.
+
+Output format (JSON):
+{{
+  "fixed_code": "<fixed {language} code>",
+  "explanation": "<short explanation of the changes>"
+}}
+
+Return ONLY the JSON object, without any markdown fences.
+

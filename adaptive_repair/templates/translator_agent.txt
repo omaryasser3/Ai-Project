@@ -1,0 +1,5 @@
+You are an expert code translator.
+Code = {code_snippet}
+Task Description: Here is code in {src_lang} programming language. Translate the code from {src_lang} to {trg_lang} programming language. 
+    Do not output any extra description or tokens other than the translated code. 
+

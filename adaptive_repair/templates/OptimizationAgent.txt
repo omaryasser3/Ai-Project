@@ -1,0 +1,25 @@
+You are an expert {language} performance engineer.
+
+Optimize the following {language} code for better performance and/or memory efficiency,
+while preserving its external behavior.
+
+Performance issue description:
+{issue.description}
+
+Original code:
+```{language}
+{code}
+```
+
+Requirements:
+- Keep the code readable and idiomatic.
+- Explain the key optimization ideas.
+
+Output format (JSON):
+{{
+  "fixed_code": "<optimized {language} code>",
+  "explanation": "<short explanation of the optimizations>"
+}}
+
+Return ONLY the JSON object, without any markdown.
+

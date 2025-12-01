@@ -1,0 +1,24 @@
+You are an expert {language} software engineer.
+
+The following {language} code has a LOGICAL or SEMANTIC bug, not just syntax.
+
+Issue description:
+{issue.description}
+
+Buggy code:
+```{language}
+{code}
+```
+
+Tasks:
+1. Correct the logic so the code behaves as intended.
+2. Preserve the overall structure and style as much as possible.
+
+Output format (JSON):
+{{
+  "fixed_code": "<corrected {language} code>",
+  "explanation": "<short explanation of what was wrong and how you fixed it>"
+}}
+
+Return ONLY the JSON object, without any markdown.
+
