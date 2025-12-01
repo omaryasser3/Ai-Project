@@ -25,7 +25,7 @@ classDiagram
     }
     
     class MainAgent {
-        +analyze_and_plan(code, src_language) tuple
+        +analyze_and_plan(code, src_language) tuple~List~Issue~, RepairPlan~
         +analyze_code(code, src_language) List~Issue~
         +create_specialized_agents(issues) List~BaseAgent~
     }
@@ -266,9 +266,11 @@ The `log_experiment()` utility captures all API interactions for analysis and de
 
 ## Issue Classification
 
+The following diagram shows an example distribution of issue types that the system is designed to handle:
+
 ```mermaid
 pie showData
-    title Issue Types Handled
+    title Issue Types Handled (Example Distribution)
     "Syntax Errors" : 25
     "Logic Bugs" : 40
     "Performance Issues" : 20
@@ -282,7 +284,7 @@ The system categorizes bugs into four main types:
 | `syntax_error` | SyntaxAgent | Parsing errors, missing tokens, indentation |
 | `logic_bug` | LogicAgent | Wrong conditions, off-by-one, incorrect algorithms |
 | `performance_issue` | OptimizationAgent | Slow code, suboptimal complexity |
-| `style_issue` | LogicAgent | Naming, formatting (fallback to LogicAgent) |
+| `style_issue` | LogicAgent | Generic issues handled by LogicAgent |
 
 ---
 
