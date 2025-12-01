@@ -115,51 +115,6 @@ flowchart TD
 
 ## System Architecture
 
-### High-Level Architecture
-
-```mermaid
-flowchart TB
-    subgraph UI["Web Interface Layer"]
-        UI_WEB[Flask Web App]
-        UI_STATIC[Static Assets]
-        UI_TEMPLATES[HTML Templates]
-    end
-    
-    subgraph API["API Layer"]
-        API_ANALYZE["/api/analyze"]
-        API_REPAIR["/api/repair"]
-    end
-    
-    subgraph CORE["Core Processing Layer"]
-        MAIN[MainAgent]
-        GRAPH[LangGraph Workflow]
-        AGENTS[Specialized Agents]
-    end
-    
-    subgraph LLM["LLM Integration Layer"]
-        GEMINI[Google Gemini API]
-        CONFIG[config.yaml]
-    end
-    
-    subgraph DATA["Data Layer"]
-        BUGS[bugs.json]
-        LOGS[Experiment Logs]
-        TESTCASES[Test Cases]
-    end
-    
-    UI_WEB --> API_ANALYZE
-    UI_WEB --> API_REPAIR
-    API_ANALYZE --> MAIN
-    API_REPAIR --> GRAPH
-    GRAPH --> MAIN
-    GRAPH --> AGENTS
-    MAIN --> GEMINI
-    AGENTS --> GEMINI
-    GEMINI --> CONFIG
-    GRAPH --> LOGS
-    MAIN --> BUGS
-```
-
 ### Detailed Component Architecture
 
 ```mermaid
@@ -275,18 +230,7 @@ The `log_experiment()` utility captures all API interactions for analysis and de
 
 ---
 
-## Issue Classification
-
-The following diagram shows an example distribution of issue types that the system is designed to handle:
-
-```mermaid
-pie showData
-    title Issue Types Handled (Example Distribution)
-    "Syntax Errors" : 25
-    "Logic Bugs" : 40
-    "Performance Issues" : 20
-    "Style Issues" : 15
-```
+## Bugs Classification
 
 The system categorizes bugs into four main types:
 
