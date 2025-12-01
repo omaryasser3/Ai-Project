@@ -3,7 +3,9 @@ def powerset(arr):
     if arr:
         first, *rest = arr #python3 just like car and cdr (in this case anyway..)
         rest_subsets = powerset(rest)
-        return [[first] + subset for subset in rest_subsets]
+        # The powerset of arr includes all subsets of 'rest' (those not containing 'first')
+        # AND all subsets of 'rest' with 'first' added to them (those containing 'first').
+        return rest_subsets + [[first] + subset for subset in rest_subsets]
     else:
         return [[]]
 

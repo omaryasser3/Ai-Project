@@ -1,4 +1,3 @@
-
 def shunting_yard(tokens):
     precedence = {
         '+': 1,
@@ -13,36 +12,15 @@ def shunting_yard(tokens):
         if isinstance(token, int):
             rpntokens.append(token)
         else:
+            # While there are operators on the stack with greater or equal precedence,
+            # pop them to the output queue.
             while opstack and precedence[token] <= precedence[opstack[-1]]:
                 rpntokens.append(opstack.pop())
+            # Push the current operator onto the stack.
+            opstack.append(token)
 
+    # After processing all tokens, pop any remaining operators from the stack to the output.
     while opstack:
         rpntokens.append(opstack.pop())
 
     return rpntokens
-
-
-"""
-Infix to RPN Conversion
-shunting-yard
-
-
-Uses Dijkstra's shunting-yard algorithm to transform infix notation into equivalent Reverse Polish Notation.
-
-Input:
-    tokens: A list of tokens in infix notation
-
-Precondition:
-    all(isinstance(token, int) or token in '+-*/' for token in tokens)
-
-Output:
-    The input tokens reordered into Reverse Polish Notation
-
-Examples:
-    >>> shunting_yard([10, '-', 5, '-', 2])
-    [10, 5, '-', 2, '-']
-    >>> shunting_yard([34, '-', 12, '/', 5])
-    [34, 12, 5, '/' ,'-']
-    >>> shunting_yard([4, '+', 9, '*', 9, '-', 10, '+', 13])
-    [4, 9, 9, '*', '+', 10, '-', 13, '+']
-"""

@@ -1,8 +1,16 @@
 def detect_cycle(node):
-    hare = tortoise = node
+    if node is None:
+        return False
+
+    hare = node
+    tortoise = node
 
     while True:
-        if hare.successor is None:
+        # Before moving, check if hare can make two steps. 
+        # If hare.successor is None, the list ends after one more step (or is already at the end).
+        # If hare.successor.successor is None, the list ends after two more steps.
+        # In either case, if hare cannot move two steps, there is no cycle.
+        if hare.successor is None or hare.successor.successor is None:
             return False
 
         tortoise = tortoise.successor

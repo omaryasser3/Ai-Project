@@ -1,4 +1,3 @@
-
 from collections import deque as Queue
 
 def breadth_first_search(startnode, goalnode):
@@ -8,27 +7,17 @@ def breadth_first_search(startnode, goalnode):
     nodesseen = set()
     nodesseen.add(startnode)
 
-    while True:
+    while queue:  # Loop as long as there are nodes in the queue to process
         node = queue.popleft()
 
         if node is goalnode:
             return True
         else:
-            queue.extend(node for node in node.successors if node not in nodesseen)
-            nodesseen.update(node.successors)
+            # Only add successors to the queue if they haven't been seen yet
+            # and mark them as seen immediately upon adding to the queue.
+            for successor_node in node.successors:
+                if successor_node not in nodesseen:
+                    queue.append(successor_node)
+                    nodesseen.add(successor_node)
 
-    return False
-
-
-
-"""
-Breadth-First Search
-
-
-Input:
-    startnode: A digraph node
-    goalnode: A digraph node
-
-Output:
-    Whether goalnode is reachable from startnode
-"""
+    return False # If the queue becomes empty and goalnode was not found, it's unreachable

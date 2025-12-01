@@ -1,48 +1,30 @@
-
 def shortest_paths(source, weight_by_edge):
-    weight_by_node = {
-        v: float('inf') for u, v in weight_by_edge
-    }
+    # Collect all unique nodes from the graph to ensure proper initialization
+    all_nodes = set()
+    for u, v in weight_by_edge:
+        all_nodes.add(u)
+        all_nodes.add(v)
+    # Ensure the source node is included, even if it has no outgoing/incoming edges
+    all_nodes.add(source)
+
+    # Initialize distances: source to itself is 0, others are infinity
+    weight_by_node = {node: float('inf') for node in all_nodes}
     weight_by_node[source] = 0
 
-    for i in range(len(weight_by_node) - 1):
+    # The Bellman-Ford algorithm performs N-1 iterations, where N is the number of nodes.
+    # In each iteration, it relaxes all edges.
+    num_nodes = len(all_nodes)
+    for i in range(num_nodes - 1):
+        # Iterate over all edges in the graph
         for (u, v), weight in weight_by_edge.items():
-            weight_by_edge[u, v] = min(
-                weight_by_node[u] + weight,
-                weight_by_node[v]
-            )
+            # Core relaxation step:
+            # If a path to 'u' has been found (i.e., weight_by_node[u] is not infinity)
+            # AND a path through 'u' to 'v' is shorter than the current known path to 'v',
+            # then update the shortest path to 'v'.
+            # The `min` function handles the `float('inf')` comparisons correctly.
+            weight_by_node[v] = min(weight_by_node[v], weight_by_node[u] + weight)
+
+    # The problem statement guarantees no negative-weight cycles, so a final check
+    # for negative cycles (by running one more iteration) is not required.
 
     return weight_by_node
-
-
-"""
-Minimum-Weight Paths
-bellman-ford
-
-Bellman-Ford algorithm implementation
-
-Given a directed graph that may contain negative edges (as long as there are no negative-weight cycles), efficiently calculates the minimum path weights from a source node to every other node in the graph.
-
-Input:
-    source: A node id
-    weight_by_edge: A dict containing edge weights keyed by an ordered pair of node ids
-
-Precondition:
-    The input graph contains no negative-weight cycles
-
-Output:
-   A dict mapping each node id to the minimum weight of a path from the source node to that node
-
-Example:
-    >>> shortest_paths('A', {
-        ('A', 'B'): 3,
-        ('A', 'C'): 3,
-        ('A', 'F'): 5,
-        ('C', 'B'): -2,
-        ('C', 'D'): 7,
-        ('C', 'E'): 4,
-        ('D', 'E'): -5,
-        ('E', 'F'): -1
-    })
-    {'A': 0, 'C': 3, 'B': 1, 'E': 5, 'D': 10, 'F': 4}
-"""

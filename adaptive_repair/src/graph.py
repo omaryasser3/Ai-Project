@@ -1,6 +1,7 @@
 import json
 import logging
 from typing import TypedDict, List, Optional, Any, Annotated
+from dataclasses import asdict
 from langgraph.graph import StateGraph, END
 from agents import (
     MainAgent,
@@ -27,6 +28,7 @@ class GraphState(TypedDict):
     current_issue: Optional[Issue]
     fixed_code: Optional[str]
     explanation: Optional[str]
+    history: List[Any]
 
 
 def main_node(state: GraphState):
@@ -60,11 +62,20 @@ def main_node(state: GraphState):
     print(f"Issues found: {len(issues)}")
     print(f"Constructed Queue: {queue}")
     
+    # Initialize history
+    history_entry = {
+        "step": "MainAnalysis",
+        "issues": [asdict(i) for i in issues],
+        "plan": asdict(plan),
+        "queue": queue
+    }
+    
     return {
         "issues": issues,
         "plan": plan,
         "agent_queue": queue,
-        "current_lang": src_lang
+        "current_lang": src_lang,
+        "history": [history_entry]
     }
 
 
@@ -75,9 +86,18 @@ def translator_forward_node(state: GraphState):
     src_lang = state['current_lang']
     trg_lang = plan.target_language
     translation_response = translator_agent(code, src_lang, trg_lang, decide=False)
+    
+    history_entry = {
+        "step": "TranslatorForward",
+        "from": src_lang,
+        "to": trg_lang,
+        "result": translation_response
+    }
+    
     return {
         "code": translation_response,
-        "current_lang": trg_lang
+        "current_lang": trg_lang,
+        "history": state.get("history", []) + [history_entry]
     }
 
 def translator_backward_node(state: GraphState):
@@ -88,10 +108,18 @@ def translator_backward_node(state: GraphState):
     
     translation_response = translator_agent(code, current_lang, original_lang, decide=False)
     
+    history_entry = {
+        "step": "TranslatorBackward",
+        "from": current_lang,
+        "to": original_lang,
+        "result": translation_response
+    }
+    
     return {
         "code": translation_response,
         "current_lang": original_lang,
-        "fixed_code": translation_response
+        "fixed_code": translation_response,
+        "history": state.get("history", []) + [history_entry]
     }
 
 def syntax_fixer_node(state: GraphState):
@@ -99,10 +127,19 @@ def syntax_fixer_node(state: GraphState):
     agent = SyntaxAgent()
     issue = next((i for i in state['issues'] if i.type == 'syntax_error'), state['issues'][0])
     result = agent.repair(state['code'], issue, state['current_lang'])
+    
+    history_entry = {
+        "step": "SyntaxFixer",
+        "issue": asdict(issue),
+        "explanation": result.explanation,
+        "fixed_code": result.fixed_code
+    }
+    
     return {
         "code": result.fixed_code,
         "explanation": result.explanation,
-        "fixed_code": result.fixed_code
+        "fixed_code": result.fixed_code,
+        "history": state.get("history", []) + [history_entry]
     }
 
 def logic_fixer_node(state: GraphState):
@@ -112,10 +149,18 @@ def logic_fixer_node(state: GraphState):
 
     result = agent.repair(state['code'], issue, state['current_lang'])
     
+    history_entry = {
+        "step": "LogicFixer",
+        "issue": asdict(issue),
+        "explanation": result.explanation,
+        "fixed_code": result.fixed_code
+    }
+    
     return {
         "code": result.fixed_code,
         "explanation": result.explanation,
-        "fixed_code": result.fixed_code
+        "fixed_code": result.fixed_code,
+        "history": state.get("history", []) + [history_entry]
     }
 
 def optimization_fixer_node(state: GraphState):
@@ -125,10 +170,18 @@ def optimization_fixer_node(state: GraphState):
     
     result = agent.repair(state['code'], issue, state['current_lang'])
     
+    history_entry = {
+        "step": "OptimizationFixer",
+        "issue": asdict(issue),
+        "explanation": result.explanation,
+        "fixed_code": result.fixed_code
+    }
+    
     return {
         "code": result.fixed_code,
         "explanation": result.explanation,
-        "fixed_code": result.fixed_code
+        "fixed_code": result.fixed_code,
+        "history": state.get("history", []) + [history_entry]
     }
 
 def route_dispatcher(state: GraphState):

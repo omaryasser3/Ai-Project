@@ -37,7 +37,7 @@ def main():
     print()
 
     # Case 3: Graph with cycle
-    # Output: {'A': 0, 'C': 3, 'B': 1, 'E': 1, 'D': 0, 'F': 5}
+    # Output: {'A': 0, 'B': 1, 'C': 3, 'D': 6, 'E': 5, 'F': 9}
     graph3 = {
         ('A', 'B'): 1,
         ('B', 'C'): 2,

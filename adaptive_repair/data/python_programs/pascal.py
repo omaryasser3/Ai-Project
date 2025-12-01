@@ -1,33 +1,20 @@
-
 def pascal(n):
+    if n == 0:
+        return []
+
     rows = [[1]]
+
     for r in range(1, n):
-        row = []
-        for c in range(0, r):
-            upleft = rows[r - 1][c - 1] if c > 0 else 0
-            upright = rows[r - 1][c] if c < r else 0
-            row.append(upleft + upright)
-        rows.append(row)
+        prev_row = rows[-1]
+        current_row = [1]  # Each row starts with '1'
+
+        # Calculate the inner elements of the current row
+        # These are the sum of adjacent elements from the previous row.
+        # The loop runs for (len(prev_row) - 1) times to get the middle elements.
+        for i in range(len(prev_row) - 1):
+            current_row.append(prev_row[i] + prev_row[i + 1])
+
+        current_row.append(1)  # Each row ends with '1'
+        rows.append(current_row)
 
     return rows
-
-
-"""
-Pascal's Triangle
-pascal
-
-
-
-Input:
-    n: The number of rows to return
-
-Precondition:
-    n >= 1
-
-Output:
-    The first n rows of Pascal's triangle as a list of n lists
-
-Example:
-    >>> pascal(5)
-    [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]
-"""

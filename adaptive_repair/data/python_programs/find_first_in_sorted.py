@@ -1,20 +1,22 @@
 def find_first_in_sorted(arr, x):
     lo = 0
-    hi = len(arr)
+    hi = len(arr)  # hi is an exclusive upper bound
 
-    while lo <= hi:
+    ans = -1  # Stores the potential first index of x
+
+    while lo < hi:  # Loop while the search space is valid
         mid = (lo + hi) // 2
 
-        if x == arr[mid] and (mid == 0 or x != arr[mid - 1]):
-            return mid
+        # Check if mid is a potential answer
+        if arr[mid] == x:
+            ans = mid  # Found a potential first occurrence
+            hi = mid   # Try to find an even earlier occurrence in the left half
+        elif arr[mid] < x:
+            lo = mid + 1 # x must be in the right half
+        else: # arr[mid] > x
+            hi = mid     # x must be in the left half (or not present)
 
-        elif x <= arr[mid]:
-            hi = mid
-
-        else:
-            lo = mid + 1
-
-    return -1
+    return ans
 
 
 """

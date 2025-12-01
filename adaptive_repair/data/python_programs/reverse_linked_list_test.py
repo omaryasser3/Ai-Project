@@ -48,10 +48,9 @@ def main():
         print("Not Reversed!", end=" ")
 
     while result:
-        print(result.value)
+        print(result.value, end=" ") # Fixed: Added end=" " for consistent formatting
         result = result.successor
     print()
 
 if __name__ == "__main__":
     main()
-

@@ -1,4 +1,3 @@
-
 def get_factors(n):
     if n == 1:
         return []
@@ -7,7 +6,10 @@ def get_factors(n):
         if n % i == 0:
             return [i] + get_factors(n // i)
 
-    return []
+    # If the loop completes without finding any factors, it means 'n' itself
+    # is a prime number (or 1, but 1 is handled by the first if statement).
+    # In this case, 'n' is its own prime factor.
+    return [n]
 
 
 """

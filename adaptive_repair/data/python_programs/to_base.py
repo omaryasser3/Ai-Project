@@ -1,4 +1,3 @@
-
 import string
 def to_base(num, b):
     result = ''
@@ -6,7 +5,7 @@ def to_base(num, b):
     while num > 0:
         i = num % b
         num = num // b
-        result = result + alphabet[i]
+        result = alphabet[i] + result  # Changed from result = result + alphabet[i]
     return result
 
 
