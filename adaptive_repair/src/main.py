@@ -80,8 +80,8 @@ def save_fix(bug_id, code, filename, language):
 
 if __name__ == "__main__":
     # Process Java bugs
-    dataset = load_bugs("Java")
-    print(f"Loaded {len(dataset)} Java bugs.")
+    dataset = load_bugs("python")
+    print(f"Loaded {len(dataset)} python bugs.")
     
     for entry in dataset:
         fix, method = run_repair_system(entry['id'], entry['code'], entry['language'])

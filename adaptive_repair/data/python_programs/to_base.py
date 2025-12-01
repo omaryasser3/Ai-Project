@@ -1,12 +1,20 @@
 import string
+
 def to_base(num, b):
-    result = ''
+    if num == 0:
+        return '0'
+
+    digits = []
     alphabet = string.digits + string.ascii_uppercase
+
     while num > 0:
-        i = num % b
-        num = num // b
-        result = alphabet[i] + result  # Changed from result = result + alphabet[i]
-    return result
+        remainder = num % b
+        digits.append(alphabet[remainder])
+        num //= b
+
+    # The digits are collected in reverse order (least significant first).
+    # We need to reverse the list before joining them into the final string.
+    return "".join(reversed(digits))
 
 
 

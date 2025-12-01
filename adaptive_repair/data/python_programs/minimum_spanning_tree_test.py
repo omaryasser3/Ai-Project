@@ -13,7 +13,7 @@ def main():
         (3, 4): 10,
         (1, 4): 10})
     for edge in result:
-        print(edge, end=' ')
+        print(edge)
     print()
 
     # Case 2: Strongly connected tree input.
@@ -30,7 +30,7 @@ def main():
         (4, 6): 2,
         (5, 6): 6})
     for edge in result:
-        print(edge, end=' ')
+        print(edge)
     print()
 
     # Case 3: Minimum spanning tree input.
@@ -40,7 +40,7 @@ def main():
             (1, 3): 1,
             (2, 4): 2})
     for edge in result:
-        print(edge, end=' ')
+        print(edge)
     print()
 
 

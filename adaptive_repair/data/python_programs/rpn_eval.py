@@ -1,10 +1,17 @@
 def rpn_eval(tokens):
     def op(symbol, a, b):
+        # The lambda functions are defined such that 'a' is the first argument
+        # and 'b' is the second argument in the lambda's scope. However, when
+        # popping from the stack, 'a' (first pop) is the second operand in RPN
+        # and 'b' (second pop) is the first operand in RPN. To correctly compute
+        # 'first_operand op second_operand', we need to pass them in the correct order.
+        # The fix below swaps 'a' and 'b' in the call to op, so the lambda
+        # receives (first_operand, second_operand).
         return {
-            '+': lambda a, b: a + b,
-            '-': lambda a, b: a - b,
-            '*': lambda a, b: a * b,
-            '/': lambda a, b: a / b
+            '+': lambda x, y: x + y,
+            '-': lambda x, y: x - y,
+            '*': lambda x, y: x * y,
+            '/': lambda x, y: x / y
         }[symbol](a, b)
 
     stack = []
@@ -13,14 +20,13 @@ def rpn_eval(tokens):
         if isinstance(token, float):
             stack.append(token)
         else:
-            # The first operand popped (a) is the right-hand side operand.
-            # The second operand popped (b) is the left-hand side operand.
-            # For non-commutative operations (like subtraction and division),
-            # the operation should be b OP a.
-            a = stack.pop() # Right operand
-            b = stack.pop() # Left operand
+            # When popping from the stack for an RPN operation:
+            # 'a' is the second operand (the one pushed last)
+            # 'b' is the first operand (the one pushed second to last)
+            a = stack.pop() # This is the second operand
+            b = stack.pop() # This is the first operand
             stack.append(
-                op(token, b, a) # Corrected order: b then a
+                op(token, b, a) # Corrected: Pass b (first operand) then a (second operand)
             )
 
     return stack.pop()

@@ -1,7 +1,8 @@
+
 def bitcount(n):
     count = 0
     while n:
-        n &= (n - 1)  # Corrected: Clears the least significant set bit
+        n &= n - 1  # Corrected operation: use bitwise AND instead of XOR
         count += 1
     return count
 

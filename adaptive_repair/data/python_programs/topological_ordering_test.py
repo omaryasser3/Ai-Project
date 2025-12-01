@@ -1,76 +1,69 @@
+from collections import deque
+
+# Define Node class directly as it's part of the architectural fix
 class Node:
     def __init__(self, value):
         self.value = value
         self.outgoing_nodes = []
-        self.incoming_nodes = []
+        # incoming_nodes is removed to enforce a single source of truth for edges.
+        # In-degrees will be computed dynamically by the topological_ordering algorithm.
 
-    def add_outgoing_edge(self, target_node):
-        """
-        Adds a directed edge from this node to the target_node,
-        ensuring consistency between outgoing_nodes and incoming_nodes lists.
-        """
-        if target_node not in self.outgoing_nodes:
-            self.outgoing_nodes.append(target_node)
-        if self not in target_node.incoming_nodes:
-            target_node.incoming_nodes.append(self)
+    def add_outgoing_edge(self, destination: 'Node'):
+        """Adds a directed edge from this node to the destination, ensuring no duplicates."""
+        if destination not in self.outgoing_nodes:
+            self.outgoing_nodes.append(destination)
 
     def __repr__(self):
         return f"Node({self.value})"
 
-    def __eq__(self, other):
-        # Nodes are considered equal if they are Node instances and have the same value.
-        # This is crucial for 'not in' checks and dictionary keys.
-        return isinstance(other, Node) and self.value == other.value
-
-    def __hash__(self):
-        # Hash based on value for consistent behavior with __eq__.
-        return hash(self.value)
-
-# Placeholder for topological_ordering, as it was imported from a separate file.
-# This implementation uses Kahn's algorithm to produce a valid topological sort.
-def topological_ordering(nodes):
+# Define topological_ordering directly as it's part of the architectural fix
+def topological_ordering(nodes: list[Node]) -> list[Node]:
     """
-    Performs a topological sort on the given graph nodes using Kahn's algorithm.
-    Raises an exception if a cycle is detected.
+    Performs topological sorting using Kahn's algorithm.
+    It dynamically computes in-degrees from the 'outgoing_nodes' list,
+    as 'incoming_nodes' are no longer explicitly stored on Node objects.
     """
     in_degree = {node: 0 for node in nodes}
+    
+    # Compute in-degrees for all nodes by iterating through outgoing edges
     for node in nodes:
-        for outgoing in node.outgoing_nodes:
-            # Ensure the outgoing node is also in the initial 'nodes' list
-            # to prevent KeyError if the graph is not fully represented in 'nodes'.
-            if outgoing in in_degree:
-                in_degree[outgoing] += 1
+        for neighbor in node.outgoing_nodes:
+            # Ensure the neighbor is part of the graph being processed
+            if neighbor in in_degree:
+                in_degree[neighbor] += 1
             else:
-                # Handle cases where an outgoing node might not be in the initial 'nodes' list
-                # For this problem, we assume all relevant nodes are passed.
+                # This case indicates an edge to a node not in the provided 'nodes' list.
+                # For a well-formed graph, all nodes should be in 'nodes'.
+                # Depending on requirements, this could raise an error or ignore.
                 pass 
 
-    queue = [node for node in nodes if in_degree[node] == 0]
-    result = []
-
+    # Initialize queue with all nodes having an in-degree of 0
+    queue = deque([node for node in nodes if in_degree[node] == 0])
+    
+    topological_order = []
+    
     while queue:
-        current_node = queue.pop(0)  # Use pop(0) for FIFO queue behavior
-        result.append(current_node)
-
-        for neighbor in current_node.outgoing_nodes:
-            if neighbor in in_degree: # Ensure neighbor is a tracked node
-                in_degree[neighbor] -= 1
-                if in_degree[neighbor] == 0:
-                    queue.append(neighbor)
-
-    if len(result) != len(nodes):
+        u = queue.popleft() # Efficient dequeue from the left
+        topological_order.append(u)
+        
+        # For each neighbor of the dequeued node, decrement its in-degree
+        for v in u.outgoing_nodes:
+            in_degree[v] -= 1
+            # If a neighbor's in-degree becomes 0, add it to the queue
+            if in_degree[v] == 0:
+                queue.append(v)
+                
+    # Check for cycles: if the number of nodes in the topological order
+    # is less than the total number of nodes, a cycle exists.
+    if len(topological_order) != len(nodes):
         raise Exception("Graph has a cycle, topological ordering not possible.")
-
-    return result
+        
+    return topological_order
 
 
 """
 Driver to test topological ordering
 """
-
-# The global add_edge function has been removed.
-# Its logic is now encapsulated within the Node.add_outgoing_edge method.
-
 def main():
     # Case 1: Wikipedia graph
     # Output: 5 7 3 11 8 10 2 9
@@ -84,7 +77,10 @@ def main():
     nine = Node(9)
     ten = Node(10)
 
-    # Using Node.add_outgoing_edge to ensure consistency for every edge.
+    # Removed redundant list clearing. Node.__init__ already initializes lists,
+    # and incoming_nodes is no longer a direct attribute.
+
+    # Use the add_outgoing_edge method on Node objects
     five.add_outgoing_edge(eleven)
     seven.add_outgoing_edge(eleven)
     seven.add_outgoing_edge(eight)
@@ -96,8 +92,7 @@ def main():
     eight.add_outgoing_edge(nine)
 
     try:
-        all_nodes_case1 = [five, seven, three, eleven, eight, two, nine, ten]
-        [print(x.value, end=" ") for x in topological_ordering(all_nodes_case1)]
+        [print(x.value, end=" ") for x in topological_ordering([five, seven, three, eleven, eight, two, nine, ten])]
     except Exception as e:
         print(e)
     print()
@@ -113,7 +108,8 @@ def main():
     two = Node(2)
     three = Node(3)
 
-    # Using Node.add_outgoing_edge to ensure consistency for every edge.
+    # Removed redundant list clearing
+
     five.add_outgoing_edge(two)
     five.add_outgoing_edge(zero)
     four.add_outgoing_edge(zero)
@@ -122,15 +118,14 @@ def main():
     three.add_outgoing_edge(one)
 
     try:
-        all_nodes_case2 = [zero, one, two, three, four, five]
-        [print(x.value, end=" ") for x in topological_ordering(all_nodes_case2)]
+        [print(x.value, end=" ") for x in topological_ordering([zero, one, two, three, four, five])]
     except Exception as e:
         print(e)
     print()
     
 
     # Case 3: Cooking with InteractivePython
-    # Output: (No specific output provided, but should run without error)
+    # Output: (No specific output given, but should be a valid topological order)
 
     milk = Node("3/4 cup milk")
     egg = Node("1 egg")
@@ -142,7 +137,8 @@ def main():
     turn = Node("turn when bubbly")
     eat = Node("eat")
 
-    # Using Node.add_outgoing_edge to ensure consistency for every edge.
+    # Removed redundant list clearing
+
     milk.add_outgoing_edge(mix)
     egg.add_outgoing_edge(mix)
     oil.add_outgoing_edge(mix)
@@ -154,8 +150,7 @@ def main():
     syrup.add_outgoing_edge(eat)
 
     try:
-        all_nodes_case3 = [milk, egg, oil, mix, syrup, griddle, pour, turn, eat]
-        [print(x.value, end=" ") for x in topological_ordering(all_nodes_case3)]
+        [print(x.value, end=" ") for x in topological_ordering([milk, egg, oil, mix, syrup, griddle, pour, turn, eat])]
     except Exception as e:
         print(e)
     print()

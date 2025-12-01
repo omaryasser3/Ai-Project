@@ -7,17 +7,16 @@ def breadth_first_search(startnode, goalnode):
     nodesseen = set()
     nodesseen.add(startnode)
 
-    while queue:  # Loop as long as there are nodes in the queue to process
+    while queue:  # This correctly checks if the queue is not empty
         node = queue.popleft()
 
         if node is goalnode:
             return True
         else:
-            # Only add successors to the queue if they haven't been seen yet
-            # and mark them as seen immediately upon adding to the queue.
-            for successor_node in node.successors:
-                if successor_node not in nodesseen:
-                    queue.append(successor_node)
-                    nodesseen.add(successor_node)
+            # Filter successors to add only those not yet seen
+            new_successors = [s for s in node.successors if s not in nodesseen]
+            queue.extend(new_successors)
+            # Add the newly discovered successors to the set of seen nodes
+            nodesseen.update(new_successors)
 
-    return False # If the queue becomes empty and goalnode was not found, it's unreachable
+    return False

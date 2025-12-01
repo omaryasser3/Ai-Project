@@ -9,7 +9,7 @@ def is_valid_parenthesization(parens):
             if depth < 0:
                 return False
 
-    return True
+    return depth == 0
 
 
 """

@@ -1,37 +1,26 @@
 def find_first_in_sorted(arr, x):
     lo = 0
-    hi = len(arr)  # hi is an exclusive upper bound
+    hi = len(arr)
 
-    ans = -1  # Stores the potential first index of x
-
-    while lo < hi:  # Loop while the search space is valid
+    # The loop condition must be 'lo < hi' because 'hi' is initialized as an exclusive upper bound (len(arr)).
+    # Using 'lo <= hi' would allow 'mid' to potentially become 'len(arr)', leading to an IndexError
+    # when 'arr[mid]' is accessed, especially for empty arrays or when 'x' is greater than all elements.
+    while lo < hi:
         mid = (lo + hi) // 2
 
-        # Check if mid is a potential answer
-        if arr[mid] == x:
-            ans = mid  # Found a potential first occurrence
-            hi = mid   # Try to find an even earlier occurrence in the left half
-        elif arr[mid] < x:
-            lo = mid + 1 # x must be in the right half
-        else: # arr[mid] > x
-            hi = mid     # x must be in the left half (or not present)
+        if x == arr[mid] and (mid == 0 or x != arr[mid - 1]):
+            return mid
 
-    return ans
+        elif x <= arr[mid]:
+            # If x is less than or equal to arr[mid], it means x could be at mid
+            # or to its left. We narrow the search to the left half, including mid
+            # as a potential candidate for the first occurrence. 'hi = mid' correctly
+            # sets the new exclusive upper bound for the search space [lo, mid).
+            hi = mid
 
+        else:
+            # If x is greater than arr[mid], it must be in the right half.
+            # We exclude mid and search [mid + 1, hi).
+            lo = mid + 1
 
-"""
-Fancy Binary Search
-fancy-binsearch
-
-
-Input:
-    arr: A sorted list of ints
-    x: A value to find
-
-Output:
-    The lowest index i such that arr[i] == x, or -1 if x not in arr
-
-Example:
-    >>> find_first_in_sorted([3, 4, 5, 5, 5, 5, 6], 5)
-    2
-"""
+    return -1

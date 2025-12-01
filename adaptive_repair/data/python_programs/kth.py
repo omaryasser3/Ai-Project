@@ -1,35 +1,13 @@
 import random
 
-def _partition(arr, left, right, pivot_index):
-    """
-    Partitions the sub-array arr[left...right] around the pivot element.
-    Moves elements smaller than the pivot to its left and larger elements to its right.
-    Returns the final index of the pivot element.
-    """
-    pivot_value = arr[pivot_index]
-    # Move pivot to the end of the sub-array for easier partitioning
-    arr[pivot_index], arr[right] = arr[right], arr[pivot_index]
-    store_index = left
-    
-    # Iterate through the sub-array, moving elements smaller than pivot to the left
-    for i in range(left, right):
-        if arr[i] < pivot_value:
-            arr[store_index], arr[i] = arr[i], arr[store_index]
-            store_index += 1
-            
-    # Move the pivot to its final sorted position
-    arr[right], arr[store_index] = arr[store_index], arr[right]
-    return store_index
-
 def kth(arr, k):
     """
-    QuickSelect
-
+    QuickSelect: Finds the k-th smallest element in an array in-place.
     This is an efficient equivalent to sorted(arr)[k].
 
     Input:
-        arr: A list of ints
-        k: An int
+        arr: A list of ints (modified in-place)
+        k: An int (0-based index)
 
     Precondition:
         0 <= k < len(arr)
@@ -37,31 +15,65 @@ def kth(arr, k):
     Output:
         The kth-lowest element of arr (0-based)
     """
+    if not arr:
+        raise ValueError("Input array cannot be empty.")
     if not (0 <= k < len(arr)):
-        raise IndexError("k is out of bounds for array")
-    if not arr: # Although precondition implies non-empty, a defensive check.
-        raise ValueError("Input array cannot be empty")
+        raise IndexError(f"k ({k}) is out of bounds for array of length {len(arr)}")
 
-    # Create a copy to preserve the external behavior of not modifying the original array.
-    # The original implementation implicitly created copies with list comprehensions.
-    arr_copy = list(arr)
-    
-    left, right = 0, len(arr_copy) - 1
-    
-    # Use an iterative approach to avoid Python's recursion depth limits
-    # and improve performance by avoiding function call overhead for deep recursion.
-    while True:
-        # Select a random pivot to ensure average-case O(N) performance
-        # and mitigate worst-case O(N^2) scenarios (e.g., sorted arrays).
-        pivot_index = random.randint(left, right)
-        
-        # Partition the array in-place around the chosen pivot.
-        # This avoids creating new lists, significantly reducing memory overhead.
-        pivot_final_index = _partition(arr_copy, left, right, pivot_index)
-        
-        if k == pivot_final_index:
-            return arr_copy[k]
-        elif k < pivot_final_index:
-            right = pivot_final_index - 1
-        else: # k > pivot_final_index
-            left = pivot_final_index + 1
+    # QuickSelect modifies the array in-place. If the original array
+    # should not be modified, a copy should be made here:
+    # arr_copy = list(arr)
+    # return _kth_in_place(arr_copy, k, 0, len(arr_copy) - 1)
+
+    return _kth_in_place(arr, k, 0, len(arr) - 1)
+
+def _kth_in_place(arr, k, left, right):
+    # Base case: If the sub-array has only one element, it must be the k-th element.
+    if left == right:
+        return arr[left]
+
+    # Choose a random pivot index to ensure average O(N) performance
+    # and avoid worst-case O(N^2) on pathological inputs (e.g., already sorted arrays).
+    # Move the chosen pivot to the 'left' position to simplify the 3-way partition logic.
+    pivot_idx = random.randint(left, right)
+    arr[left], arr[pivot_idx] = arr[pivot_idx], arr[left]
+    pivot_value = arr[left]
+
+    # 3-way partition (Dijkstra's Dutch National Flag problem variant)
+    # This partitions arr[left...right] into three sections:
+    # 1. Elements < pivot_value (from arr[left] to arr[lt-1])
+    # 2. Elements == pivot_value (from arr[lt] to arr[gt])
+    # 3. Elements > pivot_value (from arr[gt+1] to arr[right])
+    lt = left  # Pointer for the end of the 'less than' section
+    gt = right # Pointer for the start of the 'greater than' section
+    i = left + 1 # Current element being examined
+
+    while i <= gt:
+        if arr[i] < pivot_value:
+            arr[i], arr[lt] = arr[lt], arr[i]
+            lt += 1
+            i += 1
+        elif arr[i] > pivot_value:
+            arr[i], arr[gt] = arr[gt], arr[i]
+            gt -= 1
+            # Note: i is NOT incremented here because the element swapped
+            # into arr[i] from arr[gt] needs to be re-evaluated.
+        else: # arr[i] == pivot_value
+            i += 1
+
+    # After partitioning, determine which section contains the k-th element.
+    # 'k' is the 0-based global index we are searching for.
+
+    if k < lt:
+        # The k-th element is in the 'less than' partition.
+        # Recurse on the sub-array arr[left ... lt-1].
+        return _kth_in_place(arr, k, left, lt - 1)
+    elif k > gt:
+        # The k-th element is in the 'greater than' partition.
+        # Recurse on the sub-array arr[gt+1 ... right].
+        return _kth_in_place(arr, k, gt + 1, right)
+    else:
+        # The k-th element is within the 'equal to pivot' partition (arr[lt ... gt]).
+        # Since all elements in this partition are equal to pivot_value,
+        # the k-th element must be pivot_value.
+        return pivot_value

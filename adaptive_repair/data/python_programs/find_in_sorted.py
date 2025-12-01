@@ -6,10 +6,8 @@ def find_in_sorted(arr, x):
         if x < arr[mid]:
             return binsearch(start, mid)
         elif x > arr[mid]:
-            # Bug fix: If x is greater than arr[mid], the search should continue
-            # in the range *after* mid, so the new start should be mid + 1.
-            # Including mid again (binsearch(mid, end)) could lead to infinite recursion
-            # if mid remains the same and x is still greater than arr[mid].
+            # Bug fix: The search space should exclude arr[mid] if x is not equal to arr[mid].
+            # If x > arr[mid], then x must be in the range (mid, end), so the new start should be mid + 1.
             return binsearch(mid + 1, end)
         else:
             return mid

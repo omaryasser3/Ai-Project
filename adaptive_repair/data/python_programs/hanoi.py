@@ -2,11 +2,8 @@ def hanoi(height, start=1, end=3):
     steps = []
     if height > 0:
         helper = ({1, 2, 3} - {start} - {end}).pop()
-        # Step 1: Move height - 1 disks from start to helper, using end as auxiliary
         steps.extend(hanoi(height - 1, start, helper))
-        # Step 2: Move the largest disk (at current height) from start to end
-        steps.append((start, end)) # Corrected line: changed 'helper' to 'end'
-        # Step 3: Move height - 1 disks from helper to end, using start as auxiliary
+        steps.append((start, end))
         steps.extend(hanoi(height - 1, helper, end))
 
     return steps

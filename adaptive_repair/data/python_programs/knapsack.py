@@ -6,11 +6,9 @@ def knapsack(capacity, items):
         weight, value = items[i - 1]
 
         for j in range(1, capacity + 1):
-            # Option 1: Don't take the current item
             memo[i, j] = memo[i - 1, j]
 
-            # Option 2: Take the current item, if its weight allows
-            if weight <= j:  # Corrected condition: item can be taken if weight is less than or EQUAL to current capacity
+            if weight <= j:
                 memo[i, j] = max(
                     memo[i, j],
                     value + memo[i - 1, j - weight]

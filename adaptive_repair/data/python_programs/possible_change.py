@@ -1,41 +1,23 @@
-import functools
-
 def possible_change(coins, total):
-    # Sort coins to ensure consistent order. While not strictly necessary for correctness
-    # with this specific memoized recursive approach (as the index handles the coin identity),
-    # it's good practice for dynamic programming problems. It ensures that if the input
-    # `coins` list order changes, the internal behavior (and thus cache hits) remains consistent.
-    coins = sorted(coins)
+    # Initialize a DP table where dp[i] will store the number of ways to make change for amount i.
+    # The size of the table is total + 1 to account for amounts from 0 to total.
+    dp = [0] * (total + 1)
 
-    @functools.lru_cache(None)  # Cache all results of this function
-    def _possible_change_memo(idx, current_total):
-        # Base case 1: If the total is 0, we've found one way (by using no more coins).
-        if current_total == 0:
-            return 1
-        # Base case 2: If the total is negative, this path is invalid.
-        if current_total < 0:
-            return 0
-        
-        # Base case 3: If we've run out of coin denominations to consider
-        # (idx has reached or exceeded the length of the coins list)
-        # and the total is still positive, it's impossible to make change.
-        if idx == len(coins):
-            return 0
+    # There is one way to make change for 0 (by using no coins).
+    dp[0] = 1
 
-        # Recursive step:
-        # We have two choices for the current coin (coins[idx]):
+    # Iterate through each coin denomination.
+    # The order of loops (coins first, then amounts) is crucial for counting combinations
+    # (where the order of coins used doesn't matter).
+    for coin in coins:
+        # For each coin, iterate from the coin's value up to the total amount.
+        # This ensures that we consider using the current coin for each possible amount.
+        for amount in range(coin, total + 1):
+            # The number of ways to make 'amount' is the sum of:
+            # 1. The ways to make 'amount' without using the current 'coin' (which is dp[amount] before this update).
+            # 2. The ways to make 'amount - coin' using any of the coins considered so far (including the current 'coin'),
+            #    and then adding the current 'coin' to those combinations.
+            dp[amount] += dp[amount - coin]
 
-        # Choice 1: Include the current coin.
-        # Subtract its value from the total and recursively call with the same coin index,
-        # as we can use the same coin multiple times.
-        ways_with_current_coin = _possible_change_memo(idx, current_total - coins[idx])
-
-        # Choice 2: Exclude the current coin.
-        # Move to the next coin denomination (idx + 1) without using the current one.
-        ways_without_current_coin = _possible_change_memo(idx + 1, current_total)
-
-        # The total number of ways is the sum of ways from these two choices.
-        return ways_with_current_coin + ways_without_current_coin
-
-    # Start the recursion from the first coin (index 0) and the given total.
-    return _possible_change_memo(0, total)
+    # The final result is the number of ways to make change for the 'total' amount.
+    return dp[total]

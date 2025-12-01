@@ -1,3 +1,4 @@
+
 def mergesort(arr):
     def merge(left, right):
         result = []
@@ -20,3 +21,16 @@ def mergesort(arr):
         left = mergesort(arr[:middle])
         right = mergesort(arr[middle:])
         return merge(left, right)
+
+
+
+"""
+Merge Sort
+
+
+Input:
+    arr: A list of ints
+
+Output:
+    The elements of arr in sorted order
+"""

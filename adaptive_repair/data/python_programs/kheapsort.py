@@ -1,21 +1,23 @@
 def kheapsort(arr, k):
     import heapq
 
-    # Initialize the min-heap with the first k+1 elements from the array.
-    # This window ensures that the smallest element is always available in the heap,
-    # given that elements are at most k positions from their sorted place.
-    # Use min(len(arr), k + 1) to handle cases where the array is shorter than k+1.
-    heap = list(arr[:min(len(arr), k + 1)])
+    # The k-heapsort algorithm maintains a min-heap of size k+1.
+    # It processes elements by pushing a new element and popping the smallest.
+
+    # Initialize the heap with the first k+1 elements from the array.
+    # Handle cases where the array is shorter than k+1.
+    heap_size = min(len(arr), k + 1)
+    heap = list(arr[:heap_size])
     heapq.heapify(heap)
 
-    # Iterate through the rest of the array, starting from index k+1.
-    # For each element, push it into the heap and pop the smallest element.
+    # Process the remaining elements in the array.
+    # For each element, push it onto the heap and yield the smallest element currently in the heap.
     # This maintains the sliding window of k+1 elements.
-    for i in range(k + 1, len(arr)):
+    for i in range(heap_size, len(arr)):
         yield heapq.heappushpop(heap, arr[i])
 
-    # After processing all elements from the array, the heap contains the remaining
-    # k+1 (or fewer) largest elements in sorted order. Pop and yield them.
+    # After all elements from the array have been processed, the heap still contains
+    # the largest k+1 elements that were encountered. Yield them in sorted order.
     while heap:
         yield heapq.heappop(heap)
 
