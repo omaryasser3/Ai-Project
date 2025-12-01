@@ -52,6 +52,16 @@ classDiagram
     MainAgent --> OptimizationAgent : creates
 ```
 
+#### Key Data Structures
+
+The system uses the following core data structures for communication between agents:
+
+| Data Structure | Description |
+|----------------|-------------|
+| `Issue` | Represents a detected problem with id, type, description, and location hint |
+| `RepairPlan` | High-level plan with translation decision (`translate`, `target_language`, `detected_language`, `language_match`) |
+| `RepairResult` | Result from agent repair containing `fixed_code` and `explanation` |
+
 ### 2. Graph-Based Workflow Orchestration (LangGraph)
 
 The system uses **LangGraph** to implement a state machine pattern for workflow orchestration. This provides:
@@ -66,10 +76,11 @@ stateDiagram-v2
     
     main_node --> dispatcher: Analyze & Plan
     
-    dispatcher --> translator_forward: If translation needed
+    dispatcher --> translator_forward: If translation needed (start)
     dispatcher --> syntax_fixer: If syntax errors
     dispatcher --> logic_fixer: If logic bugs
     dispatcher --> optimization_fixer: If performance issues
+    dispatcher --> translator_backward: After repairs (if translated)
     dispatcher --> [*]: Queue empty (END)
     
     translator_forward --> dispatcher: Loop back
