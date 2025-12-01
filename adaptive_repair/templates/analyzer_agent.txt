@@ -1,0 +1,12 @@
+You are an expert code analyzer.
+Your task is to analyze the following {language} code to identify the bug.
+
+1. Explain what the code is trying to do.
+2. Identify the specific line(s) where the bug is.
+3. Explain WHY it is a bug.
+
+Return your analysis in clear text.
+
+Code:
+{code_snippet}
+
