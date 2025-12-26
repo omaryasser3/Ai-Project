@@ -8,6 +8,7 @@ from agents import (
     SyntaxAgent,
     LogicAgent,
     OptimizationAgent,
+    ExplanationAgent,
     translator_agent,
     Issue,
     RepairPlan
@@ -29,6 +30,7 @@ class GraphState(TypedDict):
     fixed_code: Optional[str]
     explanation: Optional[str]
     history: List[Any]
+    comprehensive_explanation: Optional[dict]  # Added for ExplanationAgent output
 
 
 def construct_queue(plan: RepairPlan, issues: List[Issue]) -> List[str]:
@@ -240,10 +242,77 @@ def optimization_fixer_node(state: GraphState):
         "history": state.get("history", []) + [history_entry]
     }
 
+def explanation_node(state: GraphState):
+    """Generate comprehensive explanation of all repairs performed.
+    
+    This node enhances transparency and explainability by providing:
+    - Overall summary of changes
+    - Detailed explanations for each repair
+    - Confidence scoring
+    - Risk assessment
+    """
+    print("--- Explanation Generator ---")
+    
+    # Get repair history
+    history = state.get("history", [])
+    
+    # Filter only repair steps (not analysis or translation)
+    repair_steps = [
+        entry for entry in history 
+        if entry.get("step") in ["SyntaxFixer", "LogicFixer", "OptimizationFixer"]
+    ]
+    
+    if not repair_steps:
+        # No repairs to explain
+        return {
+            "comprehensive_explanation": {
+                "summary": "No repairs were needed.",
+                "detailed_explanations": [],
+                "confidence_score": 100,
+                "risks": [],
+                "transparency_notes": "The code analysis found no issues requiring repair."
+            }
+        }
+    
+    # Get original code from initial history or current state
+    original_code = state.get("code", "")
+    # Try to find the first code before any repairs
+    for entry in history:
+        if entry.get("step") == "MainAnalysis":
+            original_code = state.get("code", "")  # Code before repairs
+            break
+    
+    # Current fixed code
+    fixed_code = state.get("fixed_code") or state.get("code", "")
+    
+    # Generate comprehensive explanation
+    agent = ExplanationAgent()
+    explanation_data = agent.generate_explanation(
+        original_code=original_code,
+        fixed_code=fixed_code,
+        repairs=repair_steps,
+        language=state.get("current_lang", "Python")
+    )
+    
+    # Add to history
+    history_entry = {
+        "step": "ExplanationGenerator",
+        "summary": explanation_data.get("summary", ""),
+        "confidence_score": explanation_data.get("confidence_score", 0),
+        "detailed_explanations": explanation_data.get("detailed_explanations", []),
+        "risks": explanation_data.get("risks", []),
+        "transparency_notes": explanation_data.get("transparency_notes", "")
+    }
+    
+    return {
+        "comprehensive_explanation": explanation_data,
+        "history": state.get("history", []) + [history_entry]
+    }
+
 def route_dispatcher(state: GraphState):
     next_node = state.get("next_node_to_run")
     if not next_node:
-        return END
+        return "explanation"  # Route to explanation node when repairs are done
     return next_node
 
 def dispatcher_node_logic(state: GraphState):
@@ -274,6 +343,7 @@ def create_graph(
     workflow.add_node("syntax_fixer", syntax_fixer_node)
     workflow.add_node("logic_fixer", logic_fixer_node)
     workflow.add_node("optimization_fixer", optimization_fixer_node)
+    workflow.add_node("explanation", explanation_node)  # Add explanation node
 
     # Set entry point
     workflow.set_entry_point(entry_point)
@@ -284,7 +354,7 @@ def create_graph(
     workflow.add_edge("main_node", "human_review")
     workflow.add_edge("human_review", "dispatcher")
     
-    # Edge: Dispatcher -> [Agents] or END
+    # Edge: Dispatcher -> [Agents] or Explanation (when queue is empty)
     workflow.add_conditional_edges(
         "dispatcher",
         route_dispatcher,
@@ -294,7 +364,7 @@ def create_graph(
             "syntax_fixer": "syntax_fixer",
             "logic_fixer": "logic_fixer",
             "optimization_fixer": "optimization_fixer",
-            END: END
+            "explanation": "explanation"  # Route to explanation when done
         }
     )
     
@@ -304,6 +374,9 @@ def create_graph(
     workflow.add_edge("syntax_fixer", "dispatcher")
     workflow.add_edge("logic_fixer", "dispatcher")
     workflow.add_edge("optimization_fixer", "dispatcher")
+    
+    # Edge: Explanation -> END
+    workflow.add_edge("explanation", END)
 
     return workflow.compile(
         checkpointer=checkpointer,

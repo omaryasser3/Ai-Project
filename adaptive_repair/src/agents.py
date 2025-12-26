@@ -530,6 +530,108 @@ class OptimizationAgent(BaseAgent):
         )
 
 
+class ExplanationAgent(BaseAgent):
+    """Agent focused on generating comprehensive, human-readable explanations of repairs.
+    
+    This agent enhances transparency and explainability by providing:
+    - Overall summary of all changes made
+    - Detailed explanations of each repair
+    - Risk assessment and confidence scoring
+    """
+
+    def generate_explanation(self, original_code: str, fixed_code: str, repairs: List[dict], language: str) -> dict:
+        """Generate a comprehensive explanation of all repairs made.
+        
+        Args:
+            original_code: The original buggy code
+            fixed_code: The repaired code
+            repairs: List of repair records from the history
+            language: Programming language
+            
+        Returns:
+            dict with 'summary', 'detailed_explanations', and 'confidence_score'
+        """
+        # Build context from repairs
+        repairs_context = ""
+        for idx, repair in enumerate(repairs, 1):
+            step = repair.get("step", "Unknown")
+            issue = repair.get("issue", {})
+            explanation = repair.get("explanation", "No explanation")
+            
+            repairs_context += f"""
+Repair #{idx} ({step}):
+- Issue Type: {issue.get('type', 'unknown')}
+- Issue Description: {issue.get('description', 'N/A')}
+- Location: {issue.get('location_hint', 'N/A')}
+- What was done: {explanation}
+"""
+
+        prompt = f"""
+You are an expert code explainer and technical writer.
+
+Your task is to generate a comprehensive, human-readable explanation of the code repairs that were performed.
+
+**Original Code:**
+```{language}
+{original_code}
+```
+
+**Fixed Code:**
+```{language}
+{fixed_code}
+```
+
+**Repairs Applied:**
+{repairs_context}
+
+**Your Task:**
+1. Provide an **overall summary** (2-3 sentences) explaining what was wrong and what was fixed.
+2. For each repair, provide a **detailed explanation** in simple terms that a developer can understand:
+   - What was the specific problem?
+   - Why did it occur?
+   - How was it fixed?
+   - What is the impact of this fix?
+3. Assign a **confidence score** (0-100) indicating how confident you are that the repairs are correct and complete.
+4. List any **potential risks** or **remaining concerns** (if any).
+
+**Output Format (JSON):**
+{{
+  "summary": "Brief overall summary of all changes",
+  "detailed_explanations": [
+    {{
+      "repair_number": 1,
+      "title": "Short descriptive title",
+      "problem": "What was wrong",
+      "cause": "Why it occurred",
+      "solution": "How it was fixed",
+      "impact": "Effect of the fix"
+    }}
+  ],
+  "confidence_score": 85,
+  "risks": ["Any potential issues or concerns"],
+  "transparency_notes": "Any additional notes about the repair process"
+}}
+
+Return ONLY the JSON object, without markdown fences.
+"""
+        
+        raw = call_llm(self.model_name, prompt, temp=self.temperature)
+        
+        try:
+            data = self._extract_json(raw)
+        except ValueError:
+            logger.warning(f"ExplanationAgent: failed to parse JSON response. Raw: {raw[:100]}...")
+            return {
+                "summary": "Failed to generate comprehensive explanation.",
+                "detailed_explanations": [],
+                "confidence_score": 0,
+                "risks": ["Explanation generation failed"],
+                "transparency_notes": "The system was unable to generate a detailed explanation."
+            }
+        
+        return data
+
+
 class MainAgent(BaseAgent):
     """Main AI agent that analyzes buggy Python code and spawns specialized sub-agents."""
 
