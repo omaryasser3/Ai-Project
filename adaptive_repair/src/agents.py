@@ -1,6 +1,7 @@
 import os
 import json
 import logging
+import re
 from dataclasses import dataclass
 from typing import List, Literal, Optional
 
@@ -23,6 +24,41 @@ except ImportError:
 
 
 # ---------------------------------------------------------------------------
+# Utility Functions
+# ---------------------------------------------------------------------------
+
+def strip_markdown_code_block(code: str) -> str:
+    """Robustly strips markdown code fences from the code string."""
+    if not code:
+        return code
+    
+    # Remove empty lines from start/end
+    lines = code.strip().splitlines()
+    if not lines:
+        return code
+        
+    # Check first line for fence
+    if lines[0].strip().startswith("```"):
+        lines = lines[1:]
+        
+    if lines and lines[-1].strip().startswith("```"):
+        lines = lines[:-1]
+        
+    return "\n".join(lines).strip()
+
+def get_java_helper_code():
+    """Reads Node.java to provide context for Java repairs."""
+    try:
+        # data/java_programs/Node.java relative to src/agents.py
+        node_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "java_programs", "Node.java")
+        if os.path.exists(node_path):
+            with open(node_path, "r", encoding="utf-8") as f:
+                return f.read()
+    except Exception as e:
+        logger.warning(f"Failed to read Node.java: {e}")
+    return ""
+
+# ---------------------------------------------------------------------------
 # Configuration & Logging
 # ---------------------------------------------------------------------------
 
@@ -43,39 +79,111 @@ if not logger.handlers:
 logger.setLevel(logging.INFO)
 
 
-def _configure_genai() -> None:
-    """Configure Gemini using API key from environment.
+import google.api_core.exceptions
 
-    Expected env var: GEMINI_API_KEY
-    """
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
+# ---------------------------------------------------------------------------
+# Global Key Management
+# ---------------------------------------------------------------------------
+
+_API_KEYS: List[str] = []
+_CURRENT_KEY_INDEX: int = 0
+
+def _load_api_keys() -> None:
+    """Load all available API keys from environment variables."""
+    global _API_KEYS
+    _API_KEYS = []
+
+    # 1. Try comma-separated list
+    keys_str = os.getenv("GEMINI_API_KEYS")
+    if keys_str:
+        _API_KEYS.extend([k.strip() for k in keys_str.split(",") if k.strip()])
+
+    # 2. Try indexed keys (GEMINI_API_KEY_1, GEMINI_API_KEY_2, etc.)
+    i = 1
+    while True:
+        k = os.getenv(f"GEMINI_API_KEY_{i}")
+        if not k:
+            break
+        _API_KEYS.append(k.strip())
+        i += 1
+
+    # 3. Fallback to single key (or comma-separated string)
+    if not _API_KEYS:
+        single_key = os.getenv("GEMINI_API_KEY")
+        if single_key:
+            if "," in single_key:
+                _API_KEYS.extend([k.strip() for k in single_key.split(",") if k.strip()])
+            else:
+                _API_KEYS.append(single_key.strip())
+            
+    if not _API_KEYS:
         raise RuntimeError(
-            "GEMINI_API_KEY environment variable is not set. "
-            "Please export GEMINI_API_KEY with your Gemini API key."
+            "No Gemini API keys found. Please set GEMINI_API_KEYS, "
+            "GEMINI_API_KEY_n, or GEMINI_API_KEY."
         )
-    genai.configure(api_key=api_key)
 
+def _configure_genai() -> None:
+    """Configure Gemini using the current API key."""
+    global _API_KEYS, _CURRENT_KEY_INDEX
+    
+    if not _API_KEYS:
+        _load_api_keys()
+        
+    current_key = _API_KEYS[_CURRENT_KEY_INDEX]
+    genai.configure(api_key=current_key)
+    # logger.info(f"Configured GenAI with key index {_CURRENT_KEY_INDEX} (ending in ...{current_key[-4:]})")
+
+def _rotate_key() -> bool:
+    """Switch to the next available API key. Returns True if successful, False if all exhausted."""
+    global _CURRENT_KEY_INDEX, _API_KEYS
+    
+    _CURRENT_KEY_INDEX += 1
+    if _CURRENT_KEY_INDEX >= len(_API_KEYS):
+        # We've run out of keys
+        return False
+    
+    # Re-configure with the new key
+    _configure_genai()
+    logger.warning(f"Key exhausted! Rotated to key index {_CURRENT_KEY_INDEX}.")
+    return True
 
 def call_llm(model_name: str, prompt: str, temp: float = 0.2) -> str:
-    """Lightweight wrapper around the Gemini text-generation API.
+    """Wrapper around Gemini API with automatic key rotation on quota failure."""
+    
+    # Ensure initialized
+    if not _API_KEYS:
+        _configure_genai()
 
-    This is shared by legacy functions and the new agent classes.
-    """
-    _configure_genai()
-    try:
-        model = genai.GenerativeModel(model_name)
-        response = model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(temperature=temp),
-        )
-        text = getattr(response, "text", "") or ""
-        return text
-    except Exception as e:
-        logger.error(f"Error calling LLM model '{model_name}': {e}")
-        raise
+    while True:
+        try:
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(temperature=temp),
+            )
+            text = getattr(response, "text", "") or ""
+            return text
+            
+        except google.api_core.exceptions.ResourceExhausted:
+            logger.warning(f"Quota exceeded for key index {_CURRENT_KEY_INDEX}.")
+            if not _rotate_key():
+                logger.critical("All API keys exhausted during call_llm.")
+                raise Exception("All API keys exhausted")
+            # Loop continues with new key
+            
+        except Exception as e:
+            # Check for "429" in string representation if exception type isn't caught
+            if "429" in str(e) or "Resource has been exhausted" in str(e):
+                logger.warning(f"Quota error detected: {e}")
+                if not _rotate_key():
+                    logger.critical("All API keys exhausted during call_llm.")
+                    raise Exception("All API keys exhausted")
+                # Loop continues
+            else:
+                logger.error(f"Error calling LLM model '{model_name}': {e}")
+                raise
 
-def translator_agent(code_snippet, src_lang, trg_lang=None, decide=True):
+def translator_agent(code_snippet, src_lang, trg_lang=None, decide=True, bug_id=None):
     model_name = config['models']['translator']
 
     if (decide):
@@ -93,14 +201,18 @@ def translator_agent(code_snippet, src_lang, trg_lang=None, decide=True):
         response = call_llm(model_name, prompt)
         return response.replace("```json", "").replace("```", "").strip()
 
+
     else:
         prompt = f"""
         You are an expert code translator.
         Code = {code_snippet}
         Task Description: Here is code in {src_lang} programming language. Translate the code from {src_lang} to {trg_lang} programming language. 
             Do not output any extra description or tokens other than the translated code. 
+            Do NOT wrap the code in markdown blocks (e.g. ```{trg_lang}).{f'''
+            CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. The package should be `java_programs`.''' if bug_id and trg_lang.lower() == 'java' else ''}
         """
-        return call_llm(model_name, prompt)
+        raw = call_llm(model_name, prompt)
+        return strip_markdown_code_block(raw)
 
 def analyzer_agent(code_snippet, language):
     model_name = config['models']['complex_analyzer']
@@ -138,8 +250,9 @@ def fixer_agent(code_snippet, language, analysis):
     Return ONLY the corrected code. Do not include markdown formatting like ```python or ```.
     """
     
+    
     response = call_llm(model_name, prompt)
-    return response.replace("```", "").strip()
+    return strip_markdown_code_block(response)
 
 
 # ---------------------------------------------------------------------------
@@ -190,15 +303,68 @@ class BaseAgent:
         self.model_name = model_name or config["models"].get("worker", "gemini-2.5-flash")
         self.temperature = temperature
 
-    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str, bug_id: str = None) -> RepairResult:
         """Subclasses must implement this to perform the actual repair."""
         raise NotImplementedError
+
+    def _extract_json(self, text: str) -> dict:
+        """Robustly valid JSON object from a string that might contain other text."""
+        # First try direct parsing
+        text = text.strip()
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            pass
+
+        # Try to clean markdown code blocks
+        clean_text = text.replace("```json", "").replace("```", "")
+        try:
+            return json.loads(clean_text)
+        except json.JSONDecodeError:
+            pass
+            
+        # Try to find the first { and last }
+        try:
+            start = text.find("{")
+            end = text.rfind("}")
+            if start != -1 and end != -1 and end > start:
+                json_str = text[start : end + 1]
+                return json.loads(json_str)
+        except json.JSONDecodeError:
+            pass
+        
+        # Fallback: If JSON parsing fails, try to extract code block directly
+        # This handles cases where the model outputs invalid JSON (e.g. multiline strings)
+        # but does provide a code block.
+        # We look for ```language ... ```
+        # We can't know the language easily here without passing it, so we accept generic ```
+        
+        code_block_pattern = re.compile(r"```(?:\w+)?\n(.*?)```", re.DOTALL)
+        match = code_block_pattern.search(text)
+        if match:
+            # Construct a fake JSON object
+            return {
+                "fixed_code": match.group(1),
+                "explanation": "Extracted directly from code block after JSON parse failure."
+            }
+        
+        raise ValueError("Could not extract valid JSON from response")
+
+    def _strip_markdown(self, code: str) -> str:
+        """Robustly strips markdown code fences from the code string."""
+        return strip_markdown_code_block(code)
 
 
 class SyntaxAgent(BaseAgent):
     """Agent focused on resolving syntax and parsing errors."""
 
-    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str, bug_id: str = None) -> RepairResult:
+        helper_context = ""
+        if language.lower() == "java":
+            node_code = get_java_helper_code()
+            if node_code:
+                helper_context = f"\n\nReference Helper Class (Node.java):\n```java\n{node_code}\n```\n"
+
         prompt = f"""
         You are an expert {language} compiler and code fixer.
 
@@ -206,6 +372,7 @@ class SyntaxAgent(BaseAgent):
 
         Issue description:
         {issue.description}
+        {helper_context}
 
         Current code:
         ```{language}
@@ -215,7 +382,10 @@ class SyntaxAgent(BaseAgent):
         Requirements:
         - Return valid, executable {language} code that is syntactically correct.
         - Do NOT change the overall logic beyond what is required to fix syntax.
-        - After the code, provide a short explanation (2–4 sentences) of what you changed and why.
+        - After the code, provide a short explanation (2–4 sentences) of what you changed and why.{f'''
+        - CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. Do not use `Solution` or generic names.''' if bug_id and language.lower() == 'java' else ''}
+        - Do NOT wrap the code in markdown blocks (e.g. ```{language}) INSIDE the JSON string.
+        - Use \\n for newlines inside the JSON string value.
 
         Output format (JSON):
         {{
@@ -226,19 +396,21 @@ class SyntaxAgent(BaseAgent):
         Return ONLY the JSON object, without any markdown fences.
         """
         raw = call_llm(self.model_name, prompt, temp=self.temperature)
-        cleaned = raw.replace("```json", "").replace("```", "").strip()
+        
         try:
-            data = json.loads(cleaned)
-        except json.JSONDecodeError:
-            # Fallback: if the model did not respect JSON, return original code with explanation
-            logger.warning("SyntaxAgent: failed to parse JSON response; returning original code.")
+            data = self._extract_json(raw)
+        except ValueError:
+            logger.warning(f"SyntaxAgent: failed to parse JSON response. Raw: {raw[:100]}...")
             return RepairResult(
                 fixed_code=code,
                 explanation=f"Failed to parse model response as JSON. Raw response: {raw}",
             )
 
+        fixed_code = data.get("fixed_code", code)
+        fixed_code = self._strip_markdown(fixed_code)
+            
         return RepairResult(
-            fixed_code=data.get("fixed_code", code),
+            fixed_code=fixed_code,
             explanation=data.get("explanation", "No explanation provided by the model."),
         )
 
@@ -246,7 +418,13 @@ class SyntaxAgent(BaseAgent):
 class LogicAgent(BaseAgent):
     """Agent focused on fixing logical/semantic bugs."""
 
-    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str, bug_id: str = None) -> RepairResult:
+        helper_context = ""
+        if language.lower() == "java":
+            node_code = get_java_helper_code()
+            if node_code:
+                helper_context = f"\n\nReference Helper Class (Node.java):\n```java\n{node_code}\n```\n"
+
         prompt = f"""
         You are an expert {language} software engineer.
 
@@ -254,6 +432,7 @@ class LogicAgent(BaseAgent):
 
         Issue description:
         {issue.description}
+        {helper_context}
 
         Buggy code:
         ```{language}
@@ -262,29 +441,33 @@ class LogicAgent(BaseAgent):
 
         Tasks:
         1. Correct the logic so the code behaves as intended.
-        2. Preserve the overall structure and style as much as possible.
-
+        2. Preserve the overall structure and style as much as possible.{f'''
+        3. CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. The package should be `java_programs`. ''' if bug_id and language.lower() == 'java' else ''}
+        
         Output format (JSON):
         {{
           "fixed_code": "<corrected {language} code>",
           "explanation": "<short explanation of what was wrong and how you fixed it>"
         }}
 
-        Return ONLY the JSON object, without any markdown.
+        Return ONLY the JSON object, without any markdown. Use \\n for newlines in code strings.
         """
         raw = call_llm(self.model_name, prompt, temp=self.temperature)
-        cleaned = raw.replace("```json", "").replace("```", "").strip()
+        
         try:
-            data = json.loads(cleaned)
-        except json.JSONDecodeError:
-            logger.warning("LogicAgent: failed to parse JSON response; returning original code.")
+            data = self._extract_json(raw)
+        except ValueError:
+            logger.warning(f"LogicAgent: failed to parse JSON response. Raw: {raw[:100]}...")
             return RepairResult(
                 fixed_code=code,
                 explanation=f"Failed to parse model response as JSON. Raw response: {raw}",
             )
 
+        fixed_code = data.get("fixed_code", code)
+        fixed_code = self._strip_markdown(fixed_code)
+
         return RepairResult(
-            fixed_code=data.get("fixed_code", code),
+            fixed_code=fixed_code,
             explanation=data.get("explanation", "No explanation provided by the model."),
         )
 
@@ -292,7 +475,13 @@ class LogicAgent(BaseAgent):
 class OptimizationAgent(BaseAgent):
     """Agent focused on performance and efficiency improvements."""
 
-    def repair(self, code: str, issue: Issue, language: str) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str, bug_id: str = None) -> RepairResult:
+        helper_context = ""
+        if language.lower() == "java":
+            node_code = get_java_helper_code()
+            if node_code:
+                helper_context = f"\n\nReference Helper Class (Node.java):\n```java\n{node_code}\n```\n"
+
         prompt = f"""
         You are an expert {language} performance engineer.
 
@@ -301,6 +490,7 @@ class OptimizationAgent(BaseAgent):
 
         Performance issue description:
         {issue.description}
+        {helper_context}
 
         Original code:
         ```{language}
@@ -309,7 +499,8 @@ class OptimizationAgent(BaseAgent):
 
         Requirements:
         - Keep the code readable and idiomatic.
-        - Explain the key optimization ideas.
+        - Explain the key optimization ideas.{f'''
+        - CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. Do not use `Solution` or generic names.''' if bug_id and language.lower() == 'java' else ''}
 
         Output format (JSON):
         {{
@@ -317,21 +508,24 @@ class OptimizationAgent(BaseAgent):
           "explanation": "<short explanation of the optimizations>"
         }}
 
-        Return ONLY the JSON object, without any markdown.
+        Return ONLY the JSON object, without any markdown. Use \\n for newlines in code strings.
         """
         raw = call_llm(self.model_name, prompt, temp=self.temperature)
-        cleaned = raw.replace("```json", "").replace("```", "").strip()
+        
         try:
-            data = json.loads(cleaned)
-        except json.JSONDecodeError:
-            logger.warning("OptimizationAgent: failed to parse JSON response; returning original code.")
+            data = self._extract_json(raw)
+        except ValueError:
+            logger.warning(f"OptimizationAgent: failed to parse JSON response. Raw: {raw[:100]}...")
             return RepairResult(
                 fixed_code=code,
                 explanation=f"Failed to parse model response as JSON. Raw response: {raw}",
             )
 
+        fixed_code = data.get("fixed_code", code)
+        fixed_code = self._strip_markdown(fixed_code)
+
         return RepairResult(
-            fixed_code=data.get("fixed_code", code),
+            fixed_code=fixed_code,
             explanation=data.get("explanation", "No explanation provided by the model."),
         )
 
@@ -360,7 +554,8 @@ class MainAgent(BaseAgent):
                     )
                 )
             except Exception as e:
-                logger.warning(f"MainAgent: skipping malformed issue entry {item}: {e}")
+                # logger.warning(f"MainAgent: skipping malformed issue entry {item}: {e}")
+                pass
         return issues
 
     def analyze_and_plan(self, code: str, src_language: str = "Python") -> tuple[List[Issue], RepairPlan]:
@@ -438,13 +633,12 @@ class MainAgent(BaseAgent):
         """
 
         raw = call_llm(self.model_name, prompt, temp=self.temperature)
-        cleaned = raw.replace("```json", "").replace("```", "").strip()
-
+        
         try:
-            data = json.loads(cleaned)
-        except json.JSONDecodeError:
+            data = self._extract_json(raw)
+        except ValueError:
             logger.error("MainAgent: failed to parse JSON from analysis+plan response.")
-            logger.debug(f"Raw response: {raw}")
+            # logger.debug(f"Raw response: {raw}")
             # Fallback: no translation, pseudo-issue to surface the problem
             fallback_plan = RepairPlan(translate=False, target_language=None)
             fallback_issue = Issue(
@@ -546,4 +740,3 @@ def add_numbers(a, b)
         print(repair_result.fixed_code)
         print("\\n--- Explanation ---")
         print(repair_result.explanation)
-

@@ -11,7 +11,7 @@ def _resolve_log_dir() -> str:
     return log_dir
 
 
-def log_experiment(bug_id, method, prompt, response, success, error_type=None):
+def log_experiment(bug_id, method, prompt, response, success, error_type=None, log_file_name="experiment_log.json"):
     log_entry = {
         "timestamp": datetime.now().isoformat(),
         "bug_id": bug_id,
@@ -23,6 +23,6 @@ def log_experiment(bug_id, method, prompt, response, success, error_type=None):
     }
 
     log_dir = _resolve_log_dir()
-    log_file = os.path.join(log_dir, "experiment_log.json")
+    log_file = os.path.join(log_dir, log_file_name)
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(json.dumps(log_entry) + "\n")

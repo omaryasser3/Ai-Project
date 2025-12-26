@@ -85,7 +85,7 @@ def translator_forward_node(state: GraphState):
     code = state['code']
     src_lang = state['current_lang']
     trg_lang = plan.target_language
-    translation_response = translator_agent(code, src_lang, trg_lang, decide=False)
+    translation_response = translator_agent(code, src_lang, trg_lang, decide=False, bug_id=state.get('bug_id'))
     
     history_entry = {
         "step": "TranslatorForward",
@@ -106,7 +106,7 @@ def translator_backward_node(state: GraphState):
     current_lang = state['current_lang']
     original_lang = state['src_lang']
     
-    translation_response = translator_agent(code, current_lang, original_lang, decide=False)
+    translation_response = translator_agent(code, current_lang, original_lang, decide=False, bug_id=state.get('bug_id'))
     
     history_entry = {
         "step": "TranslatorBackward",
@@ -126,7 +126,7 @@ def syntax_fixer_node(state: GraphState):
     print(f"--- Syntax Fixer ---")
     agent = SyntaxAgent()
     issue = next((i for i in state['issues'] if i.type == 'syntax_error'), state['issues'][0])
-    result = agent.repair(state['code'], issue, state['current_lang'])
+    result = agent.repair(state['code'], issue, state['current_lang'], bug_id=state.get('bug_id'))
     
     history_entry = {
         "step": "SyntaxFixer",
@@ -147,7 +147,7 @@ def logic_fixer_node(state: GraphState):
     agent = LogicAgent()
     issue = next((i for i in state['issues'] if i.type == 'logic_bug'), state['issues'][0])
 
-    result = agent.repair(state['code'], issue, state['current_lang'])
+    result = agent.repair(state['code'], issue, state['current_lang'], bug_id=state.get('bug_id'))
     
     history_entry = {
         "step": "LogicFixer",
@@ -168,7 +168,7 @@ def optimization_fixer_node(state: GraphState):
     agent = OptimizationAgent()
     issue = next((i for i in state['issues'] if i.type == 'performance_issue'), state['issues'][0])
     
-    result = agent.repair(state['code'], issue, state['current_lang'])
+    result = agent.repair(state['code'], issue, state['current_lang'], bug_id=state.get('bug_id'))
     
     history_entry = {
         "step": "OptimizationFixer",
