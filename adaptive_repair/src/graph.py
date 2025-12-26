@@ -31,17 +31,8 @@ class GraphState(TypedDict):
     history: List[Any]
 
 
-def main_node(state: GraphState):
-    print(f"--- Main Analysis Node ({state.get('bug_id')}) ---")
-    
-    code = state['code']
-    src_lang = state['src_lang']
-    
-    main_agent = MainAgent()
-    issues, plan = main_agent.analyze_and_plan(code, src_language=src_lang)
-    
+def construct_queue(plan: RepairPlan, issues: List[Issue]) -> List[str]:
     queue = []
-    
     if plan.translate and plan.target_language:
         queue.append("translator_forward")
         
@@ -57,7 +48,19 @@ def main_node(state: GraphState):
             
     if plan.translate:
         queue.append("translator_backward")
-        
+    return queue
+
+def main_node(state: GraphState):
+    print(f"--- Main Analysis Node ({state.get('bug_id')}) ---")
+    
+    code = state['code']
+    src_lang = state['src_lang']
+    
+    main_agent = MainAgent()
+    issues, plan = main_agent.analyze_and_plan(code, src_language=src_lang)
+    
+    queue = construct_queue(plan, issues)
+    
     print(f"Plan: Translate={plan.translate}, Target={plan.target_language}")
     print(f"Issues found: {len(issues)}")
     print(f"Constructed Queue: {queue}")
@@ -76,6 +79,56 @@ def main_node(state: GraphState):
         "agent_queue": queue,
         "current_lang": src_lang,
         "history": [history_entry]
+    }
+
+
+def human_review_node(state: GraphState):
+    print(f"--- Human Review Node ---")
+    
+    # Check if we have dictionary overrides for plan (from user input/state update)
+    plan_data = state.get('plan')
+    issues_data = state.get('issues')
+    
+    plan = plan_data
+    issues = issues_data
+
+    # Reconstruct plan if it's a dict (modified by user/external input)
+    if isinstance(plan_data, dict):
+        print("Detailed Plan provided by user; reconstructing object...")
+        plan = RepairPlan(
+            translate=plan_data.get("translate"),
+            target_language=plan_data.get("target_language"),
+            detected_language=plan_data.get("detected_language"),
+            language_match=plan_data.get("language_match")
+        )
+
+    # Reconstruct issues if they are dicts
+    if issues_data and len(issues_data) > 0 and isinstance(issues_data[0], dict):
+        print("Issues list provided by user; reconstructing objects...")
+        reconstructed_issues = []
+        for p_issue in issues_data:
+            reconstructed_issues.append(Issue(
+                id=p_issue.get("id"),
+                type=p_issue.get("type"),
+                description=p_issue.get("description"),
+                location_hint=p_issue.get("location_hint")
+            ))
+        issues = reconstructed_issues
+    
+    # If agent_queue is empty (which happens when this is the entry point), construct it!
+    queue = state.get("agent_queue")
+    if not queue and plan:
+        print("Agent Queue is empty (Entry Point), constructing from Plan/Issues...")
+        queue = construct_queue(plan, issues or [])
+        print(f"Reconstructed Queue: {queue}")
+    
+    print(f"Current Plan: Translate={plan.translate}, Target={plan.target_language}")
+    
+    # Return updated state in case reconstruction happened
+    return {
+        "plan": plan,
+        "issues": issues,
+        "agent_queue": queue
     }
 
 
@@ -200,7 +253,12 @@ def dispatcher_node_logic(state: GraphState):
     return {"agent_queue": remaining, "next_node_to_run": next_node}
 
 
-def create_graph():
+def create_graph(
+    interrupt_before: Optional[List[str]] = None,
+    interrupt_after: Optional[List[str]] = None,
+    checkpointer: Optional[Any] = None,
+    entry_point: str = "main_node"
+):
     workflow = StateGraph(GraphState)
 
     # Add nodes
@@ -215,10 +273,13 @@ def create_graph():
     workflow.add_node("optimization_fixer", optimization_fixer_node)
 
     # Set entry point
-    workflow.set_entry_point("main_node")
+    workflow.set_entry_point(entry_point)
     
-    # Edge: Main -> Dispatcher
-    workflow.add_edge("main_node", "dispatcher")
+    # Edge: Main -> Human Review -> Dispatcher
+    workflow.add_node("human_review", human_review_node)
+    
+    workflow.add_edge("main_node", "human_review")
+    workflow.add_edge("human_review", "dispatcher")
     
     # Edge: Dispatcher -> [Agents] or END
     workflow.add_conditional_edges(
@@ -241,4 +302,8 @@ def create_graph():
     workflow.add_edge("logic_fixer", "dispatcher")
     workflow.add_edge("optimization_fixer", "dispatcher")
 
-    return workflow.compile()
+    return workflow.compile(
+        checkpointer=checkpointer,
+        interrupt_before=interrupt_before,
+        interrupt_after=interrupt_after
+    )

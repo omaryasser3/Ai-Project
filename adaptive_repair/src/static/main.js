@@ -143,21 +143,105 @@ window.addEventListener("DOMContentLoaded", () => {
   const analyzeBtn = document.getElementById("analyze-btn");
   const repairBtn = document.getElementById("repair-btn");
 
+  // Plan Review Elements
+  const planReviewCard = document.getElementById("plan-review-card");
+  const planTranslateCheck = document.getElementById("plan-translate-check");
+  const planTargetLang = document.getElementById("plan-target-lang");
+  const planDetectedLang = document.getElementById("plan-detected-lang");
+  const proceedBtn = document.getElementById("proceed-btn");
+
+  // Feedback Elements
+  const feedbackCard = document.getElementById("feedback-card");
+  const userFeedbackInput = document.getElementById("user-feedback");
+  const acceptBtn = document.getElementById("accept-btn");
+  const replanBtn = document.getElementById("replan-btn");
+  const autofixBtn = document.getElementById("autofix-btn");
+
+  // State to hold analysis results before repair
+  let currentAnalysis = null;
+  // State
+  let lastRepairedCode = "";
+
+  // Helper to show feedback card
+  function showFeedbackCard(repairedCode) {
+    if (!repairedCode) return;
+    lastRepairedCode = repairedCode;
+    feedbackCard.classList.remove("d-none");
+    userFeedbackInput.value = ""; // Clear previous feedback
+  }
+
   analyzeBtn.addEventListener("click", async () => {
     const code = codeInput.value;
     const language = langInput.value || "Python";
+
+    // Clear previous results
+    document.getElementById("repaired-code").textContent = "";
+    document.getElementById("repair-explanations").innerHTML = "";
+    document.getElementById("plan-summary").textContent = "Analyzing...";
+    document.getElementById("translated-code").textContent = "";
+    planReviewCard.classList.add("d-none");
+    feedbackCard.classList.add("d-none"); // Hide feedback on new analysis
+
     const data = await callApi("/api/analyze", { code, language });
     if (data) {
+      currentAnalysis = data;
       renderIssues(data.issues || []);
+
+      // Populate Plan Review UI
+      const p = data.plan || {};
+      planTranslateCheck.checked = !!p.translate;
+      planTargetLang.value = p.target_language || "";
+      planDetectedLang.textContent = p.detected_language || "unknown";
+
+      // Render Execution Steps
+      const stepsListEx = document.getElementById("execution-steps-list");
+      stepsListEx.innerHTML = "";
+      (data.execution_steps || []).forEach(step => {
+        const li = document.createElement("li");
+        li.className = "list-group-item bg-transparent";
+        li.textContent = step.description; // or `Step ${step.step}: ${step.description}` but list is numbered
+
+        // Optional: Add type badge
+        if (step.type) {
+          const badge = document.createElement("span");
+          badge.className = "badge bg-secondary ms-2 rounded-pill";
+          badge.textContent = step.type;
+          badge.style.fontSize = "0.7em";
+          li.appendChild(badge);
+        }
+        stepsListEx.appendChild(li);
+      });
+      if (!data.execution_steps || data.execution_steps.length === 0) {
+        const li = document.createElement("li");
+        li.className = "list-group-item bg-transparent text-muted italic";
+        li.textContent = "No steps planned (no issues found?).";
+        stepsListEx.appendChild(li);
+      }
+
+      // Show Review Card
+      planReviewCard.classList.remove("d-none");
+
+      // Also show plan summary in bottom card just for info
       renderPlanAndTranslation(data.plan, null);
     }
   });
 
+  // "Analyze & Repair" - Direct flow (legacy/shortcut)
   repairBtn.addEventListener("click", async () => {
+    // We can also route this through the review flow if we want,
+    // but the button implies one-click. We'll leave it as direct for now,
+    // or we could just hide it if we want to force review.
+    // Let's effectively simulate "Analyze" then "Proceed" automatically?
+    // Or just keep the existing behavior which is "Trust the AI".
+    // I'll keep existing behavior but clear the review card.
+    feedbackCard.classList.add("d-none");
+    planReviewCard.classList.add("d-none");
+
     const code = codeInput.value;
     const language = langInput.value || "Python";
     const data = await callApi("/api/repair", { code, language });
     if (data) {
+      // ... same rendering ...
       renderIssues(
         (data.repairs || []).map((r) => ({
           id: r.issue_id,
@@ -168,8 +252,161 @@ window.addEventListener("DOMContentLoaded", () => {
       );
       renderRepairs(data);
       renderPlanAndTranslation(data.plan, data.translation);
+
+      // Show feedback card
+      showFeedbackCard(data.final_code);
+    }
+  });
+
+  // "Proceed" - The new flow
+  proceedBtn.addEventListener("click", async () => {
+    if (!currentAnalysis) {
+      alert("Please analyze issues first.");
+      return;
+    }
+    feedbackCard.classList.add("d-none");
+
+    const code = codeInput.value;
+    const language = langInput.value || "Python";
+
+    // Construct overridden plan
+    const overriddenPlan = {
+      ...currentAnalysis.plan,
+      translate: planTranslateCheck.checked,
+      target_language: planTargetLang.value.trim() || null
+    };
+
+    // Call repair with plan override
+    const data = await callApi("/api/repair", {
+      code,
+      language,
+      issues: currentAnalysis.issues,
+      plan: overriddenPlan
+    });
+
+    if (data) {
+      // Hide review card after starting? Or keep it?
+      // Let's keep it visible so they see what they chose, but maybe disable input?
+      // For now just render results.
+
+      renderRepairs(data);
+      renderPlanAndTranslation(data.plan, data.translation);
+      showFeedbackCard(data.final_code);
+
+      // Note: The backend might return refined issues if it re-ran analysis,
+      // but our current logic bypasses analysis if plan provided.
+      // So issues should be same as we sent, or enriched with results.
+    }
+  });
+
+  // Feedback Handlers
+
+  acceptBtn.addEventListener("click", () => {
+    // Just hide the card and say thanks?
+    feedbackCard.classList.add("d-none");
+    alert("Repair accepted!");
+  });
+
+  replanBtn.addEventListener("click", async () => {
+    const feedback = userFeedbackInput.value.trim();
+    if (!feedback) {
+      alert("Please provide some feedback explanation.");
+      return;
+    }
+
+    // Use the LAST REPAIRED CODE as input??
+    // Or the original code?
+    // "Iterate" usually means on the current state.
+    // But if the repair was bad, we might want to start from scratch?
+    // Usually, we iterate on the result.
+
+    const code = lastRepairedCode || codeInput.value;
+    const language = langInput.value || "Python"; // Or detect
+
+    // UI Reset
+    feedbackCard.classList.add("d-none");
+    document.getElementById("status").textContent = "Re-planning with feedback...";
+
+    // Call Analyze with feedback
+    // Note: we need to put the new code in the input? Or just use it?
+    // Let's update the input box to show what we are working on now.
+    codeInput.value = code;
+
+    // Trigger Analyze logic
+    // We can just re-use the analyze call logic
+    // Manually calling to ensure we pass feedback
+
+    // Clear previous results
+    document.getElementById("repaired-code").textContent = "";
+    document.getElementById("repair-explanations").innerHTML = "";
+    document.getElementById("plan-summary").textContent = "Re-Analyzing...";
+    document.getElementById("translated-code").textContent = "";
+    planReviewCard.classList.add("d-none");
+
+    const data = await callApi("/api/analyze", {
+      code,
+      language,
+      user_feedback: feedback
+    });
+
+    if (data) {
+      currentAnalysis = data;
+      renderIssues(data.issues || []);
+
+      const p = data.plan || {};
+      planTranslateCheck.checked = !!p.translate;
+      planTargetLang.value = p.target_language || "";
+      planDetectedLang.textContent = p.detected_language || "unknown";
+
+      const stepsListEx = document.getElementById("execution-steps-list");
+      stepsListEx.innerHTML = "";
+      (data.execution_steps || []).forEach(step => {
+        const li = document.createElement("li");
+        li.className = "list-group-item bg-transparent";
+        li.textContent = step.description;
+        if (step.type) {
+          const badge = document.createElement("span");
+          badge.className = "badge bg-secondary ms-2 rounded-pill";
+          badge.textContent = step.type;
+          li.appendChild(badge);
+        }
+        stepsListEx.appendChild(li);
+      });
+
+      planReviewCard.classList.remove("d-none");
+      renderPlanAndTranslation(data.plan, null);
+    }
+  });
+
+  autofixBtn.addEventListener("click", async () => {
+    const feedback = userFeedbackInput.value.trim();
+    if (!feedback) {
+      alert("Please provide some feedback explanation.");
+      return;
+    }
+
+    const code = lastRepairedCode || codeInput.value;
+    const language = langInput.value || "Python";
+
+    feedbackCard.classList.add("d-none");
+    codeInput.value = code; // Update input to show current state
+    document.getElementById("status").textContent = "Auto-fixing with feedback...";
+
+    const data = await callApi("/api/repair", {
+      code,
+      language,
+      user_feedback: feedback
+    });
+    if (data) {
+      renderIssues((data.repairs || []).map(r => ({
+        id: r.issue_id,
+        type: r.type,
+        description: r.description,
+        location_hint: r.location_hint
+      })));
+      renderRepairs(data);
+      renderPlanAndTranslation(data.plan, data.translation);
+      showFeedbackCard(data.final_code);
     }
   });
 });
-
-

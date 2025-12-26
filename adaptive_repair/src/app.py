@@ -2,13 +2,16 @@ import json
 import logging
 import os
 import uuid
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from flask import Flask, jsonify, render_template, request
+from langgraph.graph import END
 
-from agents import MainAgent, BaseAgent, RepairResult, RepairPlan, translator_agent
+# Import the graph creator
+from graph import create_graph
+# Import minimal types if needed for response formatting
+from agents import Issue, RepairPlan
 from utils import log_experiment
-
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,7 +24,9 @@ def create_app() -> Flask:
         static_folder=os.path.join(os.path.dirname(__file__), "static"),
     )
 
-    main_agent = MainAgent()
+    # We don't need a global graph anymore since we create specialized ones per request
+    # but we can keep a default one if needed.
+    app.graph = create_graph()
 
     def log_api_interaction(
         request_id: str,
@@ -54,6 +59,12 @@ def create_app() -> Flask:
 
     @app.route("/api/analyze", methods=["POST"])
     def analyze():
+        """
+        Runs the 'Analysis' phase of the graph.
+        We invoke the graph and interrupt AFTER 'main_node' (or before 'human_review').
+        The 'human_review' node is designed to follow 'main_node'.
+        So we run until 'human_review' is reached (interrupt_before=["human_review"]).
+        """
         data: Dict[str, Any] = request.get_json(force=True) or {}
         code: str = data.get("code", "")
         language: str = data.get("language", "Python")
@@ -63,197 +74,223 @@ def create_app() -> Flask:
             return jsonify({"error": "No code provided."}), 400
 
         try:
-            issues, plan = main_agent.analyze_and_plan(code, src_language=language)
-            issues_payload: List[Dict[str, Any]] = [
-                {
-                    "id": issue.id,
-                    "type": issue.type,
-                    "description": issue.description,
-                    "location_hint": issue.location_hint,
-                }
-                for issue in issues
-            ]
-            plan_payload: Dict[str, Any] = {
-                "translate": plan.translate,
-                "target_language": plan.target_language,
-                "detected_language": plan.detected_language,
-                "language_match": plan.language_match,
+            # 1. Prepare Initial State
+            initial_state = {
+                "bug_id": request_id,
+                "code": code,
+                "src_lang": language,
+                "current_lang": language,
+                "issues": [],
+                "plan": None,
+                "agent_queue": [],
+                "history": [],
             }
-            response_body = {"issues": issues_payload, "plan": plan_payload}
+
+            # 2. Invoke Graph with Interruption
+            # We configure the graph to interrupt BEFORE 'human_review'.
+            # This ensures 'main_node' runs, but we stop before manual review.
+            analysis_graph = create_graph(interrupt_before=["human_review"])
+            
+            # Invoke the graph
+            # Note: When interrupting, invoke needs to know it's not a thread-based persistence call 
+            # if we are just running once. But standard invoke works fine with interrupts in MemorySaver 
+            # or even without persistence provided we catch the state.
+            # Actually, `invoke` on a compiled graph with interrupts returns the state at interruption.
+            result = analysis_graph.invoke(initial_state)
+            
+            # Result contains the state.
+            issues = result.get("issues", [])
+            plan = result.get("plan")
+            
+            # Format Response
+            issues_payload = [
+                {
+                    "id": i.id,
+                    "type": i.type,
+                    "description": i.description,
+                    "location_hint": i.location_hint,
+                }
+                for i in issues
+            ]
+            
+            plan_payload = {
+                "translate": plan.translate if plan else False,
+                "target_language": plan.target_language if plan else None,
+                "detected_language": plan.detected_language if plan else None,
+                "language_match": plan.language_match if plan else None,
+            }
+            
+            # Reconstruct execution steps from the queue in state
+            queue = result.get("agent_queue", [])
+            execution_steps = []
+            
+            step_count = 1
+            if "translator_forward" in queue:
+                 execution_steps.append({
+                    "step": step_count,
+                    "type": "Action",
+                    "description": f"Translate code to {plan.target_language if plan else 'Target'}"
+                })
+                 step_count += 1
+                 
+            issue_idx = 0
+            for q_item in queue:
+                if q_item in ["syntax_fixer", "logic_fixer", "optimization_fixer"]:
+                    if issue_idx < len(issues):
+                        issue = issues[issue_idx]
+                        agent_type = "LogicFixer"
+                        if issue.type == "syntax_error": agent_type = "SyntaxFixer"
+                        elif issue.type == "performance_issue": agent_type = "OptimizationFixer"
+                        
+                        execution_steps.append({
+                            "step": step_count,
+                            "type": "Agent",
+                            "description": f"Use {agent_type} to fix {issue.type} (Issue #{issue.id})"
+                        })
+                        step_count += 1
+                        issue_idx += 1
+                        
+            if "translator_backward" in queue:
+                execution_steps.append({
+                    "step": step_count,
+                    "type": "Action",
+                    "description": f"Translate code back to {language}"
+                })
+
+            response_body = {
+                "issues": issues_payload, 
+                "plan": plan_payload,
+                "execution_steps": execution_steps
+            }
+            
             log_api_interaction(
                 request_id,
-                "Flask_Analyze",
+                "Graph_Analyze",
                 {"code": code, "language": language},
                 response_body,
                 True,
             )
             return jsonify(response_body)
-        except Exception as exc:  # Broad catch for API stability
+
+        except Exception as exc:
             logger.exception("Error during analysis")
-            error_body = {"error": str(exc)}
-            log_api_interaction(
-                request_id,
-                "Flask_Analyze",
-                {"code": code, "language": language},
-                error_body,
-                False,
-                error_type=exc.__class__.__name__,
-            )
             return jsonify({"error": str(exc)}), 500
 
     @app.route("/api/repair", methods=["POST"])
     def repair():
+        """
+        Runs the 'Repair' phase.
+        It takes the plan/issues (potentially modified) and runs the graph to completion.
+        """
         data: Dict[str, Any] = request.get_json(force=True) or {}
         original_code: str = data.get("code", "")
         src_language: str = data.get("language", "Python")
         request_id: str = str(data.get("request_id") or uuid.uuid4())
-
+        
+        # User Feedback / Overrides
+        provided_plan = data.get("plan")
+        provided_issues = data.get("issues")
+        
         if not original_code.strip():
-            error_body = {"error": "No code provided."}
-            log_api_interaction(
-                request_id,
-                "Flask_Repair",
-                {"code": original_code, "language": src_language},
-                error_body,
-                False,
-                error_type="ValidationError",
-            )
-            return jsonify(error_body), 400
+             return jsonify({"error": "No code provided"}), 400
 
         try:
-            # Step 1: Analyze and get a repair plan (including translation decision)
-            issues, plan = main_agent.analyze_and_plan(original_code, src_language=src_language)
-            effective_source_language = plan.detected_language or src_language
-
-            # Step 2: Optional translation to a different working language
-            translation_info: Dict[str, Any] = {
+             # 1. Prepare State with Overrides
+             # main_node in graph.py is updated to prefer these if present.
+             initial_state = {
+                "bug_id": request_id,
+                "code": original_code,
+                "src_lang": src_language,
+                "current_lang": src_language,
+                "issues": provided_issues, # Pass as dicts, graph converts them
+                "plan": provided_plan,     # Pass as dict, graph converts
+                "agent_queue": [],
+                "history": [],
+            }
+             
+             # 2. Invoke Full Graph from Human Review
+             # Instead of starting at 'main_node', we start at 'human_review'.
+             # We inject the plan/issues into the initial state, so 'human_review' 
+             # node can pick them up (and optionally reconstruct objects if they are dicts).
+             
+             # Create graph with custom entry point
+             repair_graph = create_graph(entry_point="human_review")
+             
+             final_state = repair_graph.invoke(initial_state)
+             
+             # 3. Extract Results
+             final_code = final_state.get("fixed_code") or final_state.get("code")
+             history = final_state.get("history", [])
+             
+             # Transform history into 'repairs' format
+             repairs = []
+             translation_info = {
                 "used": False,
-                "from_language": effective_source_language,
+                "from_language": src_language,
                 "to_language": None,
                 "forward_translated_code": None,
-                "final_language": effective_source_language,
-            }
-
-            working_code = original_code
-            working_language = effective_source_language
-
-            if plan.translate and plan.target_language and plan.target_language != working_language:
-                try:
-                    # Use explicit target language from the plan (no auto-decision)
-                    forward_code = translator_agent(
-                        original_code,
-                        working_language,
-                        plan.target_language,
-                        decide=False,
-                    )
-                    if isinstance(forward_code, str) and forward_code.strip():
-                        working_code = forward_code
-                        working_language = plan.target_language
-                        translation_info.update(
-                            {
-                                "used": True,
-                                "to_language": plan.target_language,
-                                "forward_translated_code": forward_code,
-                            }
-                        )
-                except Exception:
-                    logger.exception("Forward translation failed; continuing in original language")
-
-            # Step 3: Dynamically create specialized agents for each issue
-            specialized_agents: List[BaseAgent] = main_agent.create_specialized_agents(issues)
-
-            # Step 4: Apply each agent in sequence, updating the code as we go
-            current_code = working_code
-            repairs: List[Dict[str, Any]] = []
-
-            for issue, agent in zip(issues, specialized_agents):
-                try:
-                    result: RepairResult = agent.repair(current_code, issue, working_language)
-                    repairs.append(
-                        {
-                            "issue_id": issue.id,
-                            "type": issue.type,
-                            "description": issue.description,
-                            "location_hint": issue.location_hint,
-                            "fixed_code": result.fixed_code,
-                            "explanation": result.explanation,
-                        }
-                    )
-                    current_code = result.fixed_code or current_code
-                except Exception as inner_exc:
-                    logger.exception("Error while repairing issue %s", issue.id)
-                    repairs.append(
-                        {
-                            "issue_id": issue.id,
-                            "type": issue.type,
-                            "description": issue.description,
-                            "location_hint": issue.location_hint,
-                            "fixed_code": current_code,
-                            "explanation": f"Failed to repair this issue: {inner_exc}",
-                        }
-                    )
-
-            # Step 5: If translation was used, translate the final code back to the original language
-            final_code = current_code
-            if translation_info["used"] and working_language != effective_source_language:
-                translated_back = False
-                try:
-                    back_code = translator_agent(
-                        current_code,
-                        working_language,
-                        effective_source_language,
-                        decide=False,
-                    )
-                    if isinstance(back_code, str) and back_code.strip():
-                        final_code = back_code
-                        translation_info["final_language"] = effective_source_language
-                        translated_back = True
-                except Exception:
-                    logger.exception("Backward translation failed; returning code in working language")
-                if not translated_back:
-                    translation_info["final_language"] = working_language
-            else:
-                translation_info["final_language"] = src_language
-
-            response_body = {
+                "final_language": final_state.get("current_lang", src_language),
+             }
+             
+             # We rely on 'step' field in history entries
+             # History entries defined in graph.py:
+             # - MainAnalysis
+             # - TranslatorForward
+             # - SyntaxFixer, LogicFixer, OptimizationFixer
+             # - TranslatorBackward
+             
+             for entry in history:
+                 step_type = entry.get("step")
+                 
+                 if step_type == "TranslatorForward":
+                     translation_info["used"] = True
+                     translation_info["to_language"] = entry.get("to")
+                     translation_info["forward_translated_code"] = entry.get("result")
+                     
+                 elif step_type == "TranslatorBackward":
+                     translation_info["final_language"] = entry.get("to")
+                     
+                 elif step_type in ["SyntaxFixer", "LogicFixer", "OptimizationFixer"]:
+                     # Map to repair object
+                     issue_data = entry.get("issue", {})
+                     repairs.append({
+                         "issue_id": issue_data.get("id"),
+                         "type": issue_data.get("type"),
+                         "description": issue_data.get("description"),
+                         "location_hint": issue_data.get("location_hint"),
+                         "fixed_code": entry.get("fixed_code"),
+                         "explanation": entry.get("explanation")
+                     })
+            
+             final_plan = final_state.get("plan") or {} # could be object or dict depending on internal state consistency
+             if hasattr(final_plan, '__dict__'):
+                 # It's a dataclass
+                 final_plan = final_plan.__dict__
+                 
+             response_body = {
                 "original_code": original_code,
                 "final_code": final_code,
                 "repairs": repairs,
-                "plan": {
-                    "translate": plan.translate,
-                    "target_language": plan.target_language,
-                    "detected_language": plan.detected_language,
-                    "language_match": plan.language_match,
-                },
+                "plan": final_plan,
                 "translation": translation_info,
-            }
-            log_api_interaction(
+             }
+             
+             log_api_interaction(
                 request_id,
-                "Flask_Repair",
+                "Graph_Repair",
                 {"code": original_code, "language": src_language},
                 response_body,
                 True,
             )
-            return jsonify(response_body)
+             return jsonify(response_body)
+
         except Exception as exc:
             logger.exception("Error during repair")
-            error_body = {"error": str(exc)}
-            log_api_interaction(
-                request_id,
-                "Flask_Repair",
-                {"code": original_code, "language": src_language},
-                error_body,
-                False,
-                error_type=exc.__class__.__name__,
-            )
-            return jsonify(error_body), 500
+            return jsonify({"error": str(exc)}), 500
 
     return app
 
 
 if __name__ == "__main__":
-    # Run the Flask development server
     app = create_app()
     app.run(host="127.0.0.1", port=5000, debug=True)
-
-

@@ -558,7 +558,7 @@ class MainAgent(BaseAgent):
                 pass
         return issues
 
-    def analyze_and_plan(self, code: str, src_language: str = "Python") -> tuple[List[Issue], RepairPlan]:
+    def analyze_and_plan(self, code: str, src_language: str = "Python", user_feedback: Optional[str] = None) -> tuple[List[Issue], RepairPlan]:
         """Analyze buggy code and decide whether to translate before repairing.
 
         Returns a tuple of (issues, plan).
@@ -620,11 +620,16 @@ class MainAgent(BaseAgent):
 
         Return ONLY the JSON object, without markdown fences.
         """
+        
+        feedback_context = ""
+        if user_feedback:
+            feedback_context = f"\nIMPORTANT USER FEEDBACK (The user rejected the previous repair attempt):\n'{user_feedback}'\nPlease address this feedback specifically in your new analysis and plan."
 
         prompt = f"""
         {system_instructions}
 
         Original language of the code: {src_language}
+        {feedback_context}
 
         Here is the code to analyze:
         ```
