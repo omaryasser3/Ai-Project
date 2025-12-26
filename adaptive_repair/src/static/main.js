@@ -154,8 +154,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const feedbackCard = document.getElementById("feedback-card");
   const userFeedbackInput = document.getElementById("user-feedback");
   const acceptBtn = document.getElementById("accept-btn");
-  const refuseGenerateBtn = document.getElementById("refuse-generate-btn");
-  const refuseStopBtn = document.getElementById("refuse-stop-btn");
+  const replanBtn = document.getElementById("replan-btn");
+  const autofixBtn = document.getElementById("autofix-btn");
 
   // State to hold analysis results before repair
   let currentAnalysis = null;
@@ -307,7 +307,78 @@ window.addEventListener("DOMContentLoaded", () => {
     alert("Repair accepted!");
   });
 
-  refuseGenerateBtn.addEventListener("click", async () => {
+  replanBtn.addEventListener("click", async () => {
+    const feedback = userFeedbackInput.value.trim();
+    if (!feedback) {
+      alert("Please provide some feedback explanation.");
+      return;
+    }
+
+    // Use the LAST REPAIRED CODE as input??
+    // Or the original code?
+    // "Iterate" usually means on the current state.
+    // But if the repair was bad, we might want to start from scratch?
+    // Usually, we iterate on the result.
+
+    const code = lastRepairedCode || codeInput.value;
+    const language = langInput.value || "Python"; // Or detect
+
+    // UI Reset
+    feedbackCard.classList.add("d-none");
+    document.getElementById("status").textContent = "Re-planning with feedback...";
+
+    // Call Analyze with feedback
+    // Note: we need to put the new code in the input? Or just use it?
+    // Let's update the input box to show what we are working on now.
+    codeInput.value = code;
+
+    // Trigger Analyze logic
+    // We can just re-use the analyze call logic
+    // Manually calling to ensure we pass feedback
+
+    // Clear previous results
+    document.getElementById("repaired-code").textContent = "";
+    document.getElementById("repair-explanations").innerHTML = "";
+    document.getElementById("plan-summary").textContent = "Re-Analyzing...";
+    document.getElementById("translated-code").textContent = "";
+    planReviewCard.classList.add("d-none");
+
+    const data = await callApi("/api/analyze", {
+      code,
+      language,
+      user_feedback: feedback
+    });
+
+    if (data) {
+      currentAnalysis = data;
+      renderIssues(data.issues || []);
+
+      const p = data.plan || {};
+      planTranslateCheck.checked = !!p.translate;
+      planTargetLang.value = p.target_language || "";
+      planDetectedLang.textContent = p.detected_language || "unknown";
+
+      const stepsListEx = document.getElementById("execution-steps-list");
+      stepsListEx.innerHTML = "";
+      (data.execution_steps || []).forEach(step => {
+        const li = document.createElement("li");
+        li.className = "list-group-item bg-transparent";
+        li.textContent = step.description;
+        if (step.type) {
+          const badge = document.createElement("span");
+          badge.className = "badge bg-secondary ms-2 rounded-pill";
+          badge.textContent = step.type;
+          li.appendChild(badge);
+        }
+        stepsListEx.appendChild(li);
+      });
+
+      planReviewCard.classList.remove("d-none");
+      renderPlanAndTranslation(data.plan, null);
+    }
+  });
+
+  autofixBtn.addEventListener("click", async () => {
     const feedback = userFeedbackInput.value.trim();
     if (!feedback) {
       alert("Please provide some feedback explanation.");
@@ -319,7 +390,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     feedbackCard.classList.add("d-none");
     codeInput.value = code; // Update input to show current state
-    document.getElementById("status").textContent = "Regenerating with feedback...";
+    document.getElementById("status").textContent = "Auto-fixing with feedback...";
 
     const data = await callApi("/api/repair", {
       code,
@@ -337,19 +408,5 @@ window.addEventListener("DOMContentLoaded", () => {
       renderPlanAndTranslation(data.plan, data.translation);
       showFeedbackCard(data.final_code);
     }
-  });
-
-  refuseStopBtn.addEventListener("click", () => {
-     feedbackCard.classList.add("d-none");
-     planReviewCard.classList.add("d-none");
-     document.getElementById("repaired-code").textContent = "";
-     document.getElementById("repair-explanations").innerHTML = "";
-     document.getElementById("status").textContent = "Process stopped.";
-     document.getElementById("issues-list").innerHTML = "";
-     document.getElementById("no-issues").classList.add("d-none");
-     
-     // Optionally clear input?
-     // codeInput.value = "";
-     alert("Process stopped. You can enter new code to start over.");
   });
 });
