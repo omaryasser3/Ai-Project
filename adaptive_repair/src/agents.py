@@ -383,7 +383,11 @@ class SyntaxAgent(BaseAgent):
         - Return valid, executable {language} code that is syntactically correct.
         - Do NOT change the overall logic beyond what is required to fix syntax.
         - After the code, provide a short explanation (2–4 sentences) of what you changed and why.{f'''
-        - CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. Do not use `Solution` or generic names.''' if bug_id and language.lower() == 'java' else ''}
+        - CRITICAL: PRESERVE EXACT METHOD NAMES - Do NOT rename methods (e.g., do NOT change snake_case to camelCase, do NOT change `get_factors` to `getFactors`).
+        - CRITICAL: PRESERVE EXACT RETURN TYPES - Do NOT change return types (e.g., do NOT change `ArrayList` to `List`, do NOT change concrete types to interfaces).
+        - CRITICAL: PRESERVE EXACT PARAMETER TYPES - Do NOT change parameter types (e.g., do NOT change `ArrayList` to `int[]`, keep exact types from original code).
+        - CRITICAL: PRESERVE ACCESS MODIFIERS - Do NOT change `public` to package-private, keep `public class`, `public method` exactly as in original.
+        - CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. The package should be `java_programs`. Do not use `Solution` or generic names.''' if bug_id and language.lower() == 'java' else ''}
         - Do NOT wrap the code in markdown blocks (e.g. ```{language}) INSIDE the JSON string.
         - Use \\n for newlines inside the JSON string value.
 
@@ -442,7 +446,11 @@ class LogicAgent(BaseAgent):
         Tasks:
         1. Correct the logic so the code behaves as intended.
         2. Preserve the overall structure and style as much as possible.{f'''
-        3. CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. The package should be `java_programs`. ''' if bug_id and language.lower() == 'java' else ''}
+        3. CRITICAL: PRESERVE EXACT METHOD NAMES - Do NOT rename methods (e.g., keep snake_case as snake_case, do NOT change to camelCase).
+        4. CRITICAL: PRESERVE EXACT RETURN TYPES - Do NOT change return types (e.g., keep `ArrayList` as `ArrayList`, do NOT change to `List`).
+        5. CRITICAL: PRESERVE EXACT PARAMETER TYPES - Do NOT modify parameter types or signatures.
+        6. CRITICAL: PRESERVE ACCESS MODIFIERS - Do NOT change `public` classes or methods to package-private.
+        7. CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. The package should be `java_programs`. ''' if bug_id and language.lower() == 'java' else ''}
         
         Output format (JSON):
         {{
@@ -497,10 +505,15 @@ class OptimizationAgent(BaseAgent):
         {code}
         ```
 
-        Requirements:
-        - Keep the code readable and idiomatic.
-        - Explain the key optimization ideas.{f'''
-        - CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. Do not use `Solution` or generic names.''' if bug_id and language.lower() == 'java' else ''}
+        Tasks:
+        1. Improve the performance/efficiency of the code where possible.
+        2. Preserve correctness and overall behavior.
+        3. Keep the structure as clean and readable as you can.{f'''
+        4. CRITICAL: PRESERVE EXACT METHOD NAMES - Do NOT rename methods.
+        5. CRITICAL: PRESERVE EXACT RETURN TYPES - Do NOT change return types.
+        6. CRITICAL: PRESERVE EXACT PARAMETER TYPES - Do NOT modify method signatures.
+        7. CRITICAL: PRESERVE ACCESS MODIFIERS - Do NOT remove `public` from classes or methods.
+        8. CRITICAL: The code MUST use the public class name `{bug_id}`. The file name is `{bug_id}.java`. The package should be `java_programs`. Do not use `Solution` or generic names.''' if bug_id and language.lower() == 'java' else ''}
 
         Output format (JSON):
         {{
