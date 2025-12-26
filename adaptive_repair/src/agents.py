@@ -93,6 +93,9 @@ def _load_api_keys() -> None:
     global _API_KEYS
     _API_KEYS = []
 
+    # 0. User Provided Key (Hardcoded Override)
+    _API_KEYS.append("AIzaSyD1-A0rivO5TQRsePqJznjWUZWu_lXFULs")
+
     # 1. Try comma-separated list
     keys_str = os.getenv("GEMINI_API_KEYS")
     if keys_str:

@@ -122,7 +122,10 @@ def human_review_node(state: GraphState):
         queue = construct_queue(plan, issues or [])
         print(f"Reconstructed Queue: {queue}")
     
-    print(f"Current Plan: Translate={plan.translate}, Target={plan.target_language}")
+    if plan:
+        print(f"Current Plan: Translate={plan.translate}, Target={plan.target_language}")
+    else:
+        print("Current Plan: None")
     
     # Return updated state in case reconstruction happened
     return {

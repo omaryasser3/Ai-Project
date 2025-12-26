@@ -209,12 +209,12 @@ def create_app() -> Flask:
             }
              
              # 2. Invoke Full Graph from Human Review
-             # Instead of starting at 'main_node', we start at 'human_review'.
-             # We inject the plan/issues into the initial state, so 'human_review' 
-             # node can pick them up (and optionally reconstruct objects if they are dicts).
-             
+             # If plan/issues provided, start at 'human_review' to inject them.
+             # Otherwise, start at 'main_node' to perform analysis first.
+             entry_point = "human_review" if provided_plan else "main_node"
+
              # Create graph with custom entry point
-             repair_graph = create_graph(entry_point="human_review")
+             repair_graph = create_graph(entry_point=entry_point)
              
              final_state = repair_graph.invoke(initial_state)
              
