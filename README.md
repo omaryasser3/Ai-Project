@@ -1,123 +1,316 @@
-# Adaptive Program Repair System
+# AI-Powered Adaptive Program Repair System
 
 ## What This Project Does
-The Adaptive Program Repair System orchestrates large language models (LLMs) through a LangGraph-powered workflow to detect, analyze, and repair bugs in Python and Java programs. A router agent inspects code, classifies issues, optionally translates code to a more LLM-friendly language, and then routes each defect to specialized fixer agents (syntax, logic, optimization). Repairs, translations, and experiment metadata are logged for later review, and the system can be driven either from a CLI batch runner or a Flask REST API/UI.
+The AI-Powered Adaptive Program Repair (APR) System is a sophisticated multi-agent framework that leverages Large Language Models (LLMs) orchestrated through LangGraph to automatically detect, analyze, and repair bugs in Python and Java programs. The system employs specialized AI agents to handle different types of programming errors, from syntax issues to complex algorithmic bugs, with comprehensive evaluation, logging, and visualization capabilities.
 
-## Highlights
-- **Multi-agent orchestration:** `MainAgent` triages bugs, builds a repair queue, and spawns `SyntaxAgent`, `LogicAgent`, and `OptimizationAgent` workers described in `adaptive_repair/src/agents.py`.
-- **LangGraph state machine:** `adaptive_repair/src/graph.py` manages the pipeline (analysis → optional translation → per-issue fixes → translation back).
-- **Cross-language repair:** The translator agent can automatically move code between languages before/after repairs to improve LLM accuracy.
-- **Rich datasets:** `adaptive_repair/data` contains buggy programs, ground-truth solutions, and pytest-based regression suites for both Java and Python benchmarks.
-- **Experiment logging:** Every agent interaction persists to `logs/experiment_log.json`, while `results.txt` and `report.html` capture aggregate benchmarking runs.
+## Key Features
+- **Multi-Agent Architecture:** Specialized agents for syntax errors, logic bugs, and performance issues
+- **Cross-Language Repair:** Automatic code translation between languages for optimal repair accuracy
+- **Comprehensive Evaluation Pipeline:** Test execution, diff analysis, hallucination detection, and detailed metrics
+- **Interactive Dashboard:** Real-time visualization of repair results and performance metrics
+- **Advanced Logging & Analysis:** Detailed experiment logs with failure analysis and batch summaries
+- **REST API & Web Interface:** Both programmatic and user-friendly interfaces for code repair
+- **Rich Benchmark Datasets:** Curated datasets of buggy programs with ground truth solutions and regression tests
 
-## Repository Map
-| Path | Purpose |
-| --- | --- |
-| `adaptive_repair/src` | Flask app (`app.py`), LangGraph workflow (`graph.py`), CLI batch runner (`main.py`), agent definitions, shared utils, static assets, and templates. |
-| `adaptive_repair/config.yaml` | Central LLM/model configuration (router, analyzers, translators) and default temperature. |
-| `adaptive_repair/data` | Benchmark datasets: buggy programs (`Bugs/`), golden references (`correct_*_programs/`), and pytest regressions (`python_testcases/`, `java_testcases/`). |
-| `METHODOLOGY.md` | Architectural deep dive (multi-agent design, state machine diagrams, data flow). |
-| `adaptive_repair/results.txt`, `adaptive_repair/report.html` | Sample benchmarking output and HTML summary. |
-| `requirements.txt` | Minimal Python dependencies (LangGraph, LangChain, Flask, Google Generative AI bindings). |
+## Project Structure
+```
+adaptive_repair/
+├── src/                          # Core application code
+│   ├── app.py                    # Flask REST API and web interface
+│   ├── main.py                   # CLI batch processing script
+│   ├── graph.py                  # LangGraph workflow orchestration
+│   ├── agents.py                 # Multi-agent architecture definitions
+│   ├── evaluator.py              # Test execution and evaluation utilities
+│   ├── evaluation_pipeline.py    # Comprehensive evaluation pipeline
+│   ├── failure_analyzer.py       # Failure analysis and reporting
+│   ├── verify_java.py            # Java program verification
+│   ├── verify_all_java.py        # Batch Java verification
+│   ├── setup_env.py              # Environment setup utilities
+│   ├── utils.py                  # Helper functions and utilities
+│   ├── templates/                # HTML templates for web interface
+│   └── static/                   # CSS/JS assets for web interface
+├── Dashboard/                    # Evaluation visualization and analytics
+│   ├── dashboard.py              # Streamlit dashboard application
+│   ├── data_parser.py            # Data parsing utilities
+│   └── java_test_parser.py       # Java test result parsing
+├── data/                         # Benchmark datasets and test cases
+│   ├── Bugs/                     # Buggy program datasets
+│   │   ├── java_programs/        # Java buggy programs (48 files)
+│   │   └── python_programs/      # Python buggy programs (50 files)
+│   ├── correct_java_programs/    # Ground truth Java solutions
+│   ├── correct_python_programs/  # Ground truth Python solutions
+│   ├── java_testcases/           # JUnit-style Java test cases
+│   ├── json_testcases/           # JSON test case definitions
+│   └── python_testcases/         # pytest Python test cases
+├── logs/                         # Experiment logs and evaluation reports
+│   ├── batch_summary_java.json   # Java batch evaluation results
+│   ├── batch_summary_python.json # Python batch evaluation results
+│   ├── evaluation_log_java.json  # Detailed Java evaluation logs
+│   ├── evaluation_log_python.json# Detailed Python evaluation logs
+│   ├── experiment_log_java.json  # Java experiment interactions
+│   ├── experiment_log.json       # General experiment logs
+│   ├── failure_report_java.txt   # Java failure analysis
+│   ├── failure_report_python.txt # Python failure analysis
+│   └── runtime_evaluation.jsonl  # Runtime evaluation logs
+├── assets/                       # Static assets for reports
+├── config.yaml                   # LLM model configuration
+├── results_python.txt            # Python test execution results
+├── report.html                   # HTML evaluation report
+└── verification_results.txt      # Batch verification results
+```
+
+## Key Components
+- **Core Engine:** `src/graph.py` and `src/agents.py` implement the LangGraph-powered multi-agent workflow
+- **Evaluation System:** `src/evaluation_pipeline.py` provides comprehensive assessment with hallucination detection
+- **Dashboard:** `Dashboard/dashboard.py` offers interactive visualization of repair metrics
+- **Datasets:** Curated benchmark programs with ground truth solutions and comprehensive test suites
+- **Logging:** Extensive logging infrastructure for experiment tracking and failure analysis
 
 ## Prerequisites
-- Python 3.11+ (project tests were last run with Python 3.13.9 per `results.txt`).
-- Google Gemini API key with access to the listed models.
-- Windows PowerShell commands are shown below; adapt paths if using another shell.
+- Python 3.9+ (tested with Python 3.13.9)
+- Google Gemini API key with access to Gemini models
+- Java Development Kit (JDK) 8+ for Java program verification
+- Windows PowerShell (commands shown) or compatible shell
 
-## Environment Setup
+## Installation & Setup
+
+### 1. Clone and Environment Setup
 ```powershell
-# Clone and enter the repository
-git clone <repo-url>
+# Clone the repository
+git clone <repository-url>
 cd Ai-Project
 
-# (Optional) create an isolated environment
+# Create virtual environment (recommended)
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 
-# Install runtime dependencies
+# Install dependencies
 pip install -r requirements.txt
-
-# Provide your Gemini key for the agents
-$env:GEMINI_API_KEY = "sk-your-key"
 ```
-The agents automatically read `GEMINI_API_KEY` via `agents._configure_genai()`. Use a `.env` file in the repo root if you prefer (dotenv support is enabled by default).
 
-## Configuring Models & Parameters
-All LLM knobs live in `adaptive_repair/config.yaml`:
+### 2. API Configuration
+```powershell
+# Set Gemini API key (required)
+$env:GEMINI_API_KEY = "your-gemini-api-key-here"
+```
+
+Or create a `.env` file in the project root:
+```
+GEMINI_API_KEY=your-gemini-api-key-here
+```
+
+The system automatically loads the API key via the `agents._configure_genai()` function.
+
+## Configuration
+Model and parameter settings are centralized in `adaptive_repair/config.yaml`:
+
 ```yaml
 models:
   router: "gemini-2.5-flash"
   complex_analyzer: "gemini-2.5-flash"
   complex_fixer: "gemini-2.5-flash"
   translator: "gemini-2.5-flash"
-  # ...
+  syntax_agent: "gemini-2.5-flash"
+  logic_agent: "gemini-2.5-flash"
+  optimization_agent: "gemini-2.5-flash"
+
 parameters:
   temperature: 0.2
 ```
-- Update individual entries (e.g., `router`, `worker`, `translator`) to point at different Gemini variants or custom deployments.
-- Adjust `parameters.temperature` to control sampling for every agent that doesn’t override it.
-- Any change takes effect globally the next time you run a CLI job or start the Flask app; no rebuild is required.
 
-## Running the System
-### 1. Batch repairing benchmark bugs (CLI)
+**Configuration Options:**
+- **Models:** Specify different Gemini models for each agent type
+- **Temperature:** Controls randomness in LLM responses (0.0 = deterministic, 1.0 = creative)
+- Changes take effect immediately without rebuilding
+
+## Usage Guide
+
+### 1. Interactive Dashboard
+Launch the comprehensive evaluation dashboard for visualizing repair results:
+
 ```powershell
-python adaptive_repair\src\main.py
+streamlit run adaptive_repair/Dashboard/dashboard.py
 ```
-- Loads every Java bug from `adaptive_repair/data/Bugs/java_programs/`.
-- For each entry, `graph.create_graph()` runs the LangGraph pipeline, and fixes are saved to `adaptive_repair/data/java_programs/<bug-id>.java`.
-- Experiment metadata is duplicated under the "Final_Result" label by `utils.log_experiment()`.
-- Customize the dataset by editing `load_bugs()` or pointing it to the Python corpus.
 
-### 2. Flask REST API + UI
+**Dashboard Features:**
+- Real-time metrics overview (pass/fail rates, error distribution)
+- Interactive charts for Java and Python evaluation results
+- Detailed test result breakdowns
+- Automatic integration with log files
+
+### 2. Batch Processing (CLI)
+Process multiple bugs automatically:
+
 ```powershell
-python adaptive_repair\src\app.py
-```
-The development server listens on `http://127.0.0.1:5000`.
+# Process all Java bugs (default)
+python adaptive_repair/src/main.py
 
-Key endpoints
-| Method & Path | Body | Description |
+# Process all Python bugs
+python adaptive_repair/src/main.py --language python
+
+# Process specific bug
+python adaptive_repair/src/main.py --bug_id BITCOUNT --language java
+```
+
+**Arguments:**
+- `--language`: `java` or `python` (default: `java`)
+- `--bug_id`: Specific bug identifier (e.g., `BITCOUNT`, `QUICKSORT`)
+
+### 3. Comprehensive Evaluation Pipeline
+Run full evaluation with testing, diff analysis, and hallucination detection:
+
+```powershell
+# Evaluate single bug
+python adaptive_repair/src/evaluation_pipeline.py --bug_id BITCOUNT --language java
+
+# Evaluate all bugs in batch
+python adaptive_repair/src/evaluation_pipeline.py --all --language java
+```
+
+**Features:**
+- Automated test execution
+- Code diff analysis
+- Hallucination detection
+- Comprehensive logging
+- Batch summary generation
+
+### 4. Web Interface & REST API
+Launch the Flask-based web interface:
+
+```powershell
+python adaptive_repair/src/app.py
+```
+
+Server runs on `http://127.0.0.1:5000` with the following endpoints:
+
+| Method & Path | Request Body | Response |
 | --- | --- | --- |
-| `POST /api/analyze` | `{ "code": "...", "language": "Python" }` | Returns detected issues plus the translation plan (JSON). |
-| `POST /api/repair` | `{ "code": "...", "language": "Python" }` | Runs the full LangGraph workflow and responds with `final_code`, per-issue explanations, and translation metadata. |
+| `POST /api/analyze` | `{"code": "...", "language": "python"}` | Detected issues and repair plan |
+| `POST /api/repair` | `{"code": "...", "language": "python"}` | Complete repair with explanations |
 
-`create_app()` wires templates/static assets so you can add a lightweight UI in `adaptive_repair/src/templates` and `adaptive_repair/src/static` if desired.
+### 5. Java Program Verification
+Verify Java program fixes against test cases:
 
-### 3. Reproducing the Quicksort example
 ```powershell
-python adaptive_repair\reproduce_quicksort.py
+# Verify single program
+python adaptive_repair/src/verify_java.py --bug_id BITCOUNT --type fixed
+
+# Verify all Java programs
+python adaptive_repair/src/verify_all_java.py
 ```
-Imports `data.python_programs.quicksort`, runs a regression for duplicate handling, and asserts correctness. This is a minimal pattern for scripting targeted reproductions.
 
-## Working With the Dataset
-- **Bug sources:** `adaptive_repair/data/Bugs/python_programs/` and `.../java_programs/` each contain intentionally broken submissions.
-- **Ground truth:** `adaptive_repair/data/correct_python_programs/` and `.../correct_java_programs/` hold canonical solutions for evaluation.
-- **Test harnesses:** `adaptive_repair/data/python_testcases/` (pytest) and `.../java_testcases/` (JUnit-style JSON inputs) exercise every algorithm variant.
-- **Metadata:** `adaptive_repair/data/bugs.json` captures bug IDs, categories, and descriptions that can be surfaced in custom dashboards.
+### 6. Python Testing
+Run pytest on Python programs:
 
-When you add new problems, mirror this structure so both the CLI batch runner and pytest suites pick them up automatically.
-
-## Logging, Results, and Reporting
-- `utils.log_experiment()` appends JSON lines to `logs/experiment_log.json`, capturing timestamps, prompts, responses, success flags, and error types.
-- `adaptive_repair/results.txt` contains a sample pytest session (278 items) demonstrating regression coverage.
-- `adaptive_repair/report.html` provides a shareable HTML summary; update it whenever you rerun large evaluations.
-- Static assets for reports live under `adaptive_repair/assets/`.
-
-## Testing & Verification
-Python regressions live alongside the datasets and can be executed after generating fixes:
 ```powershell
-pytest adaptive_repair\data\python_testcases -q
+# Test all Python programs
+pytest adaptive_repair/data/python_testcases/ -v
+
+# Test specific program
+pytest adaptive_repair/data/python_testcases/test_bitcount.py -v
+
+# Save results to file
+pytest adaptive_repair/data/python_testcases/ -v > results.txt
 ```
-For Java, plug your preferred runner into the files under `adaptive_repair/data/java_testcases/` or adapt the JSON harnesses in `adaptive_repair/data/json_testcases/`.
+
+## Dataset & Benchmarking
+
+### Dataset Structure
+The system includes comprehensive benchmark datasets:
+
+- **Buggy Programs:** `adaptive_repair/data/Bugs/` contains 48 Java and 50 Python intentionally broken programs
+- **Ground Truth:** `adaptive_repair/data/correct_*_programs/` hold canonical solutions for evaluation
+- **Test Cases:**
+  - Python: pytest-based test suites in `adaptive_repair/data/python_testcases/`
+  - Java: JUnit-style tests in `adaptive_repair/data/java_testcases/`
+  - JSON test definitions in `adaptive_repair/data/json_testcases/`
+
+### Adding New Benchmarks
+To add new problems, follow this structure:
+1. Place buggy code in `data/Bugs/<language>_programs/`
+2. Add ground truth solution to `data/correct_<language>_programs/`
+3. Create corresponding test cases
+4. The CLI batch runner and evaluation pipeline will automatically detect new files
+
+## Logging & Results Analysis
+
+### Log Files
+The system generates comprehensive logs in `adaptive_repair/logs/`:
+
+- **Experiment Logs:** `experiment_log*.json` - Detailed agent interactions and prompts
+- **Batch Summaries:** `batch_summary_*.json` - Aggregated results for Java/Python evaluations
+- **Evaluation Logs:** `evaluation_log_*.json` - Comprehensive evaluation results
+- **Failure Reports:** `failure_report_*.txt` - Categorized failure analysis
+- **Runtime Logs:** `runtime_evaluation.jsonl` - Web interface usage logs
+
+### Results & Reporting
+- **Test Results:** `results_python.txt` - pytest execution output (278 test cases)
+- **HTML Reports:** `report.html` - Visual test execution summary
+- **Verification Results:** `verification_results.txt` - Batch verification outcomes
+
+### Analysis Tools
+```powershell
+# Generate failure analysis report
+python adaptive_repair/src/failure_analyzer.py --language java
+
+# View detailed evaluation results
+python adaptive_repair/src/evaluation_pipeline.py --bug_id BITCOUNT --language java --analyze-only
+```
 
 ## Troubleshooting
-- **Missing API key:** Ensure `$env:GEMINI_API_KEY` is exported before running CLI or Flask entry points; otherwise `_configure_genai()` raises a runtime error.
-- **Rate limits / quota:** Lower `parameters.temperature`, add retries, or pace batch jobs to comply with Gemini quotas.
-- **Non-ASCII file issues on Windows:** Python files are opened using UTF-8; keep datasets UTF-8 encoded to avoid decoding failures.
-- **Large datasets:** If processing thousands of bugs, shard the `Bugs/` directories or add filtering logic in `load_bugs()` to control resource usage.
 
-## Next Steps
-1. Integrate acceptance tests that automatically call `/api/repair` for a subset of bugs and validate output against `correct_*_programs`.
-2. Extend `config.yaml` with per-agent temperatures or safety settings if you experiment with different Gemini tiers.
-3. Build a dashboard that parses `logs/experiment_log.json` and highlights success/failure trends across bug categories.
+### Common Issues
+- **Missing API Key:** Ensure `GEMINI_API_KEY` environment variable is set before running any commands
+- **Rate Limits:** Reduce `temperature` in `config.yaml` or add delays between API calls
+- **Java Compilation Errors:** Verify JDK 8+ is installed and `JAVA_HOME` is set correctly
+- **File Encoding Issues:** Ensure all source files are UTF-8 encoded
+- **Memory Issues:** For large datasets, process bugs individually using `--bug_id` parameter
+
+### Environment Setup Issues
+```powershell
+# Verify environment setup
+python adaptive_repair/src/setup_env.py
+
+# Check Java installation (for Java verification)
+java -version
+javac -version
+```
+
+### Performance Optimization
+- **Batch Processing:** Use `--bug_id` for individual bugs when memory is limited
+- **API Efficiency:** Adjust model configurations in `config.yaml` for faster/smaller models
+- **Logging Control:** Set appropriate log levels to reduce I/O overhead
+
+## Development & Extension
+
+### Current Capabilities
+- ✅ Multi-agent architecture with specialized repair agents
+- ✅ Cross-language code translation and repair
+- ✅ Comprehensive evaluation pipeline with hallucination detection
+- ✅ Interactive dashboard for result visualization
+- ✅ REST API and web interface
+- ✅ Extensive logging and failure analysis
+- ✅ Support for both Python and Java benchmarks
+
+### Future Enhancements
+1. **Additional Language Support:** Extend to C++, JavaScript, and other languages
+2. **Advanced Agent Training:** Fine-tune agents on specific bug patterns
+3. **Real-time Collaboration:** Multi-user dashboard with collaborative features
+4. **Integration APIs:** RESTful APIs for CI/CD pipeline integration
+5. **Performance Metrics:** Advanced benchmarking against other APR systems
+6. **Custom Model Support:** Integration with additional LLM providers
+
+### Contributing
+When extending the system:
+1. Follow the existing agent pattern in `src/agents.py`
+2. Add comprehensive tests for new functionality
+3. Update evaluation metrics in the dashboard
+4. Document new features in this README
+5. Ensure backward compatibility with existing log formats
+
+## Methodology & Architecture
+For detailed technical information about the system's design, data flow, and architectural patterns, see [`METHODOLOGY.md`](METHODOLOGY.md).
+
+## License & Citation
+This project implements advanced techniques in automated program repair using multi-agent LLM orchestration. Please cite appropriately when using in research or publications.
 
