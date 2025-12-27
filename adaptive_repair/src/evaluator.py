@@ -491,7 +491,6 @@ class ExperimentLogger:
             "timestamp": datetime.now().isoformat(),
             "model_output": attempt_data.get("model_output", ""),
             "compilation": attempt_data.get("compilation", {}),
-            "validation": attempt_data.get("validation", {}),
             "test_results": attempt_data.get("test_results", {}),
             "diff_analysis": attempt_data.get("diff_analysis", {}),
             "hallucination_check": attempt_data.get("hallucination_check", []),

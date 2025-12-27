@@ -61,7 +61,7 @@ class EvaluationPipeline:
             "language": language,
             "overall_success": False,
             "compilation": {},
-            "tests": {},
+            "test_results": {},
             "diff_analysis": {},
             "hallucination_check": [],
             "api_check": {},
@@ -139,7 +139,7 @@ class EvaluationPipeline:
             else:
                 test_results = self.test_executor.run_python_test(bug_id)
             
-            results["tests"] = test_results
+            results["test_results"] = test_results
             
             # Step 5: Diff analysis
             print(f"📊 Analyzing diff for {bug_id}...")
@@ -268,7 +268,7 @@ class EvaluationPipeline:
                 summary["files_failed"] += 1
             
             # Test-level statistics (for more accurate metrics)
-            test_results = result.get("tests", {})
+            test_results = result.get("test_results", {})
             summary["total_tests"] += test_results.get("test_count", 0)
             summary["tests_passed"] += test_results.get("pass_count", 0)
             summary["tests_failed"] += test_results.get("fail_count", 0)

@@ -75,9 +75,9 @@ class FailureAnalyzer:
                         "error": result.get("compilation", {}).get("output", "No error message")
                     })
                 
-                elif not result.get("tests", {}).get("success", True):
+                elif not result.get("test_results", {}).get("success", True):
                     analysis["failure_categories"]["TEST_FAILURE"].append(bug_id)
-                    tests = result.get("tests", {})
+                    tests = result.get("test_results", {})
                     analysis["test_failures"].append({
                         "bug_id": bug_id,
                         "test_count": tests.get("test_count", 0),

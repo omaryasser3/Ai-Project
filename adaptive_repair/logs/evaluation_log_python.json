@@ -2,14 +2,21 @@
   {
     "bug_id": "bitcount",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:23.405904",
+    "timestamp": "2025-12-27T14:05:12.468689",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:26.526131",
+        "timestamp": "2025-12-27T14:05:16.751037",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 9,
+          "pass_count": 9,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 9 items\n\npython_testcases\\test_bitcount.py .........                              [100%]\n\n============================== 9 passed in 0.06s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 1,
@@ -26,19 +33,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:26.526142"
+    "completion_time": "2025-12-27T14:05:16.751055"
   },
   {
     "bug_id": "breadth_first_search",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:26.527834",
+    "timestamp": "2025-12-27T14:05:16.754989",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:28.193171",
+        "timestamp": "2025-12-27T14:05:18.721505",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 5,
+          "pass_count": 5,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_breadth_first_search.py .....                      [100%]\n\n============================== 5 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 7,
@@ -55,19 +69,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:28.193180"
+    "completion_time": "2025-12-27T14:05:18.721533"
   },
   {
     "bug_id": "bucketsort",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:28.194164",
+    "timestamp": "2025-12-27T14:05:18.722750",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:29.936231",
+        "timestamp": "2025-12-27T14:05:20.453875",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 7,
+          "pass_count": 7,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_bucketsort.py .......                              [100%]\n\n============================== 7 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 1,
@@ -84,19 +105,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:29.936240"
+    "completion_time": "2025-12-27T14:05:20.453892"
   },
   {
     "bug_id": "depth_first_search",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:29.937289",
+    "timestamp": "2025-12-27T14:05:20.455231",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:31.503905",
+        "timestamp": "2025-12-27T14:05:22.148230",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 5,
+          "pass_count": 5,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_depth_first_search.py .....                        [100%]\n\n============================== 5 passed in 0.04s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 6,
@@ -113,19 +141,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:31.503913"
+    "completion_time": "2025-12-27T14:05:22.148241"
   },
   {
     "bug_id": "detect_cycle",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:31.504835",
+    "timestamp": "2025-12-27T14:05:22.150201",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:33.212821",
+        "timestamp": "2025-12-27T14:05:23.785345",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 6,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_detect_cycle.py ......                             [100%]\n\n============================== 6 passed in 0.04s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 11,
@@ -142,18 +177,17 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:33.212835"
+    "completion_time": "2025-12-27T14:05:23.785356"
   },
   {
     "bug_id": "find_first_in_sorted",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:33.214789",
+    "timestamp": "2025-12-27T14:05:23.786778",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:33.216295",
+        "timestamp": "2025-12-27T14:05:23.788127",
         "model_output": "",
         "compilation": {},
-        "validation": {},
         "test_results": {},
         "diff_analysis": {},
         "hallucination_check": [],
@@ -164,7 +198,7 @@
             "language": "python",
             "overall_success": false,
             "compilation": {},
-            "tests": {},
+            "test_results": {},
             "diff_analysis": {},
             "hallucination_check": [
               {
@@ -189,19 +223,26 @@
     ],
     "final_status": "failed_hallucination",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:33.216314"
+    "completion_time": "2025-12-27T14:05:23.788143"
   },
   {
     "bug_id": "find_in_sorted",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:33.219413",
+    "timestamp": "2025-12-27T14:05:23.790331",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:34.781727",
+        "timestamp": "2025-12-27T14:05:25.503729",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 7,
+          "pass_count": 7,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_find_in_sorted.py .......                          [100%]\n\n============================== 7 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 4,
@@ -218,19 +259,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:34.781752"
+    "completion_time": "2025-12-27T14:05:25.503742"
   },
   {
     "bug_id": "flatten",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:34.783788",
+    "timestamp": "2025-12-27T14:05:25.505203",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:36.486447",
+        "timestamp": "2025-12-27T14:05:27.507801",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 7,
+          "pass_count": 7,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_flatten.py .......                                 [100%]\n\n============================== 7 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 1,
@@ -247,19 +295,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:36.486457"
+    "completion_time": "2025-12-27T14:05:27.507818"
   },
   {
     "bug_id": "gcd",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:36.487456",
+    "timestamp": "2025-12-27T14:05:27.509579",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:37.989171",
+        "timestamp": "2025-12-27T14:05:29.158074",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 6,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_gcd.py ......                                      [100%]\n\n============================== 6 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 2,
@@ -276,19 +331,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:37.989184"
+    "completion_time": "2025-12-27T14:05:29.158086"
   },
   {
     "bug_id": "get_factors",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:37.991129",
+    "timestamp": "2025-12-27T14:05:29.159943",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:39.707035",
+        "timestamp": "2025-12-27T14:05:30.628343",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 11,
+          "pass_count": 11,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 11 items\n\npython_testcases\\test_get_factors.py ...........                         [100%]\n\n============================= 11 passed in 0.04s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 4,
@@ -305,19 +367,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:39.707048"
+    "completion_time": "2025-12-27T14:05:30.628353"
   },
   {
     "bug_id": "hanoi",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:39.708763",
+    "timestamp": "2025-12-27T14:05:30.630330",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:41.225766",
+        "timestamp": "2025-12-27T14:05:32.217600",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 8,
+          "pass_count": 8,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 8 items\n\npython_testcases\\test_hanoi.py ........                                  [100%]\n\n============================== 8 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 2,
@@ -334,18 +403,17 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:41.225776"
+    "completion_time": "2025-12-27T14:05:32.217610"
   },
   {
     "bug_id": "is_valid_parenthesization",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:41.227264",
+    "timestamp": "2025-12-27T14:05:32.219526",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:41.227982",
+        "timestamp": "2025-12-27T14:05:32.220909",
         "model_output": "",
         "compilation": {},
-        "validation": {},
         "test_results": {},
         "diff_analysis": {},
         "hallucination_check": [],
@@ -356,7 +424,7 @@
             "language": "python",
             "overall_success": false,
             "compilation": {},
-            "tests": {},
+            "test_results": {},
             "diff_analysis": {},
             "hallucination_check": [
               {
@@ -376,19 +444,26 @@
     ],
     "final_status": "failed_hallucination",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:41.227993"
+    "completion_time": "2025-12-27T14:05:32.220920"
   },
   {
     "bug_id": "kheapsort",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:41.229544",
+    "timestamp": "2025-12-27T14:05:32.223070",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:42.894066",
+        "timestamp": "2025-12-27T14:05:34.062776",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 4,
+          "pass_count": 4,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 4 items\n\npython_testcases\\test_kheapsort.py ....                                  [100%]\n\n============================== 4 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 15,
@@ -405,19 +480,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:42.894076"
+    "completion_time": "2025-12-27T14:05:34.062787"
   },
   {
     "bug_id": "knapsack",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:42.895805",
+    "timestamp": "2025-12-27T14:05:34.065807",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:44.996244",
+        "timestamp": "2025-12-27T14:05:35.629377",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 9,
+          "pass_count": 9,
+          "fail_count": 0,
+          "skipped_count": 1,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_knapsack.py .........s                             [100%]\n\n======================== 9 passed, 1 skipped in 0.04s =========================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 1,
@@ -434,19 +516,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:44.996254"
+    "completion_time": "2025-12-27T14:05:35.629387"
   },
   {
     "bug_id": "kth",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:44.997876",
+    "timestamp": "2025-12-27T14:05:35.631083",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:46.588291",
+        "timestamp": "2025-12-27T14:05:37.259920",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 7,
+          "pass_count": 7,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_kth.py .......                                     [100%]\n\n============================== 7 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 75,
@@ -463,19 +552,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:46.588300"
+    "completion_time": "2025-12-27T14:05:37.259929"
   },
   {
     "bug_id": "lcs_length",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:46.589947",
+    "timestamp": "2025-12-27T14:05:37.262040",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:48.191502",
+        "timestamp": "2025-12-27T14:05:38.844932",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 9,
+          "pass_count": 9,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 9 items\n\npython_testcases\\test_lcs_length.py .........                            [100%]\n\n============================== 9 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 12,
@@ -492,19 +588,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:48.191518"
+    "completion_time": "2025-12-27T14:05:38.844941"
   },
   {
     "bug_id": "levenshtein",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:48.193905",
+    "timestamp": "2025-12-27T14:05:38.847118",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:51.403344",
+        "timestamp": "2025-12-27T14:05:41.888895",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 6,
+          "fail_count": 0,
+          "skipped_count": 1,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_levenshtein.py ...s...                             [100%]\n\n======================== 6 passed, 1 skipped in 1.46s =========================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 2,
@@ -521,19 +624,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:51.403364"
+    "completion_time": "2025-12-27T14:05:41.888910"
   },
   {
     "bug_id": "lis",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:51.406405",
+    "timestamp": "2025-12-27T14:05:41.891406",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:53.097131",
+        "timestamp": "2025-12-27T14:05:43.542327",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 12,
+          "pass_count": 12,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 12 items\n\npython_testcases\\test_lis.py ............                                [100%]\n\n============================= 12 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 29,
@@ -550,19 +660,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:53.097146"
+    "completion_time": "2025-12-27T14:05:43.542341"
   },
   {
     "bug_id": "longest_common_subsequence",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:53.099749",
+    "timestamp": "2025-12-27T14:05:43.544837",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:54.793860",
+        "timestamp": "2025-12-27T14:05:45.064228",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 10,
+          "pass_count": 10,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_longest_common_subsequence.py ..........           [100%]\n\n============================= 10 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 37,
@@ -579,19 +696,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:54.793881"
+    "completion_time": "2025-12-27T14:05:45.064239"
   },
   {
     "bug_id": "max_sublist_sum",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:54.797558",
+    "timestamp": "2025-12-27T14:05:45.067932",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:56.338032",
+        "timestamp": "2025-12-27T14:05:46.663006",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 5,
+          "fail_count": 1,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_max_sublist_sum.py ....F.                          [100%]\n\n================================== FAILURES ===================================\nE   assert -4 == 0\n     +  where -4 = max_sublist_sum(*[[-4, -4, -5]])\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_max_sublist_sum.py:15: assert -4 == 0\n=========================== short test summary info ===========================\nFAILED python_testcases/test_max_sublist_sum.py::test_max_sublist_sum[input_data4-0]\n========================= 1 failed, 5 passed in 0.04s =========================\n\n",
+          "returncode": 1,
+          "success": false
+        },
         "diff_analysis": {
           "success": true,
           "additions": 20,
@@ -608,19 +732,26 @@
     ],
     "final_status": "failed_tests",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:56.338043"
+    "completion_time": "2025-12-27T14:05:46.663017"
   },
   {
     "bug_id": "mergesort",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:56.340419",
+    "timestamp": "2025-12-27T14:05:46.666451",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:57.918438",
+        "timestamp": "2025-12-27T14:05:48.231699",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 14,
+          "pass_count": 14,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 14 items\n\npython_testcases\\test_mergesort.py ..............                        [100%]\n\n============================= 14 passed in 0.05s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 1,
@@ -637,19 +768,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:57.918447"
+    "completion_time": "2025-12-27T14:05:48.231710"
   },
   {
     "bug_id": "minimum_spanning_tree",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:57.921249",
+    "timestamp": "2025-12-27T14:05:48.234128",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:58:59.747124",
+        "timestamp": "2025-12-27T14:05:49.823007",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 3,
+          "pass_count": 3,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_minimum_spanning_tree.py ...                       [100%]\n\n============================== 3 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 36,
@@ -666,19 +804,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:58:59.747134"
+    "completion_time": "2025-12-27T14:05:49.823017"
   },
   {
     "bug_id": "next_palindrome",
     "language": "python",
-    "timestamp": "2025-12-27T04:58:59.749051",
+    "timestamp": "2025-12-27T14:05:49.826208",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:01.424547",
+        "timestamp": "2025-12-27T14:05:51.447904",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 5,
+          "pass_count": 4,
+          "fail_count": 1,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_next_palindrome.py ....F                           [100%]\n\n================================== FAILURES ===================================\nE   assert [1, 0, 0, 0, 1] == [1, 0, 0, 1]\n      \n      At index 3 diff: 0 != 1\n      Left contains one more item: 1\n      Use -v to get more diff\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_next_palindrome.py:15: assert [1, 0, 0, 0, 1] == [1, 0, 0, 1]\n=========================== short test summary info ===========================\nFAILED python_testcases/test_next_palindrome.py::test_next_palindrome[input_data4-expected4]\n========================= 1 failed, 4 passed in 0.03s =========================\n\n",
+          "returncode": 1,
+          "success": false
+        },
         "diff_analysis": {
           "success": true,
           "additions": 0,
@@ -695,19 +840,26 @@
     ],
     "final_status": "failed_tests",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:01.424558"
+    "completion_time": "2025-12-27T14:05:51.447913"
   },
   {
     "bug_id": "next_permutation",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:01.427636",
+    "timestamp": "2025-12-27T14:05:51.450770",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:02.888971",
+        "timestamp": "2025-12-27T14:05:53.048637",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 8,
+          "pass_count": 8,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 8 items\n\npython_testcases\\test_next_permutation.py ........                       [100%]\n\n============================== 8 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 2,
@@ -724,19 +876,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:02.888980"
+    "completion_time": "2025-12-27T14:05:53.048647"
   },
   {
     "bug_id": "node",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:02.890934",
+    "timestamp": "2025-12-27T14:05:53.051799",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:02.894372",
+        "timestamp": "2025-12-27T14:05:53.054714",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "success": false,
+          "output": "Test file not found: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_node.py",
+          "returncode": -1,
+          "test_count": 0,
+          "pass_count": 0,
+          "fail_count": 0,
+          "skipped_count": 0
+        },
         "diff_analysis": {
           "success": true,
           "additions": 9,
@@ -753,19 +912,26 @@
     ],
     "final_status": "failed_tests",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:02.894380"
+    "completion_time": "2025-12-27T14:05:53.054723"
   },
   {
     "bug_id": "pascal",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:02.898169",
+    "timestamp": "2025-12-27T14:05:53.057668",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:04.652951",
+        "timestamp": "2025-12-27T14:05:54.702654",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 5,
+          "pass_count": 5,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_pascal.py .....                                    [100%]\n\n============================== 5 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 4,
@@ -782,19 +948,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:04.652960"
+    "completion_time": "2025-12-27T14:05:54.702664"
   },
   {
     "bug_id": "possible_change",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:04.656223",
+    "timestamp": "2025-12-27T14:05:54.705770",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:06.457967",
+        "timestamp": "2025-12-27T14:05:56.758541",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 10,
+          "pass_count": 9,
+          "fail_count": 1,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_possible_change.py F.........                      [100%]\n\n================================== FAILURES ===================================\nE   IndexError: list assignment index out of range\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_programs\\possible_change.py:7: IndexError: list assignment index out of range\n=========================== short test summary info ===========================\nFAILED python_testcases/test_possible_change.py::test_possible_change[input_data0-0]\n========================= 1 failed, 9 passed in 0.05s =========================\n\n",
+          "returncode": 1,
+          "success": false
+        },
         "diff_analysis": {
           "success": true,
           "additions": 19,
@@ -811,19 +984,26 @@
     ],
     "final_status": "failed_tests",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:06.457983"
+    "completion_time": "2025-12-27T14:05:56.758562"
   },
   {
     "bug_id": "powerset",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:06.462823",
+    "timestamp": "2025-12-27T14:05:56.762647",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:08.126579",
+        "timestamp": "2025-12-27T14:05:58.462548",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 5,
+          "pass_count": 5,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_powerset.py .....                                  [100%]\n\n============================== 5 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 8,
@@ -840,19 +1020,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:08.126603"
+    "completion_time": "2025-12-27T14:05:58.462562"
   },
   {
     "bug_id": "quicksort",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:08.128817",
+    "timestamp": "2025-12-27T14:05:58.465876",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:09.733556",
+        "timestamp": "2025-12-27T14:06:00.064775",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 13,
+          "pass_count": 13,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 13 items\n\npython_testcases\\test_quicksort.py .............                         [100%]\n\n============================= 13 passed in 0.04s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 65,
@@ -869,19 +1056,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:09.733564"
+    "completion_time": "2025-12-27T14:06:00.064785"
   },
   {
     "bug_id": "reverse_linked_list",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:09.735720",
+    "timestamp": "2025-12-27T14:06:00.069065",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:11.471443",
+        "timestamp": "2025-12-27T14:06:01.604193",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 3,
+          "pass_count": 1,
+          "fail_count": 2,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_reverse_linked_list.py FF.                         [100%]\n\n================================== FAILURES ===================================\nE   assert None == <node.Node object at 0x000001FAF07B3A10>\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_reverse_linked_list.py:22: assert None == <node.Node object at 0x000001FAF07B3A10>\nE   assert None == <node.Node object at 0x000001FAF0831910>\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_reverse_linked_list.py:39: assert None == <node.Node object at 0x000001FAF0831910>\n=========================== short test summary info ===========================\nFAILED python_testcases/test_reverse_linked_list.py::test1 - assert None == <...\nFAILED python_testcases/test_reverse_linked_list.py::test2 - assert None == <...\n========================= 2 failed, 1 passed in 0.03s =========================\n\n",
+          "returncode": 1,
+          "success": false
+        },
         "diff_analysis": {
           "success": true,
           "additions": 0,
@@ -898,19 +1092,26 @@
     ],
     "final_status": "failed_tests",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:11.471457"
+    "completion_time": "2025-12-27T14:06:01.604206"
   },
   {
     "bug_id": "rpn_eval",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:11.477985",
+    "timestamp": "2025-12-27T14:06:01.607195",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:12.982624",
+        "timestamp": "2025-12-27T14:06:03.229212",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 6,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_rpn_eval.py ......                                 [100%]\n\n============================== 6 passed in 0.04s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 17,
@@ -927,19 +1128,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:12.982636"
+    "completion_time": "2025-12-27T14:06:03.229222"
   },
   {
     "bug_id": "shortest_paths",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:12.987692",
+    "timestamp": "2025-12-27T14:06:03.232185",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:14.614901",
+        "timestamp": "2025-12-27T14:06:04.786446",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 3,
+          "pass_count": 3,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_shortest_paths.py ...                              [100%]\n\n============================== 3 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 20,
@@ -956,19 +1164,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:14.614920"
+    "completion_time": "2025-12-27T14:06:04.786455"
   },
   {
     "bug_id": "shortest_path_length",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:14.620777",
+    "timestamp": "2025-12-27T14:06:04.789662",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:16.246095",
+        "timestamp": "2025-12-27T14:06:06.373464",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 4,
+          "pass_count": 4,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 4 items\n\npython_testcases\\test_shortest_path_length.py ....                       [100%]\n\n============================== 4 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 36,
@@ -985,19 +1200,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:16.246110"
+    "completion_time": "2025-12-27T14:06:06.373476"
   },
   {
     "bug_id": "shortest_path_lengths",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:16.250591",
+    "timestamp": "2025-12-27T14:06:06.377338",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:18.078324",
+        "timestamp": "2025-12-27T14:06:07.925021",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 4,
+          "pass_count": 4,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 4 items\n\npython_testcases\\test_shortest_path_lengths.py ....                      [100%]\n\n============================== 4 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 1,
@@ -1014,19 +1236,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:18.078344"
+    "completion_time": "2025-12-27T14:06:07.925029"
   },
   {
     "bug_id": "shunting_yard",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:18.083896",
+    "timestamp": "2025-12-27T14:06:07.928969",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:19.737916",
+        "timestamp": "2025-12-27T14:06:09.568662",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 6,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_shunting_yard.py ......                            [100%]\n\n============================== 6 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 5,
@@ -1043,19 +1272,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:19.737930"
+    "completion_time": "2025-12-27T14:06:09.568671"
   },
   {
     "bug_id": "sieve",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:19.741936",
+    "timestamp": "2025-12-27T14:06:09.571790",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:21.370453",
+        "timestamp": "2025-12-27T14:06:11.055911",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 6,
+          "pass_count": 6,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_sieve.py ......                                    [100%]\n\n============================== 6 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 5,
@@ -1072,19 +1308,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:21.370465"
+    "completion_time": "2025-12-27T14:06:11.055921"
   },
   {
     "bug_id": "sqrt",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:21.373409",
+    "timestamp": "2025-12-27T14:06:11.059941",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:23.153768",
+        "timestamp": "2025-12-27T14:06:12.892432",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 7,
+          "pass_count": 7,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_sqrt.py .......                                    [100%]\n\n============================== 7 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 2,
@@ -1101,19 +1344,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:23.153783"
+    "completion_time": "2025-12-27T14:06:12.892441"
   },
   {
     "bug_id": "subsequences",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:23.158549",
+    "timestamp": "2025-12-27T14:06:12.896074",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:24.794769",
+        "timestamp": "2025-12-27T14:06:14.591014",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 12,
+          "pass_count": 12,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 12 items\n\npython_testcases\\test_subsequences.py ............                       [100%]\n\n============================= 12 passed in 0.05s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 10,
@@ -1130,19 +1380,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:24.794777"
+    "completion_time": "2025-12-27T14:06:14.591024"
   },
   {
     "bug_id": "topological_ordering",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:24.797493",
+    "timestamp": "2025-12-27T14:06:14.595207",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:26.366823",
+        "timestamp": "2025-12-27T14:06:16.164353",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 3,
+          "pass_count": 0,
+          "fail_count": 3,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_topological_ordering.py FFF                        [100%]\n\n================================== FAILURES ===================================\nE   assert [5, 7, 3, 11, 8, 2, ...] == [5, 7, 3, 11, 8, 10, ...]\n      \n      At index 5 diff: 2 != 10\n      Use -v to get more diff\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_topological_ordering.py:42: assert [5, 7, 3, 11, 8, 2, ...] == [5, 7, 3, 11, 8, 10, ...]\nE   assert [4, 5, 2, 0, 3, 1] == [4, 5, 0, 2, 3, 1]\n      \n      At index 2 diff: 2 != 0\n      Use -v to get more diff\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_topological_ordering.py:70: assert [4, 5, 2, 0, 3, 1] == [4, 5, 0, 2, 3, 1]\nE   AssertionError: assert ['3/4 cup mil...t syrup', ...] == ['3/4 cup mil...1/4 cup', ...]\n      \n      At index 5 diff: 'heat syrup' != 'pour 1/4 cup'\n      Use -v to get more diff\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_topological_ordering.py:118: AssertionError: assert ['3/4 cup mil...t syrup', ...] == ['3/4 cup mil...1/4 cup', ...]\n=========================== short test summary info ===========================\nFAILED python_testcases/test_topological_ordering.py::test1 - assert [5, 7, 3...\nFAILED python_testcases/test_topological_ordering.py::test2 - assert [4, 5, 2...\nFAILED python_testcases/test_topological_ordering.py::test3 - AssertionError:...\n============================== 3 failed in 0.04s ==============================\n\n",
+          "returncode": 1,
+          "success": false
+        },
         "diff_analysis": {
           "success": true,
           "additions": 35,
@@ -1159,19 +1416,26 @@
     ],
     "final_status": "failed_tests",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:26.366839"
+    "completion_time": "2025-12-27T14:06:16.164363"
   },
   {
     "bug_id": "to_base",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:26.370856",
+    "timestamp": "2025-12-27T14:06:16.169344",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:28.047159",
+        "timestamp": "2025-12-27T14:06:17.805047",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 10,
+          "pass_count": 10,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_to_base.py ..........                              [100%]\n\n============================= 10 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 13,
@@ -1188,19 +1452,26 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:28.047180"
+    "completion_time": "2025-12-27T14:06:17.805071"
   },
   {
     "bug_id": "wrap",
     "language": "python",
-    "timestamp": "2025-12-27T04:59:28.050205",
+    "timestamp": "2025-12-27T14:06:17.808649",
     "attempts": [
       {
-        "timestamp": "2025-12-27T04:59:29.632792",
+        "timestamp": "2025-12-27T14:06:19.336673",
         "model_output": "",
         "compilation": {},
-        "validation": {},
-        "test_results": {},
+        "test_results": {
+          "test_count": 5,
+          "pass_count": 5,
+          "fail_count": 0,
+          "skipped_count": 0,
+          "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_wrap.py .....                                      [100%]\n\n============================== 5 passed in 0.03s ==============================\n\n",
+          "returncode": 0,
+          "success": true
+        },
         "diff_analysis": {
           "success": true,
           "additions": 15,
@@ -1217,6 +1488,6 @@
     ],
     "final_status": "success",
     "total_attempts": 1,
-    "completion_time": "2025-12-27T04:59:29.632805"
+    "completion_time": "2025-12-27T14:06:19.336681"
   }
 ]

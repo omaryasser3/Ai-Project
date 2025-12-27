@@ -13,7 +13,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 9,
         "pass_count": 9,
         "fail_count": 0,
@@ -39,7 +39,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 5,
         "pass_count": 5,
         "fail_count": 0,
@@ -65,7 +65,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 7,
         "pass_count": 7,
         "fail_count": 0,
@@ -91,12 +91,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 5,
         "pass_count": 5,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_depth_first_search.py .....                        [100%]\n\n============================== 5 passed in 0.03s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_depth_first_search.py .....                        [100%]\n\n============================== 5 passed in 0.04s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -117,12 +117,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 6,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_detect_cycle.py ......                             [100%]\n\n============================== 6 passed in 0.08s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_detect_cycle.py ......                             [100%]\n\n============================== 6 passed in 0.04s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -143,7 +143,7 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {},
+      "test_results": {},
       "diff_analysis": {},
       "hallucination_check": [
         {
@@ -167,7 +167,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 7,
         "pass_count": 7,
         "fail_count": 0,
@@ -193,7 +193,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 7,
         "pass_count": 7,
         "fail_count": 0,
@@ -219,7 +219,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 6,
         "fail_count": 0,
@@ -245,12 +245,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 11,
         "pass_count": 11,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 11 items\n\npython_testcases\\test_get_factors.py ...........                         [100%]\n\n============================= 11 passed in 0.03s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 11 items\n\npython_testcases\\test_get_factors.py ...........                         [100%]\n\n============================= 11 passed in 0.04s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -271,7 +271,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 8,
         "pass_count": 8,
         "fail_count": 0,
@@ -297,7 +297,7 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {},
+      "test_results": {},
       "diff_analysis": {},
       "hallucination_check": [
         {
@@ -316,7 +316,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 4,
         "pass_count": 4,
         "fail_count": 0,
@@ -342,12 +342,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 9,
         "pass_count": 9,
         "fail_count": 0,
         "skipped_count": 1,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_knapsack.py .........s                             [100%]\n\n======================== 9 passed, 1 skipped in 0.05s =========================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_knapsack.py .........s                             [100%]\n\n======================== 9 passed, 1 skipped in 0.04s =========================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -368,7 +368,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 7,
         "pass_count": 7,
         "fail_count": 0,
@@ -394,12 +394,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 9,
         "pass_count": 9,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 9 items\n\npython_testcases\\test_lcs_length.py .........                            [100%]\n\n============================== 9 passed in 0.04s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 9 items\n\npython_testcases\\test_lcs_length.py .........                            [100%]\n\n============================== 9 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -420,12 +420,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 6,
         "fail_count": 0,
         "skipped_count": 1,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_levenshtein.py ...s...                             [100%]\n\n======================== 6 passed, 1 skipped in 1.60s =========================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_levenshtein.py ...s...                             [100%]\n\n======================== 6 passed, 1 skipped in 1.46s =========================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -446,12 +446,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 12,
         "pass_count": 12,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 12 items\n\npython_testcases\\test_lis.py ............                                [100%]\n\n============================= 12 passed in 0.04s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 12 items\n\npython_testcases\\test_lis.py ............                                [100%]\n\n============================= 12 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -472,12 +472,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 10,
         "pass_count": 10,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_longest_common_subsequence.py ..........           [100%]\n\n============================= 10 passed in 0.04s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_longest_common_subsequence.py ..........           [100%]\n\n============================= 10 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -498,12 +498,12 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 5,
         "fail_count": 1,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_max_sublist_sum.py ....F.                          [100%]\n\n================================== FAILURES ===================================\nE   assert -4 == 0\n     +  where -4 = max_sublist_sum(*[[-4, -4, -5]])\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_max_sublist_sum.py:15: assert -4 == 0\n=========================== short test summary info ===========================\nFAILED python_testcases/test_max_sublist_sum.py::test_max_sublist_sum[input_data4-0]\n========================= 1 failed, 5 passed in 0.03s =========================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_max_sublist_sum.py ....F.                          [100%]\n\n================================== FAILURES ===================================\nE   assert -4 == 0\n     +  where -4 = max_sublist_sum(*[[-4, -4, -5]])\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_max_sublist_sum.py:15: assert -4 == 0\n=========================== short test summary info ===========================\nFAILED python_testcases/test_max_sublist_sum.py::test_max_sublist_sum[input_data4-0]\n========================= 1 failed, 5 passed in 0.04s =========================\n\n",
         "returncode": 1,
         "success": false
       },
@@ -524,12 +524,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 14,
         "pass_count": 14,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 14 items\n\npython_testcases\\test_mergesort.py ..............                        [100%]\n\n============================= 14 passed in 0.09s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 14 items\n\npython_testcases\\test_mergesort.py ..............                        [100%]\n\n============================= 14 passed in 0.05s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -550,12 +550,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 3,
         "pass_count": 3,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_minimum_spanning_tree.py ...                       [100%]\n\n============================== 3 passed in 0.09s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_minimum_spanning_tree.py ...                       [100%]\n\n============================== 3 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -576,12 +576,12 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 5,
         "pass_count": 4,
         "fail_count": 1,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_next_palindrome.py ....F                           [100%]\n\n================================== FAILURES ===================================\nE   assert [1, 0, 0, 0, 1] == [1, 0, 0, 1]\n      \n      At index 3 diff: 0 != 1\n      Left contains one more item: 1\n      Use -v to get more diff\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_next_palindrome.py:15: assert [1, 0, 0, 0, 1] == [1, 0, 0, 1]\n=========================== short test summary info ===========================\nFAILED python_testcases/test_next_palindrome.py::test_next_palindrome[input_data4-expected4]\n========================= 1 failed, 4 passed in 0.08s =========================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 5 items\n\npython_testcases\\test_next_palindrome.py ....F                           [100%]\n\n================================== FAILURES ===================================\nE   assert [1, 0, 0, 0, 1] == [1, 0, 0, 1]\n      \n      At index 3 diff: 0 != 1\n      Left contains one more item: 1\n      Use -v to get more diff\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_next_palindrome.py:15: assert [1, 0, 0, 0, 1] == [1, 0, 0, 1]\n=========================== short test summary info ===========================\nFAILED python_testcases/test_next_palindrome.py::test_next_palindrome[input_data4-expected4]\n========================= 1 failed, 4 passed in 0.03s =========================\n\n",
         "returncode": 1,
         "success": false
       },
@@ -602,7 +602,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 8,
         "pass_count": 8,
         "fail_count": 0,
@@ -628,7 +628,7 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "success": false,
         "output": "Test file not found: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_node.py",
         "returncode": -1,
@@ -654,7 +654,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 5,
         "pass_count": 5,
         "fail_count": 0,
@@ -680,7 +680,7 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 10,
         "pass_count": 9,
         "fail_count": 1,
@@ -706,7 +706,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 5,
         "pass_count": 5,
         "fail_count": 0,
@@ -732,12 +732,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 13,
         "pass_count": 13,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 13 items\n\npython_testcases\\test_quicksort.py .............                         [100%]\n\n============================= 13 passed in 0.03s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 13 items\n\npython_testcases\\test_quicksort.py .............                         [100%]\n\n============================= 13 passed in 0.04s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -758,12 +758,12 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 3,
         "pass_count": 1,
         "fail_count": 2,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_reverse_linked_list.py FF.                         [100%]\n\n================================== FAILURES ===================================\nE   assert None == <node.Node object at 0x000002B530A53A10>\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_reverse_linked_list.py:22: assert None == <node.Node object at 0x000002B530A53A10>\nE   assert None == <node.Node object at 0x000002B530AD1910>\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_reverse_linked_list.py:39: assert None == <node.Node object at 0x000002B530AD1910>\n=========================== short test summary info ===========================\nFAILED python_testcases/test_reverse_linked_list.py::test1 - assert None == <...\nFAILED python_testcases/test_reverse_linked_list.py::test2 - assert None == <...\n========================= 2 failed, 1 passed in 0.04s =========================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 3 items\n\npython_testcases\\test_reverse_linked_list.py FF.                         [100%]\n\n================================== FAILURES ===================================\nE   assert None == <node.Node object at 0x000001FAF07B3A10>\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_reverse_linked_list.py:22: assert None == <node.Node object at 0x000001FAF07B3A10>\nE   assert None == <node.Node object at 0x000001FAF0831910>\nD:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\\python_testcases\\test_reverse_linked_list.py:39: assert None == <node.Node object at 0x000001FAF0831910>\n=========================== short test summary info ===========================\nFAILED python_testcases/test_reverse_linked_list.py::test1 - assert None == <...\nFAILED python_testcases/test_reverse_linked_list.py::test2 - assert None == <...\n========================= 2 failed, 1 passed in 0.03s =========================\n\n",
         "returncode": 1,
         "success": false
       },
@@ -784,12 +784,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 6,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_rpn_eval.py ......                                 [100%]\n\n============================== 6 passed in 0.03s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 6 items\n\npython_testcases\\test_rpn_eval.py ......                                 [100%]\n\n============================== 6 passed in 0.04s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -810,7 +810,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 3,
         "pass_count": 3,
         "fail_count": 0,
@@ -836,7 +836,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 4,
         "pass_count": 4,
         "fail_count": 0,
@@ -862,12 +862,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 4,
         "pass_count": 4,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 4 items\n\npython_testcases\\test_shortest_path_lengths.py ....                      [100%]\n\n============================== 4 passed in 0.09s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 4 items\n\npython_testcases\\test_shortest_path_lengths.py ....                      [100%]\n\n============================== 4 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -888,7 +888,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 6,
         "fail_count": 0,
@@ -914,7 +914,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 6,
         "pass_count": 6,
         "fail_count": 0,
@@ -940,12 +940,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 7,
         "pass_count": 7,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_sqrt.py .......                                    [100%]\n\n============================== 7 passed in 0.04s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 7 items\n\npython_testcases\\test_sqrt.py .......                                    [100%]\n\n============================== 7 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -966,12 +966,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 12,
         "pass_count": 12,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 12 items\n\npython_testcases\\test_subsequences.py ............                       [100%]\n\n============================= 12 passed in 0.03s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 12 items\n\npython_testcases\\test_subsequences.py ............                       [100%]\n\n============================= 12 passed in 0.05s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -992,7 +992,7 @@
       "language": "python",
       "overall_success": false,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 3,
         "pass_count": 0,
         "fail_count": 3,
@@ -1018,12 +1018,12 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 10,
         "pass_count": 10,
         "fail_count": 0,
         "skipped_count": 0,
-        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_to_base.py ..........                              [100%]\n\n============================= 10 passed in 0.09s ==============================\n\n",
+        "output": "============================= test session starts =============================\nplatform win32 -- Python 3.13.9, pytest-9.0.1, pluggy-1.6.0\nrootdir: D:\\4th year\\Fall\\Ai\\Project\\Ai Project\\adaptive_repair\\data\nplugins: anyio-4.11.0, langsmith-0.4.49, html-4.1.1, metadata-3.1.1\ncollected 10 items\n\npython_testcases\\test_to_base.py ..........                              [100%]\n\n============================= 10 passed in 0.03s ==============================\n\n",
         "returncode": 0,
         "success": true
       },
@@ -1044,7 +1044,7 @@
       "language": "python",
       "overall_success": true,
       "compilation": {},
-      "tests": {
+      "test_results": {
         "test_count": 5,
         "pass_count": 5,
         "fail_count": 0,
