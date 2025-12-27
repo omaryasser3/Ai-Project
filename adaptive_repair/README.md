@@ -197,10 +197,13 @@ Automatically verifies all fixed Java programs with corresponding tests.
 **Run pytest for Python programs:**
 ```bash
 # Test a specific Python file
-pytest data/python_programs/test_<program_name>.py -v
+pytest data/python_testcases/test_<program_name>.py -v
+
+# Example: Test quicksort
+pytest data/python_testcases/test_quicksort.py -v
 
 # Test all Python programs
-pytest data/python_programs/ -v
+pytest data/python_testcases/ -v
 
 # Run with detailed output
 pytest data/python_programs/ -v -s
