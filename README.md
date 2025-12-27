@@ -188,6 +188,56 @@ Server runs on `http://127.0.0.1:5000` with the following endpoints:
 | `POST /api/analyze` | `{"code": "...", "language": "python"}` | Detected issues and repair plan |
 | `POST /api/repair` | `{"code": "...", "language": "python"}` | Complete repair with explanations |
 
+**API Documentation:**
+Access interactive API documentation at:
+- **Swagger UI:** `http://localhost:5000/docs` - Interactive testing interface
+- **ReDoc:** `http://localhost:5000/redoc` - Clean documentation view  
+- **OpenAPI Spec:** `http://localhost:5000/openapi.json` - Machine-readable API schema
+
+**Testing the API with Swagger UI:**
+
+1. **Open Swagger** at `http://localhost:5000/docs`
+2. **Click** "Try it out" on any endpoint
+3. **Enter** your test data
+4. **Click** "Execute" to see results
+
+**Example: Analyze Endpoint**
+```json
+{
+  "code": "def add(a, b):\n    return a - b",
+  "language": "Python"
+}
+```
+
+**Example: Auto Language Detection**
+Leave `language` empty to test auto-detection:
+```json
+{
+  "code": "def factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n)",
+  "language": ""
+}
+```
+Response includes `"detected_language": "Python"` and `"language_match": false`.
+
+**Example: Repair Endpoint**
+```json
+{
+  "code": "def add(a, b):\n    return a - b",
+  "language": "Python",
+  "plan": null,
+  "issues": null
+}
+```
+
+**Multi-Language Testing:**
+Test with Java or C++ code:
+```json
+{
+  "code": "public class Test {\n    public static void main(String[] args) {\n        System.out.println(\"Hello\");\n    }\n}",
+  "language": ""
+}
+```
+
 ### 5. Java Program Verification
 Verify Java program fixes against test cases:
 
