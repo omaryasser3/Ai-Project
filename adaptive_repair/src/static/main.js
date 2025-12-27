@@ -216,6 +216,158 @@ function renderComprehensiveExplanation(comprehensiveExplanation) {
   }
 }
 
+function renderTestValidation(testValidation) {
+  const card = document.getElementById("test-validation-card");
+  const summaryEl = document.getElementById("test-summary");
+  const confidenceScoreEl = document.getElementById("test-confidence-score");
+  const confidenceBarEl = document.getElementById("test-confidence-bar");
+  const testCodeEl = document.getElementById("test-code");
+  const testDescriptionsList = document.getElementById("test-descriptions-list");
+  const testCoverageEl = document.getElementById("test-coverage");
+  const testConcernsContainer = document.getElementById("test-concerns");
+  const testConcernsList = document.getElementById("test-concerns-list");
+  const testMissingContainer = document.getElementById("test-missing");
+  const testMissingList = document.getElementById("test-missing-list");
+
+  if (!testValidation || !testValidation.tests) {
+    card.classList.add("d-none");
+    return;
+  }
+
+  // Show card
+  card.classList.remove("d-none");
+
+  const validation = testValidation.validation || {};
+  const tests = testValidation.tests || {};
+
+  // Render validation summary
+  summaryEl.textContent = validation.validation_summary || "No validation summary available.";
+
+  // Render confidence score
+  const confidence = validation.confidence_score || 0;
+  confidenceScoreEl.textContent = `${confidence}%`;
+  confidenceBarEl.style.width = `${confidence}%`;
+
+  // Color code based on confidence
+  if (confidence >= 80) {
+    confidenceBarEl.className = "progress-bar bg-success";
+    confidenceScoreEl.className = "badge bg-success";
+  } else if (confidence >= 50) {
+    confidenceBarEl.className = "progress-bar bg-warning";
+    confidenceScoreEl.className = "badge bg-warning";
+  } else {
+    confidenceBarEl.className = "progress-bar bg-danger";
+    confidenceScoreEl.className = "badge bg-danger";
+  }
+
+  // Render test code
+  testCodeEl.textContent = tests.test_code || "// No tests generated";
+
+  // Render test descriptions
+  testDescriptionsList.innerHTML = "";
+  const descriptions = tests.test_descriptions || [];
+  if (descriptions.length > 0) {
+    descriptions.forEach((desc) => {
+      const li = document.createElement("li");
+      li.className = "mb-2";
+      li.innerHTML = `
+        <strong>${desc.test_name || "Unnamed Test"}:</strong> ${marked.parse(desc.description || "")}
+        ${desc.input ? `<br><span class="text-muted small">Input: ${desc.input}</span>` : ""}
+        ${desc.expected ? `<br><span class="text-muted small">Expected: ${desc.expected}</span>` : ""}
+      `;
+      testDescriptionsList.appendChild(li);
+    });
+  } else {
+    testDescriptionsList.innerHTML = "<li class='text-muted'>No test descriptions available</li>";
+  }
+
+  // Render test execution results
+  const execution = testValidation.execution || {};
+  const executionSummaryEl = document.getElementById("test-execution-summary");
+  const executionListEl = document.getElementById("test-execution-list");
+  const executionOutputEl = document.getElementById("test-execution-output");
+
+  if (execution.execution_success !== undefined) {
+    const summary = execution.summary || {};
+    const total = summary.total || 0;
+    const passed = summary.passed || 0;
+    const failed = summary.failed || 0;
+    const errors = summary.errors || 0;
+
+    // Set summary with appropriate styling
+    if (execution.execution_success) {
+      executionSummaryEl.className = "alert alert-success mb-2 small";
+      executionSummaryEl.innerHTML = `<strong>✅ All Tests Passed!</strong> ${passed}/${total} tests successful`;
+    } else {
+      executionSummaryEl.className = "alert alert-danger mb-2 small";
+      executionSummaryEl.innerHTML = `<strong>❌ Some Tests Failed</strong> Passed: ${passed}, Failed: ${failed}, Errors: ${errors}`;
+    }
+
+    // Render individual test results
+    executionListEl.innerHTML = "";
+    const testResults = execution.test_results || [];
+    testResults.forEach((test) => {
+      const li = document.createElement("li");
+      li.className = "mb-1";
+
+      let icon, statusClass;
+      if (test.status === "PASSED") {
+        icon = "✅";
+        statusClass = "text-success";
+      } else if (test.status === "FAILED") {
+        icon = "❌";
+        statusClass = "text-danger";
+      } else {
+        icon = "⚠️";
+        statusClass = "text-warning";
+      }
+
+      li.innerHTML = `${icon} <span class="${statusClass}">${test.name}</span> - ${test.status}`;
+      if (test.message) {
+        li.innerHTML += `<br><span class="text-muted ms-3">${test.message}</span>`;
+      }
+      executionListEl.appendChild(li);
+    });
+
+    // Show full output
+    executionOutputEl.textContent = execution.output || "No output available";
+  } else {
+    executionSummaryEl.className = "alert alert-secondary mb-2 small";
+    executionSummaryEl.innerHTML = "⏳ Tests not executed";
+  }
+
+  // Render coverage notes
+  testCoverageEl.innerHTML = marked.parse(tests.coverage_notes || "No coverage notes");
+
+  // Render concerns
+  const concerns = validation.concerns || [];
+  if (concerns.length > 0 && concerns[0] !== "None" && concerns[0] !== "") {
+    testConcernsContainer.classList.remove("d-none");
+    testConcernsList.innerHTML = "";
+    concerns.forEach((concern) => {
+      const li = document.createElement("li");
+      li.innerHTML = marked.parse(concern);
+      testConcernsList.appendChild(li);
+    });
+  } else {
+    testConcernsContainer.classList.add("d-none");
+  }
+
+  // Render missing tests
+  const missing = validation.missing_tests || [];
+  if (missing.length > 0 && missing[0] !== "" && missing[0] !== "None") {
+    testMissingContainer.classList.remove("d-none");
+    testMissingList.innerHTML = "";
+    missing.forEach((test) => {
+      const li = document.createElement("li");
+      li.innerHTML = marked.parse(test);
+      testMissingList.appendChild(li);
+    });
+  } else {
+    testMissingContainer.classList.add("d-none");
+  }
+}
+
 function renderPlanAndTranslation(plan, translation) {
   const planSummaryEl = document.getElementById("plan-summary");
   const translatedCodeEl = document.getElementById("translated-code");
@@ -266,6 +418,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const planTranslateCheck = document.getElementById("plan-translate-check");
   const planTargetLang = document.getElementById("plan-target-lang");
   const planDetectedLang = document.getElementById("plan-detected-lang");
+
+  const planFeedbackInput = document.getElementById("plan-feedback");
   const proceedBtn = document.getElementById("proceed-btn");
 
   // Feedback Elements
@@ -290,13 +444,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
   analyzeBtn.addEventListener("click", async () => {
     const code = codeInput.value;
-    const language = langInput.value || "Python";
+    const language = langInput.value || "";
 
     // Clear previous results
     document.getElementById("repaired-code").textContent = "";
     document.getElementById("repair-explanations").innerHTML = "";
     document.getElementById("plan-summary").textContent = "Analyzing...";
     document.getElementById("translated-code").textContent = "";
+    document.getElementById("detected-language-display").classList.add("d-none");
     planReviewCard.classList.add("d-none");
     feedbackCard.classList.add("d-none"); // Hide feedback on new analysis
 
@@ -310,6 +465,17 @@ window.addEventListener("DOMContentLoaded", () => {
       planTranslateCheck.checked = !!p.translate;
       planTargetLang.value = p.target_language || "";
       planDetectedLang.textContent = p.detected_language || "unknown";
+
+      // Show detected language and update input field
+      if (p.detected_language) {
+        const detectedLangDisplay = document.getElementById("detected-language-display");
+        const detectedLangName = document.getElementById("detected-language-name");
+        detectedLangName.textContent = p.detected_language;
+        detectedLangDisplay.classList.remove("d-none");
+
+        // Update the language input to show detected language
+        langInput.value = p.detected_language;
+      }
 
       // Render Execution Steps
       const stepsListEx = document.getElementById("execution-steps-list");
@@ -356,7 +522,7 @@ window.addEventListener("DOMContentLoaded", () => {
     planReviewCard.classList.add("d-none");
 
     const code = codeInput.value;
-    const language = langInput.value || "Python";
+    const language = langInput.value || "";
     const data = await callApi("/api/repair", { code, language });
     if (data) {
       // ... same rendering ...
@@ -371,6 +537,7 @@ window.addEventListener("DOMContentLoaded", () => {
       renderRepairs(data);
       renderPlanAndTranslation(data.plan, data.translation);
       renderComprehensiveExplanation(data.comprehensive_explanation);  // Show ExplanationAgent results
+      renderTestValidation(data.test_validation);  // Show TestGeneratorAgent results
 
       // Show feedback card
       showFeedbackCard(data.final_code);
@@ -386,7 +553,8 @@ window.addEventListener("DOMContentLoaded", () => {
     feedbackCard.classList.add("d-none");
 
     const code = codeInput.value;
-    const language = langInput.value || "Python";
+    const language = langInput.value || "";
+    const feedback = planFeedbackInput.value.trim();
 
     // Construct overridden plan
     const overriddenPlan = {
@@ -400,7 +568,8 @@ window.addEventListener("DOMContentLoaded", () => {
       code,
       language,
       issues: currentAnalysis.issues,
-      plan: overriddenPlan
+      plan: overriddenPlan,
+      user_feedback: feedback
     });
 
     if (data) {
@@ -411,6 +580,7 @@ window.addEventListener("DOMContentLoaded", () => {
       renderRepairs(data);
       renderPlanAndTranslation(data.plan, data.translation);
       renderComprehensiveExplanation(data.comprehensive_explanation);  // Show ExplanationAgent results
+      renderTestValidation(data.test_validation);  // Show TestGeneratorAgent results
       showFeedbackCard(data.final_code);
 
       // Note: The backend might return refined issues if it re-ran analysis,

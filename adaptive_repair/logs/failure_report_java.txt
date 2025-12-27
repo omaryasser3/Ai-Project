@@ -1,29 +1,36 @@
-Batch Verification started at Sat Dec 27 04:44:41 2025
+================================================================================
+APR EVALUATION FAILURE ANALYSIS REPORT - JAVA
+================================================================================
+Generated: failure_analyzer.py
 
---- Verifying BITCOUNT (fixed) ---
-JUnit version 4.13.2
-.........
-Time: 0.014
+SUMMARY
+--------------------------------------------------------------------------------
+Total Experiments:    40
+Successful:           29 (72.5%)
+Failed:               11 (27.5%)
 
-OK (9 tests)
+FAILURE BREAKDOWN BY CATEGORY
+--------------------------------------------------------------------------------
+COMPILATION: 7 cases
+  - BUCKETSORT
+  - MINIMUM_SPANNING_TREE
+  - NEXT_PERMUTATION
+  - POWERSET
+  - SHUNTING_YARD
+  - TOPOLOGICAL_ORDERING
+  - WRAP
+TEST_FAILURE: 4 cases
+  - LCS_LENGTH
+  - MAX_SUBLIST_SUM
+  - NEXT_PALINDROME
+  - SUBSEQUENCES
 
+COMPILATION FAILURES
+--------------------------------------------------------------------------------
+Total: 7 bugs failed compilation
 
-Tests Passed!
-
-----------------------------------------
---- Verifying BREADTH_FIRST_SEARCH (fixed) ---
-JUnit version 4.13.2
-.....
-Time: 0.006
-
-OK (5 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying BUCKETSORT (fixed) ---
-Compilation Failed:
+Bug: BUCKETSORT
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -55,246 +62,8 @@ Note: Some messages have been simplified; recompile with -Xdiags:verbose to get 
 4 warnings
 
 
-----------------------------------------
---- Verifying DEPTH_FIRST_SEARCH (fixed) ---
-JUnit version 4.13.2
-.....
-Time: 0.009
-
-OK (5 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying DETECT_CYCLE (fixed) ---
-JUnit version 4.13.2
-......
-Time: 0.007
-
-OK (6 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying FIND_FIRST_IN_SORTED (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.01
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying FIND_IN_SORTED (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.009
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying FLATTEN (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.017
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying GCD (fixed) ---
-JUnit version 4.13.2
-.....
-Time: 0.011
-
-OK (5 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying GET_FACTORS (fixed) ---
-JUnit version 4.13.2
-...........
-Time: 0.015
-
-OK (11 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying HANOI (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.023
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying IS_VALID_PARENTHESIZATION (fixed) ---
-JUnit version 4.13.2
-...
-Time: 0.01
-
-OK (3 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying KHEAPSORT (fixed) ---
-JUnit version 4.13.2
-....
-Time: 0.017
-
-OK (4 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying KNAPSACK (fixed) ---
-JUnit version 4.13.2
-..........
-Time: 1.175
-
-OK (10 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying KTH (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.013
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying LCS_LENGTH (fixed) ---
-JUnit version 4.13.2
-.E....E...E.E
-Time: 0.016
-There were 4 failures:
-1) test_0(java_testcases.junit.LCS_LENGTH_TEST)
-java.lang.AssertionError: expected:<2> but was:<4>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:120)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.LCS_LENGTH_TEST.test_0(LCS_LENGTH_TEST.java:8)
-2) test_4(java_testcases.junit.LCS_LENGTH_TEST)
-java.lang.AssertionError: expected:<3> but was:<4>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:120)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.LCS_LENGTH_TEST.test_4(LCS_LENGTH_TEST.java:32)
-3) test_7(java_testcases.junit.LCS_LENGTH_TEST)
-java.lang.AssertionError: expected:<3> but was:<5>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:120)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.LCS_LENGTH_TEST.test_7(LCS_LENGTH_TEST.java:50)
-4) test_8(java_testcases.junit.LCS_LENGTH_TEST)
-java.lang.AssertionError: expected:<3> but was:<6>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:120)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.LCS_LENGTH_TEST.test_8(LCS_LENGTH_TEST.java:56)
-
-FAILURES!!!
-Tests run: 9,  Failures: 4
-
-
-Tests Failed.
-
-----------------------------------------
---- Verifying LEVENSHTEIN (fixed) ---
-JUnit version 4.13.2
-...I...
-Time: 0.011
-
-OK (6 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying LIS (fixed) ---
-JUnit version 4.13.2
-....
-Time: 0.01
-
-OK (4 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying LONGEST_COMMON_SUBSEQUENCE (fixed) ---
-JUnit version 4.13.2
-..........
-Time: 0.015
-
-OK (10 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying MAX_SUBLIST_SUM (fixed) ---
-JUnit version 4.13.2
-.....E.
-Time: 0.013
-There was 1 failure:
-1) test_4(java_testcases.junit.MAX_SUBLIST_SUM_TEST)
-java.lang.AssertionError: expected:<0> but was:<-4>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:647)
-	at org.junit.Assert.assertEquals(Assert.java:633)
-	at java_testcases.junit.MAX_SUBLIST_SUM_TEST.test_4(MAX_SUBLIST_SUM_TEST.java:32)
-
-FAILURES!!!
-Tests run: 6,  Failures: 1
-
-
-Tests Failed.
-
-----------------------------------------
---- Verifying MERGESORT (fixed) ---
-JUnit version 4.13.2
-.............
-Time: 0.016
-
-OK (13 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying MINIMUM_SPANNING_TREE (fixed) ---
-Compilation Failed:
+Bug: MINIMUM_SPANNING_TREE
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -340,47 +109,8 @@ D:\4th year\Fall\Ai\Project\Ai Project\adaptive_repair\build_tmp\java_testcases\
 4 warnings
 
 
-----------------------------------------
---- Verifying NEXT_PALINDROME (fixed) ---
-JUnit version 4.13.2
-.E.E.E.E.E
-Time: 0.018
-There were 5 failures:
-1) test_0(java_testcases.junit.NEXT_PALINDROME_TEST)
-org.junit.ComparisonFailure: expected:<[[1,5,0,5,1]]> but was:<[15051]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.NEXT_PALINDROME_TEST.test_0(NEXT_PALINDROME_TEST.java:9)
-2) test_1(java_testcases.junit.NEXT_PALINDROME_TEST)
-org.junit.ComparisonFailure: expected:<[[1,4,1]]> but was:<[141]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.NEXT_PALINDROME_TEST.test_1(NEXT_PALINDROME_TEST.java:16)
-3) test_2(java_testcases.junit.NEXT_PALINDROME_TEST)
-org.junit.ComparisonFailure: expected:<[[4,7,2,6,6,2,7,4]]> but was:<[47266274]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.NEXT_PALINDROME_TEST.test_2(NEXT_PALINDROME_TEST.java:23)
-4) test_3(java_testcases.junit.NEXT_PALINDROME_TEST)
-org.junit.ComparisonFailure: expected:<[[4,7,2,6,2,7,4]]> but was:<[4726274]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.NEXT_PALINDROME_TEST.test_3(NEXT_PALINDROME_TEST.java:30)
-5) test_4(java_testcases.junit.NEXT_PALINDROME_TEST)
-org.junit.ComparisonFailure: expected:<[[1,0,0,1]]> but was:<[1001]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.NEXT_PALINDROME_TEST.test_4(NEXT_PALINDROME_TEST.java:37)
-
-FAILURES!!!
-Tests run: 5,  Failures: 5
-
-
-Tests Failed.
-
-----------------------------------------
---- Verifying NEXT_PERMUTATION (fixed) ---
-Compilation Failed:
+Bug: NEXT_PERMUTATION
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -418,31 +148,8 @@ Note: Some messages have been simplified; recompile with -Xdiags:verbose to get 
 4 warnings
 
 
-----------------------------------------
---- Verifying PASCAL (fixed) ---
-JUnit version 4.13.2
-.....
-Time: 0.013
-
-OK (5 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying POSSIBLE_CHANGE (fixed) ---
-JUnit version 4.13.2
-.........
-Time: 0.015
-
-OK (9 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying POWERSET (fixed) ---
-Compilation Failed:
+Bug: POWERSET
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -470,75 +177,8 @@ Note: Recompile with -Xlint:unchecked for details.
 4 warnings
 
 
-----------------------------------------
---- Verifying QUICKSORT (fixed) ---
-JUnit version 4.13.2
-.............
-Time: 0.02
-
-OK (13 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying REVERSE_LINKED_LIST (fixed) ---
-JUnit version 4.13.2
-...
-Time: 0.012
-
-OK (3 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying RPN_EVAL (fixed) ---
-JUnit version 4.13.2
-......
-Time: 0.052
-
-OK (6 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying SHORTEST_PATHS (fixed) ---
-JUnit version 4.13.2
-...
-Time: 0.014
-
-OK (3 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying SHORTEST_PATH_LENGTH (fixed) ---
-JUnit version 4.13.2
-....
-Time: 0.009
-
-OK (4 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying SHORTEST_PATH_LENGTHS (fixed) ---
-JUnit version 4.13.2
-....
-Time: 0.016
-
-OK (4 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying SHUNTING_YARD (fixed) ---
-Compilation Failed:
+Bug: SHUNTING_YARD
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -571,84 +211,8 @@ Note: Recompile with -Xlint:unchecked for details.
 4 warnings
 
 
-----------------------------------------
---- Verifying SIEVE (fixed) ---
-JUnit version 4.13.2
-......
-Time: 0.012
-
-OK (6 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying SQRT (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.012
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying SUBSEQUENCES (fixed) ---
-JUnit version 4.13.2
-...E...E.E.E.E.E.E.E
-Time: 0.019
-There were 8 failures:
-1) test_0(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<[[1,2,3],[1,2,4],[1,[3,4],[2,3,4]]]> but was:<[[1,2,3],[1,2,4],[1,[2,5],[1,3,4],[1,3,5],[1,4,5],[2,3,4],[2,3,5],[2,4,5],[3,4,5]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_0(SUBSEQUENCES_TEST.java:9)
-2) test_3(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<...6,8],[4,5,6,9],[4,5,[7,8],[4,5,7,9],[4,5,8,9],[4,6,7,8],[4,6,7,9],[4,6,8,9],[4,7,8,9],[5,6,7,8],[5,6,7,9],[5,6,8,9],[5,7,8,9],[6,7,8,9]]]> but was:<...6,8],[4,5,6,9],[4,5,[6,10],[4,5,7,8],[4,5,7,9],[4,5,7,10],[4,5,8,9],[4,5,8,10],[4,5,9,10],[4,6,7,8],[4,6,7,9],[4,6,7,10],[4,6,8,9],[4,6,8,10],[4,6,9,10],[4,7,8,9],[4,7,8,10],[4,7,9,10],[4,8,9,10],[5,6,7,8],[5,6,7,9],[5,6,7,10],[5,6,8,9],[5,6,8,10],[5,6,9,10],[5,7,8,9],[5,7,8,10],[5,7,9,10],[5,8,9,10],[6,7,8,9],[6,7,8,10],[6,7,9,10],[6,8,9,10],[7,8,9,10]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_3(SUBSEQUENCES_TEST.java:30)
-3) test_4(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<[[4,5,6,7,8,9][]]> but was:<[[4,5,6,7,8,9][,[4,5,6,7,8,10],[4,5,6,7,9,10],[4,5,6,8,9,10],[4,5,7,8,9,10],[4,6,7,8,9,10],[5,6,7,8,9,10]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_4(SUBSEQUENCES_TEST.java:37)
-4) test_5(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<...,[1,7],[1,8],[1,9],[[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[3,4],[3,5],[3,6],[3,7],[3,8],[3,9],[4,5],[4,6],[4,7],[4,8],[4,9],[5,6],[5,7],[5,8],[5,9],[6,7],[6,8],[6,9],[7,8],[7,9],[8,9]]]> but was:<...,[1,7],[1,8],[1,9],[[1,10],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],[2,9],[2,10],[3,4],[3,5],[3,6],[3,7],[3,8],[3,9],[3,10],[4,5],[4,6],[4,7],[4,8],[4,9],[4,10],[5,6],[5,7],[5,8],[5,9],[5,10],[6,7],[6,8],[6,9],[6,10],[7,8],[7,9],[7,10],[8,9],[8,10],[9,10]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_5(SUBSEQUENCES_TEST.java:44)
-5) test_6(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<...2,3,4,5,9],[1,2,3,4,[6,7],[1,2,3,4,6,8],[1,2,3,4,6,9],[1,2,3,4,7,8],[1,2,3,4,7,9],[1,2,3,4,8,9],[1,2,3,5,6,7],[1,2,3,5,6,8],[1,2,3,5,6,9],[1,2,3,5,7,8],[1,2,3,5,7,9],[1,2,3,5,8,9],[1,2,3,6,7,8],[1,2,3,6,7,9],[1,2,3,6,8,9],[1,2,3,7,8,9],[1,2,4,5,6,7],[1,2,4,5,6,8],[1,2,4,5,6,9],[1,2,4,5,7,8],[1,2,4,5,7,9],[1,2,4,5,8,9],[1,2,4,6,7,8],[1,2,4,6,7,9],[1,2,4,6,8,9],[1,2,4,7,8,9],[1,2,5,6,7,8],[1,2,5,6,7,9],[1,2,5,6,8,9],[1,2,5,7,8,9],[1,2,6,7,8,9],[1,3,4,5,6,7],[1,3,4,5,6,8],[1,3,4,5,6,9],[1,3,4,5,7,8],[1,3,4,5,7,9],[1,3,4,5,8,9],[1,3,4,6,7,8],[1,3,4,6,7,9],[1,3,4,6,8,9],[1,3,4,7,8,9],[1,3,5,6,7,8],[1,3,5,6,7,9],[1,3,5,6,8,9],[1,3,5,7,8,9],[1,3,6,7,8,9],[1,4,5,6,7,8],[1,4,5,6,7,9],[1,4,5,6,8,9],[1,4,5,7,8,9],[1,4,6,7,8,9],[1,5,6,7,8,9],[2,3,4,5,6,7],[2,3,4,5,6,8],[2,3,4,5,6,9],[2,3,4,5,7,8],[2,3,4,5,7,9],[2,3,4,5,8,9],[2,3,4,6,7,8],[2,3,4,6,7,9],[2,3,4,6,8,9],[2,3,4,7,8,9],[2,3,5,6,7,8],[2,3,5,6,7,9],[2,3,5,6,8,9],[2,3,5,7,8,9],[2,3,6,7,8,9],[2,4,5,6,7,8],[2,4,5,6,7,9],[2,4,5,6,8,9],[2,4,5,7,8,9],[2,4,6,7,8,9],[2,5,6,7,8,9],[3,4,5,6,7,8],[3,4,5,6,7,9],[3,4,5,6,8,9],[3,4,5,7,8,9],[3,4,6,7,8,9],[3,5,6,7,8,9],[4,5,6,7,8,9]]]> but was:<...2,3,4,5,9],[1,2,3,4,[5,10],[1,2,3,4,6,7],[1,2,3,4,6,8],[1,2,3,4,6,9],[1,2,3,4,6,10],[1,2,3,4,7,8],[1,2,3,4,7,9],[1,2,3,4,7,10],[1,2,3,4,8,9],[1,2,3,4,8,10],[1,2,3,4,9,10],[1,2,3,5,6,7],[1,2,3,5,6,8],[1,2,3,5,6,9],[1,2,3,5,6,10],[1,2,3,5,7,8],[1,2,3,5,7,9],[1,2,3,5,7,10],[1,2,3,5,8,9],[1,2,3,5,8,10],[1,2,3,5,9,10],[1,2,3,6,7,8],[1,2,3,6,7,9],[1,2,3,6,7,10],[1,2,3,6,8,9],[1,2,3,6,8,10],[1,2,3,6,9,10],[1,2,3,7,8,9],[1,2,3,7,8,10],[1,2,3,7,9,10],[1,2,3,8,9,10],[1,2,4,5,6,7],[1,2,4,5,6,8],[1,2,4,5,6,9],[1,2,4,5,6,10],[1,2,4,5,7,8],[1,2,4,5,7,9],[1,2,4,5,7,10],[1,2,4,5,8,9],[1,2,4,5,8,10],[1,2,4,5,9,10],[1,2,4,6,7,8],[1,2,4,6,7,9],[1,2,4,6,7,10],[1,2,4,6,8,9],[1,2,4,6,8,10],[1,2,4,6,9,10],[1,2,4,7,8,9],[1,2,4,7,8,10],[1,2,4,7,9,10],[1,2,4,8,9,10],[1,2,5,6,7,8],[1,2,5,6,7,9],[1,2,5,6,7,10],[1,2,5,6,8,9],[1,2,5,6,8,10],[1,2,5,6,9,10],[1,2,5,7,8,9],[1,2,5,7,8,10],[1,2,5,7,9,10],[1,2,5,8,9,10],[1,2,6,7,8,9],[1,2,6,7,8,10],[1,2,6,7,9,10],[1,2,6,8,9,10],[1,2,7,8,9,10],[1,3,4,5,6,7],[1,3,4,5,6,8],[1,3,4,5,6,9],[1,3,4,5,6,10],[1,3,4,5,7,8],[1,3,4,5,7,9],[1,3,4,5,7,10],[1,3,4,5,8,9],[1,3,4,5,8,10],[1,3,4,5,9,10],[1,3,4,6,7,8],[1,3,4,6,7,9],[1,3,4,6,7,10],[1,3,4,6,8,9],[1,3,4,6,8,10],[1,3,4,6,9,10],[1,3,4,7,8,9],[1,3,4,7,8,10],[1,3,4,7,9,10],[1,3,4,8,9,10],[1,3,5,6,7,8],[1,3,5,6,7,9],[1,3,5,6,7,10],[1,3,5,6,8,9],[1,3,5,6,8,10],[1,3,5,6,9,10],[1,3,5,7,8,9],[1,3,5,7,8,10],[1,3,5,7,9,10],[1,3,5,8,9,10],[1,3,6,7,8,9],[1,3,6,7,8,10],[1,3,6,7,9,10],[1,3,6,8,9,10],[1,3,7,8,9,10],[1,4,5,6,7,8],[1,4,5,6,7,9],[1,4,5,6,7,10],[1,4,5,6,8,9],[1,4,5,6,8,10],[1,4,5,6,9,10],[1,4,5,7,8,9],[1,4,5,7,8,10],[1,4,5,7,9,10],[1,4,5,8,9,10],[1,4,6,7,8,9],[1,4,6,7,8,10],[1,4,6,7,9,10],[1,4,6,8,9,10],[1,4,7,8,9,10],[1,5,6,7,8,9],[1,5,6,7,8,10],[1,5,6,7,9,10],[1,5,6,8,9,10],[1,5,7,8,9,10],[1,6,7,8,9,10],[2,3,4,5,6,7],[2,3,4,5,6,8],[2,3,4,5,6,9],[2,3,4,5,6,10],[2,3,4,5,7,8],[2,3,4,5,7,9],[2,3,4,5,7,10],[2,3,4,5,8,9],[2,3,4,5,8,10],[2,3,4,5,9,10],[2,3,4,6,7,8],[2,3,4,6,7,9],[2,3,4,6,7,10],[2,3,4,6,8,9],[2,3,4,6,8,10],[2,3,4,6,9,10],[2,3,4,7,8,9],[2,3,4,7,8,10],[2,3,4,7,9,10],[2,3,4,8,9,10],[2,3,5,6,7,8],[2,3,5,6,7,9],[2,3,5,6,7,10],[2,3,5,6,8,9],[2,3,5,6,8,10],[2,3,5,6,9,10],[2,3,5,7,8,9],[2,3,5,7,8,10],[2,3,5,7,9,10],[2,3,5,8,9,10],[2,3,6,7,8,9],[2,3,6,7,8,10],[2,3,6,7,9,10],[2,3,6,8,9,10],[2,3,7,8,9,10],[2,4,5,6,7,8],[2,4,5,6,7,9],[2,4,5,6,7,10],[2,4,5,6,8,9],[2,4,5,6,8,10],[2,4,5,6,9,10],[2,4,5,7,8,9],[2,4,5,7,8,10],[2,4,5,7,9,10],[2,4,5,8,9,10],[2,4,6,7,8,9],[2,4,6,7,8,10],[2,4,6,7,9,10],[2,4,6,8,9,10],[2,4,7,8,9,10],[2,5,6,7,8,9],[2,5,6,7,8,10],[2,5,6,7,9,10],[2,5,6,8,9,10],[2,5,7,8,9,10],[2,6,7,8,9,10],[3,4,5,6,7,8],[3,4,5,6,7,9],[3,4,5,6,7,10],[3,4,5,6,8,9],[3,4,5,6,8,10],[3,4,5,6,9,10],[3,4,5,7,8,9],[3,4,5,7,8,10],[3,4,5,7,9,10],[3,4,5,8,9,10],[3,4,6,7,8,9],[3,4,6,7,8,10],[3,4,6,7,9,10],[3,4,6,8,9,10],[3,4,7,8,9,10],[3,5,6,7,8,9],[3,5,6,7,8,10],[3,5,6,7,9,10],[3,5,6,8,9,10],[3,5,7,8,9,10],[3,6,7,8,9,10],[4,5,6,7,8,9],[4,5,6,7,8,10],[4,5,6,7,9,10],[4,5,6,8,9,10],[4,5,7,8,9,10],[4,6,7,8,9,10],[5,6,7,8,9,10]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_6(SUBSEQUENCES_TEST.java:51)
-6) test_7(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<...3,8],[1,2,3,9],[1,2,[4,5],[1,2,4,6],[1,2,4,7],[1,2,4,8],[1,2,4,9],[1,2,5,6],[1,2,5,7],[1,2,5,8],[1,2,5,9],[1,2,6,7],[1,2,6,8],[1,2,6,9],[1,2,7,8],[1,2,7,9],[1,2,8,9],[1,3,4,5],[1,3,4,6],[1,3,4,7],[1,3,4,8],[1,3,4,9],[1,3,5,6],[1,3,5,7],[1,3,5,8],[1,3,5,9],[1,3,6,7],[1,3,6,8],[1,3,6,9],[1,3,7,8],[1,3,7,9],[1,3,8,9],[1,4,5,6],[1,4,5,7],[1,4,5,8],[1,4,5,9],[1,4,6,7],[1,4,6,8],[1,4,6,9],[1,4,7,8],[1,4,7,9],[1,4,8,9],[1,5,6,7],[1,5,6,8],[1,5,6,9],[1,5,7,8],[1,5,7,9],[1,5,8,9],[1,6,7,8],[1,6,7,9],[1,6,8,9],[1,7,8,9],[2,3,4,5],[2,3,4,6],[2,3,4,7],[2,3,4,8],[2,3,4,9],[2,3,5,6],[2,3,5,7],[2,3,5,8],[2,3,5,9],[2,3,6,7],[2,3,6,8],[2,3,6,9],[2,3,7,8],[2,3,7,9],[2,3,8,9],[2,4,5,6],[2,4,5,7],[2,4,5,8],[2,4,5,9],[2,4,6,7],[2,4,6,8],[2,4,6,9],[2,4,7,8],[2,4,7,9],[2,4,8,9],[2,5,6,7],[2,5,6,8],[2,5,6,9],[2,5,7,8],[2,5,7,9],[2,5,8,9],[2,6,7,8],[2,6,7,9],[2,6,8,9],[2,7,8,9],[3,4,5,6],[3,4,5,7],[3,4,5,8],[3,4,5,9],[3,4,6,7],[3,4,6,8],[3,4,6,9],[3,4,7,8],[3,4,7,9],[3,4,8,9],[3,5,6,7],[3,5,6,8],[3,5,6,9],[3,5,7,8],[3,5,7,9],[3,5,8,9],[3,6,7,8],[3,6,7,9],[3,6,8,9],[3,7,8,9],[4,5,6,7],[4,5,6,8],[4,5,6,9],[4,5,7,8],[4,5,7,9],[4,5,8,9],[4,6,7,8],[4,6,7,9],[4,6,8,9],[4,7,8,9],[5,6,7,8],[5,6,7,9],[5,6,8,9],[5,7,8,9],[6,7,8,9]]]> but was:<...3,8],[1,2,3,9],[1,2,[3,10],[1,2,4,5],[1,2,4,6],[1,2,4,7],[1,2,4,8],[1,2,4,9],[1,2,4,10],[1,2,5,6],[1,2,5,7],[1,2,5,8],[1,2,5,9],[1,2,5,10],[1,2,6,7],[1,2,6,8],[1,2,6,9],[1,2,6,10],[1,2,7,8],[1,2,7,9],[1,2,7,10],[1,2,8,9],[1,2,8,10],[1,2,9,10],[1,3,4,5],[1,3,4,6],[1,3,4,7],[1,3,4,8],[1,3,4,9],[1,3,4,10],[1,3,5,6],[1,3,5,7],[1,3,5,8],[1,3,5,9],[1,3,5,10],[1,3,6,7],[1,3,6,8],[1,3,6,9],[1,3,6,10],[1,3,7,8],[1,3,7,9],[1,3,7,10],[1,3,8,9],[1,3,8,10],[1,3,9,10],[1,4,5,6],[1,4,5,7],[1,4,5,8],[1,4,5,9],[1,4,5,10],[1,4,6,7],[1,4,6,8],[1,4,6,9],[1,4,6,10],[1,4,7,8],[1,4,7,9],[1,4,7,10],[1,4,8,9],[1,4,8,10],[1,4,9,10],[1,5,6,7],[1,5,6,8],[1,5,6,9],[1,5,6,10],[1,5,7,8],[1,5,7,9],[1,5,7,10],[1,5,8,9],[1,5,8,10],[1,5,9,10],[1,6,7,8],[1,6,7,9],[1,6,7,10],[1,6,8,9],[1,6,8,10],[1,6,9,10],[1,7,8,9],[1,7,8,10],[1,7,9,10],[1,8,9,10],[2,3,4,5],[2,3,4,6],[2,3,4,7],[2,3,4,8],[2,3,4,9],[2,3,4,10],[2,3,5,6],[2,3,5,7],[2,3,5,8],[2,3,5,9],[2,3,5,10],[2,3,6,7],[2,3,6,8],[2,3,6,9],[2,3,6,10],[2,3,7,8],[2,3,7,9],[2,3,7,10],[2,3,8,9],[2,3,8,10],[2,3,9,10],[2,4,5,6],[2,4,5,7],[2,4,5,8],[2,4,5,9],[2,4,5,10],[2,4,6,7],[2,4,6,8],[2,4,6,9],[2,4,6,10],[2,4,7,8],[2,4,7,9],[2,4,7,10],[2,4,8,9],[2,4,8,10],[2,4,9,10],[2,5,6,7],[2,5,6,8],[2,5,6,9],[2,5,6,10],[2,5,7,8],[2,5,7,9],[2,5,7,10],[2,5,8,9],[2,5,8,10],[2,5,9,10],[2,6,7,8],[2,6,7,9],[2,6,7,10],[2,6,8,9],[2,6,8,10],[2,6,9,10],[2,7,8,9],[2,7,8,10],[2,7,9,10],[2,8,9,10],[3,4,5,6],[3,4,5,7],[3,4,5,8],[3,4,5,9],[3,4,5,10],[3,4,6,7],[3,4,6,8],[3,4,6,9],[3,4,6,10],[3,4,7,8],[3,4,7,9],[3,4,7,10],[3,4,8,9],[3,4,8,10],[3,4,9,10],[3,5,6,7],[3,5,6,8],[3,5,6,9],[3,5,6,10],[3,5,7,8],[3,5,7,9],[3,5,7,10],[3,5,8,9],[3,5,8,10],[3,5,9,10],[3,6,7,8],[3,6,7,9],[3,6,7,10],[3,6,8,9],[3,6,8,10],[3,6,9,10],[3,7,8,9],[3,7,8,10],[3,7,9,10],[3,8,9,10],[4,5,6,7],[4,5,6,8],[4,5,6,9],[4,5,6,10],[4,5,7,8],[4,5,7,9],[4,5,7,10],[4,5,8,9],[4,5,8,10],[4,5,9,10],[4,6,7,8],[4,6,7,9],[4,6,7,10],[4,6,8,9],[4,6,8,10],[4,6,9,10],[4,7,8,9],[4,7,8,10],[4,7,9,10],[4,8,9,10],[5,6,7,8],[5,6,7,9],[5,6,7,10],[5,6,8,9],[5,6,8,10],[5,6,9,10],[5,7,8,9],[5,7,8,10],[5,7,9,10],[5,8,9,10],[6,7,8,9],[6,7,8,10],[6,7,9,10],[6,8,9,10],[7,8,9,10]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_7(SUBSEQUENCES_TEST.java:58)
-7) test_8(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<...,[5],[6],[7],[8],[9][]]> but was:<...,[5],[6],[7],[8],[9][,[10]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_8(SUBSEQUENCES_TEST.java:65)
-8) test_9(java_testcases.junit.SUBSEQUENCES_TEST)
-org.junit.ComparisonFailure: expected:<...,10,12],[5,6,7,8,9,1[1,12],[5,6,7,8,10,11,12],[5,6,7,9,10,11,12],[5,6,8,9,10,11,12],[5,7,8,9,10,11,12],[6,7,8,9,10,11,12]]]> but was:<...,10,12],[5,6,7,8,9,1[0,13],[5,6,7,8,9,11,12],[5,6,7,8,9,11,13],[5,6,7,8,9,12,13],[5,6,7,8,10,11,12],[5,6,7,8,10,11,13],[5,6,7,8,10,12,13],[5,6,7,8,11,12,13],[5,6,7,9,10,11,12],[5,6,7,9,10,11,13],[5,6,7,9,10,12,13],[5,6,7,9,11,12,13],[5,6,7,10,11,12,13],[5,6,8,9,10,11,12],[5,6,8,9,10,11,13],[5,6,8,9,10,12,13],[5,6,8,9,11,12,13],[5,6,8,10,11,12,13],[5,6,9,10,11,12,13],[5,7,8,9,10,11,12],[5,7,8,9,10,11,13],[5,7,8,9,10,12,13],[5,7,8,9,11,12,13],[5,7,8,10,11,12,13],[5,7,9,10,11,12,13],[5,8,9,10,11,12,13],[6,7,8,9,10,11,12],[6,7,8,9,10,11,13],[6,7,8,9,10,12,13],[6,7,8,9,11,12,13],[6,7,8,10,11,12,13],[6,7,9,10,11,12,13],[6,8,9,10,11,12,13],[7,8,9,10,11,12,13]]]>
-	at org.junit.Assert.assertEquals(Assert.java:117)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at java_testcases.junit.SUBSEQUENCES_TEST.test_9(SUBSEQUENCES_TEST.java:72)
-
-FAILURES!!!
-Tests run: 12,  Failures: 8
-
-
-Tests Failed.
-
-----------------------------------------
---- Verifying TOPOLOGICAL_ORDERING (fixed) ---
-Compilation Failed:
+Bug: TOPOLOGICAL_ORDERING
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -668,20 +232,8 @@ D:\4th year\Fall\Ai\Project\Ai Project\adaptive_repair\build_tmp\java_testcases\
 4 warnings
 
 
-----------------------------------------
---- Verifying TO_BASE (fixed) ---
-JUnit version 4.13.2
-.......
-Time: 0.013
-
-OK (7 tests)
-
-
-Tests Passed!
-
-----------------------------------------
---- Verifying WRAP (fixed) ---
-Compilation Failed:
+Bug: WRAP
+--------------------------------------------------------------------------------
 warning: [options] bootstrap class path is not set in conjunction with -source 8
   not setting the bootstrap class path may lead to class files that cannot run on JDK 8
     --release 8 is recommended instead of -source 8 -target 1.8 because it sets the bootstrap class path automatically
@@ -707,25 +259,23 @@ D:\4th year\Fall\Ai\Project\Ai Project\adaptive_repair\build_tmp\java_testcases\
 4 warnings
 
 
-----------------------------------------
 
-==============================
-VERIFICATION SUMMARY
-==============================
-Total Tests: 40
-Passed:      29
-Failed:      11
+TEST FAILURES
+--------------------------------------------------------------------------------
+Total: 4 bugs failed tests
 
-Failed Files:
-- BUCKETSORT
-- LCS_LENGTH
-- MAX_SUBLIST_SUM
-- MINIMUM_SPANNING_TREE
-- NEXT_PALINDROME
-- NEXT_PERMUTATION
-- POWERSET
-- SHUNTING_YARD
-- SUBSEQUENCES
-- TOPOLOGICAL_ORDERING
-- WRAP
+  Bug: LCS_LENGTH
+  Tests: 5/9 passed (4 failed)
 
+  Bug: MAX_SUBLIST_SUM
+  Tests: 5/6 passed (1 failed)
+
+  Bug: NEXT_PALINDROME
+  Tests: 0/5 passed (5 failed)
+
+  Bug: SUBSEQUENCES
+  Tests: 4/12 passed (8 failed)
+
+================================================================================
+END OF REPORT
+================================================================================

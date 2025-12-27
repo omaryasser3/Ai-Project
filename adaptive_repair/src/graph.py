@@ -9,6 +9,7 @@ from agents import (
     LogicAgent,
     OptimizationAgent,
     ExplanationAgent,
+    TestGeneratorAgent,  # NEW: Import test generator
     translator_agent,
     Issue,
     RepairPlan
@@ -31,6 +32,9 @@ class GraphState(TypedDict):
     explanation: Optional[str]
     history: List[Any]
     comprehensive_explanation: Optional[dict]  # Added for ExplanationAgent output
+    test_validation: Optional[dict]  # NEW: Added for TestGeneratorAgent output
+    generate_tests: Optional[bool]   # NEW: Toggle for test generation
+    user_feedback: Optional[str]     # NEW: User provided feedback
 
 
 def construct_queue(plan: RepairPlan, issues: List[Issue]) -> List[str]:
@@ -67,6 +71,12 @@ def main_node(state: GraphState):
     print(f"Issues found: {len(issues)}")
     print(f"Constructed Queue: {queue}")
     
+    # CRITICAL: Use detected language as source of truth
+    # This ensures backward translation uses the correct language
+    detected_lang = plan.detected_language if plan.detected_language else src_lang
+    if detected_lang != src_lang:
+        print(f"LANGUAGE CORRECTED: User provided '{src_lang}', detected '{detected_lang}'")
+    
     # Initialize history
     history_entry = {
         "step": "MainAnalysis",
@@ -79,7 +89,8 @@ def main_node(state: GraphState):
         "issues": issues,
         "plan": plan,
         "agent_queue": queue,
-        "current_lang": src_lang,
+        "src_lang": detected_lang,  # Use detected language, not user-provided
+        "current_lang": detected_lang,  # Use detected language
         "history": [history_entry]
     }
 
@@ -205,7 +216,7 @@ def logic_fixer_node(state: GraphState):
     agent = LogicAgent()
     issue = next((i for i in state['issues'] if i.type == 'logic_bug'), state['issues'][0])
 
-    result = agent.repair(state['code'], issue, state['current_lang'], bug_id=state.get('bug_id'))
+    result = agent.repair(state['code'], issue, state['current_lang'], bug_id=state.get('bug_id'), user_feedback=state.get('user_feedback'))
     
     history_entry = {
         "step": "LogicFixer",
@@ -309,6 +320,67 @@ def explanation_node(state: GraphState):
         "history": state.get("history", []) + [history_entry]
     }
 
+def test_generator_node(state: GraphState):
+    """Generate and execute tests for the repaired code.
+    
+    This node provides safety & transparency by:
+    - Generating comprehensive unit tests
+    - Actually executing the tests
+    - Providing PASS/FAIL validation
+    - Showing test coverage and confidence
+    """
+    print("--- Test Generator & Executor ---")
+    
+    # Get original and fixed code
+    original_code = state.get("code", "")
+    
+    fixed_code = state.get("fixed_code") or state.get("code", "")
+    language = state.get("current_lang", "Python")
+    bug_id = state.get("bug_id", "unknown")
+    
+    # Generate tests and execute them
+    agent = TestGeneratorAgent()
+    test_validation_data = agent.validate_repair_with_tests(
+        original_code=original_code,
+        fixed_code=fixed_code,
+        language=language,
+        bug_id=bug_id
+    )
+    
+    # Add to history
+    execution = test_validation_data.get("execution", {})
+    summary = execution.get("summary", {})
+    
+    # Check if tests were actually executed or just generated
+    execution_output = execution.get("output", "")
+    if "Unsupported language" in execution_output:
+        print(f"⚠ Tests generated for {language} but cannot be executed (not supported)")
+        print(f"  Test execution only available for Python and Java")
+    else:
+        print(f"✓ Tests executed successfully in {language}")
+    
+    history_entry = {
+        "step": "TestGenerator",
+        "tests_generated": len(test_validation_data.get("tests", {}).get("test_descriptions", [])),
+        "tests_executed": summary.get("total", 0),
+        "tests_passed": summary.get("passed", 0),
+        "tests_failed": summary.get("failed", 0),
+        "execution_success": execution.get("execution_success", False)
+    }
+    
+    print(f"Generated {history_entry['tests_generated']} tests")
+    print(f"Executed {history_entry['tests_executed']} tests: {history_entry['tests_passed']} passed, {history_entry['tests_failed']} failed")
+    
+    return {
+        "test_validation": test_validation_data,
+        "history": state.get("history", []) + [history_entry]
+    }
+
+def route_to_test_generation(state: GraphState):
+    if state.get("generate_tests"):
+        return "test_generator"
+    return END
+
 def route_dispatcher(state: GraphState):
     next_node = state.get("next_node_to_run")
     if not next_node:
@@ -344,6 +416,7 @@ def create_graph(
     workflow.add_node("logic_fixer", logic_fixer_node)
     workflow.add_node("optimization_fixer", optimization_fixer_node)
     workflow.add_node("explanation", explanation_node)  # Add explanation node
+    workflow.add_node("test_generator", test_generator_node)  # NEW: Add test generator node
 
     # Set entry point
     workflow.set_entry_point(entry_point)
@@ -375,8 +448,16 @@ def create_graph(
     workflow.add_edge("logic_fixer", "dispatcher")
     workflow.add_edge("optimization_fixer", "dispatcher")
     
-    # Edge: Explanation -> END
-    workflow.add_edge("explanation", END)
+    # NEW: Edge: Explanation -> Test Generator (Conditional)
+    workflow.add_conditional_edges(
+        "explanation",
+        route_to_test_generation,
+        {
+            "test_generator": "test_generator",
+            END: END
+        }
+    )
+    workflow.add_edge("test_generator", END)
 
     return workflow.compile(
         checkpointer=checkpointer,

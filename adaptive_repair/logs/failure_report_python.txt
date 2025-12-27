@@ -1,0 +1,62 @@
+================================================================================
+APR EVALUATION FAILURE ANALYSIS REPORT - PYTHON
+================================================================================
+Generated: failure_analyzer.py
+
+SUMMARY
+--------------------------------------------------------------------------------
+Total Experiments:    41
+Successful:           33 (80.5%)
+Failed:               8 (19.5%)
+
+FAILURE BREAKDOWN BY CATEGORY
+--------------------------------------------------------------------------------
+HALLUCINATION: 2 cases
+  - find_first_in_sorted
+  - is_valid_parenthesization
+TEST_FAILURE: 6 cases
+  - max_sublist_sum
+  - next_palindrome
+  - node
+  - possible_change
+  - reverse_linked_list
+  - topological_ordering
+
+TEST FAILURES
+--------------------------------------------------------------------------------
+Total: 6 bugs failed tests
+
+  Bug: max_sublist_sum
+  Tests: 5/6 passed (1 failed)
+
+  Bug: next_palindrome
+  Tests: 4/5 passed (1 failed)
+
+  Bug: node
+  Tests: 0/0 passed (0 failed)
+
+  Bug: possible_change
+  Tests: 9/10 passed (1 failed)
+
+  Bug: reverse_linked_list
+  Tests: 1/3 passed (2 failed)
+
+  Bug: topological_ordering
+  Tests: 0/3 passed (3 failed)
+
+HALLUCINATION CASES
+--------------------------------------------------------------------------------
+Total: 2 bugs with hallucinations
+
+  Bug: find_first_in_sorted
+  Issues detected: 2
+    - [critical] syntax_error: Mismatched parentheses: 7 opening, 9 closing
+    - [high] syntax_error: Mismatched brackets: 8 opening, 6 closing
+
+  Bug: is_valid_parenthesization
+  Issues detected: 1
+    - [critical] syntax_error: Mismatched parentheses: 13 opening, 12 closing
+
+================================================================================
+END OF REPORT
+================================================================================

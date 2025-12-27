@@ -436,7 +436,7 @@ class SyntaxAgent(BaseAgent):
 class LogicAgent(BaseAgent):
     """Agent focused on fixing logical/semantic bugs."""
 
-    def repair(self, code: str, issue: Issue, language: str, bug_id: str = None) -> RepairResult:
+    def repair(self, code: str, issue: Issue, language: str, bug_id: str = None, user_feedback: str = None) -> RepairResult:
         helper_context = ""
         if language.lower() == "java":
             node_code = get_java_helper_code()
@@ -456,6 +456,11 @@ class LogicAgent(BaseAgent):
         ```{language}
         {code}
         ```
+        {f'''
+        USER FEEDBACK:
+        The user has provided specific feedback for this repair. You MUST follow these instructions:
+        "{user_feedback}"
+        ''' if user_feedback else ''}
 
         Tasks:
         1. Correct the logic so the code behaves as intended.
@@ -843,6 +848,384 @@ class MainAgent(BaseAgent):
                 specialized_agents.append(LogicAgent())
 
         return specialized_agents
+
+
+# ---------------------------------------------------------------------------
+# WEB APP ONLY AGENTS (Not used in dataset evaluation)
+# ---------------------------------------------------------------------------
+
+class TestGeneratorAgent(BaseAgent):
+    """Agent focused on automatically generating unit tests for repaired code.
+    
+    **PURPOSE**: Safety & Transparency
+    - Automatically generates test cases to verify the repaired code works correctly
+    - Provides additional confidence in the repair quality
+    - Helps catch edge cases and validate correctness
+    
+    **WEB APP ONLY**: This agent is designed for interactive use in the web interface
+    and is NOT used during dataset evaluation.
+    """
+    
+    def generate_tests(self, code: str, language: str, bug_id: str = None, 
+                      num_tests: int = 5) -> dict:
+        """Generate unit tests for the given code.
+        
+        Args:
+            code: The repaired code to test
+            language: Programming language (Python or Java)
+            bug_id: Optional bug identifier for context
+            num_tests: Number of test cases to generate (default: 5)
+            
+        Returns:
+            dict with 'test_code', 'test_descriptions', and 'coverage_notes'
+        """
+        
+        # Determine test framework based on language
+        if language.lower() == "python":
+            test_framework = "pytest"
+            test_import = "import pytest"
+            test_decorator = "@pytest.mark.parametrize"
+        elif language.lower() == "java":
+            test_framework = "JUnit 4"
+            test_import = "import org.junit.*;\nimport static org.junit.Assert.*;"
+            test_decorator = "@Test"
+        else:
+            test_framework = "standard testing"
+            test_import = ""
+            test_decorator = ""
+        
+        prompt = f"""
+You are an expert test engineer specialized in {language} testing.
+
+Your task is to generate comprehensive unit tests for the following {language} code to verify its correctness.
+
+**Code to Test:**
+```{language}
+{code}
+```
+
+**Requirements:**
+1. Generate {num_tests} diverse test cases that cover:
+   - Normal/typical inputs
+   - Edge cases (empty inputs, boundary values, etc.)
+   - Error/exception handling (if applicable)
+   - Different code paths
+
+2. Use {test_framework} testing framework
+3. Include clear, descriptive test names
+4. Add comments explaining what each test validates
+5. Ensure tests are executable and follow best practices{f'''
+6. CRITICAL: Test class name should be `{bug_id}_TEST` if the code class is `{bug_id}`
+7. Use correct package structure: `package java_testcases.junit;`''' if language.lower() == 'java' and bug_id else ''}
+
+**Output Format (JSON):**
+{{
+  "test_code": "<complete test code with {num_tests} test methods>",
+  "test_descriptions": [
+    {{
+      "test_name": "test_normal_case",
+      "description": "What this test validates",
+      "input": "Example input",
+      "expected": "Expected output"
+    }}
+  ],
+  "coverage_notes": "Summary of what aspects are covered by these tests",
+  "framework": "{test_framework}"
+}}
+
+Return ONLY the JSON object, without markdown fences.
+"""
+        
+        raw = call_llm(self.model_name, prompt, temp=self.temperature)
+        
+        try:
+            data = self._extract_json(raw)
+        except ValueError:
+            logger.warning(f"TestGeneratorAgent: failed to parse JSON response. Raw: {raw[:100]}...")
+            return {
+                "test_code": f"# Failed to generate tests\n# Raw response: {raw[:200]}...",
+                "test_descriptions": [],
+                "coverage_notes": "Test generation failed - could not parse response",
+                "framework": test_framework
+            }
+        
+        # Clean up test_code if it contains markdown
+        test_code = data.get("test_code", "")
+        test_code = self._strip_markdown(test_code)
+        data["test_code"] = test_code
+        
+        return data
+    
+    def execute_tests(self, test_code: str, fixed_code: str, language: str, bug_id: str = None) -> dict:
+        """Execute the generated tests and capture results.
+        
+        Args:
+            test_code: The generated test code
+            fixed_code: The repaired code to test
+            language: Programming language (Python or Java)
+            bug_id: Optional bug identifier
+            
+        Returns:
+            dict with 'execution_success', 'test_results', 'output', and 'summary'
+        """
+        import subprocess
+        import tempfile
+        import os
+        
+        results = {
+            "execution_success": False,
+            "test_results": [],
+            "output": "",
+            "summary": {
+                "total": 0,
+                "passed": 0,
+                "failed": 0,
+                "errors": 0
+            }
+        }
+        
+        try:
+            if language.lower() == "python":
+                # Execute Python tests with pytest
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    # Write the fixed code
+                    code_file = os.path.join(tmpdir, "repaired_code.py")
+                    with open(code_file, "w", encoding="utf-8") as f:
+                        f.write(fixed_code)
+                    
+                    # Write the test code
+                    test_file = os.path.join(tmpdir, "test_repaired_code.py")
+                    # Inject import of the repaired code into tests
+                    test_code_with_import = f"from repaired_code import *\n\n{test_code}"
+                    with open(test_file, "w", encoding="utf-8") as f:
+                        f.write(test_code_with_import)
+                    
+                    # Run pytest
+                    result = subprocess.run(
+                        ["pytest", test_file, "-v", "--tb=short"],
+                        capture_output=True,
+                        text=True,
+                        cwd=tmpdir,
+                        timeout=10
+                    )
+                    
+                    results["output"] = result.stdout + "\n" + result.stderr
+                    results["execution_success"] = result.returncode == 0
+                    
+                    # Parse pytest output
+                    output_lines = results["output"].split("\n")
+                    for line in output_lines:
+                        if " PASSED" in line:
+                            test_name = line.split("::")[1].split(" ")[0] if "::" in line else "unknown"
+                            results["test_results"].append({
+                                "name": test_name,
+                                "status": "PASSED",
+                                "message": ""
+                            })
+                            results["summary"]["passed"] += 1
+                            results["summary"]["total"] += 1
+                        elif " FAILED" in line:
+                            test_name = line.split("::")[1].split(" ")[0] if "::" in line else "unknown"
+                            results["test_results"].append({
+                                "name": test_name,
+                                "status": "FAILED",
+                                "message": "Test assertion failed"
+                            })
+                            results["summary"]["failed"] += 1
+                            results["summary"]["total"] += 1
+                        elif " ERROR" in line:
+                            test_name = line.split("::")[1].split(" ")[0] if "::" in line else "unknown"
+                            results["test_results"].append({
+                                "name": test_name,
+                                "status": "ERROR",
+                                "message": "Test execution error"
+                            })
+                            results["summary"]["errors"] += 1
+                            results["summary"]["total"] += 1
+                    
+            elif language.lower() == "java":
+                # Execute Java tests with JUnit
+                # Note: This requires JUnit jars to be available
+                project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+                lib_dir = os.path.join(project_root, "lib")
+                junit_jar = os.path.join(lib_dir, "junit-4.13.2.jar")
+                hamcrest_jar = os.path.join(lib_dir, "hamcrest-core-1.3.jar")
+                
+                if not os.path.exists(junit_jar):
+                    results["output"] = "JUnit jar not found - cannot execute Java tests"
+                    return results
+                
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    # Write the fixed code
+                    code_file = os.path.join(tmpdir, f"{bug_id or 'Solution'}.java")
+                    with open(code_file, "w", encoding="utf-8") as f:
+                        f.write(fixed_code)
+                    
+                    # Write the test code
+                    test_file = os.path.join(tmpdir, f"{bug_id or 'Solution'}_TEST.java")
+                    with open(test_file, "w", encoding="utf-8") as f:
+                        f.write(test_code)
+                    
+                    # Compile
+                    classpath = f".{os.pathsep}{junit_jar}{os.pathsep}{hamcrest_jar}"
+                    compile_result = subprocess.run(
+                        ["javac", "-cp", classpath, code_file, test_file],
+                        capture_output=True,
+                        text=True,
+                        cwd=tmpdir,
+                        timeout=10
+                    )
+                    
+                    if compile_result.returncode != 0:
+                        results["output"] = f"Compilation failed:\n{compile_result.stderr}"
+                        return results
+                    
+                    # Run tests
+                    test_class = f"{bug_id or 'Solution'}_TEST"
+                    run_result = subprocess.run(
+                        ["java", "-cp", f".{os.pathsep}{junit_jar}{os.pathsep}{hamcrest_jar}",
+                         "org.junit.runner.JUnitCore", test_class],
+                        capture_output=True,
+                        text=True,
+                        cwd=tmpdir,
+                        timeout=10
+                    )
+                    
+                    results["output"] = run_result.stdout + "\n" + run_result.stderr
+                    results["execution_success"] = run_result.returncode == 0
+                    
+                    # Parse JUnit output
+                    if "OK " in results["output"]:
+                        # All tests passed
+                        import re
+                        match = re.search(r'OK \((\d+) test', results["output"])
+                        if match:
+                            num_tests = int(match.group(1))
+                            results["summary"]["total"] = num_tests
+                            results["summary"]["passed"] = num_tests
+                            for i in range(num_tests):
+                                results["test_results"].append({
+                                    "name": f"test_{i+1}",
+                                    "status": "PASSED",
+                                    "message": ""
+                                })
+                    elif "FAILURES!!!" in results["output"]:
+                        # Some tests failed
+                        import re
+                        match = re.search(r'Tests run: (\d+),\s+Failures: (\d+)', results["output"])
+                        if match:
+                            results["summary"]["total"] = int(match.group(1))
+                            results["summary"]["failed"] = int(match.group(2))
+                            results["summary"]["passed"] = results["summary"]["total"] - results["summary"]["failed"]
+            else:
+                results["output"] = f"Unsupported language: {language}"
+                
+        except subprocess.TimeoutExpired:
+            results["output"] = "Test execution timed out (>10 seconds)"
+        except Exception as e:
+            results["output"] = f"Test execution error: {str(e)}"
+            logger.warning(f"TestGeneratorAgent execution failed: {e}")
+        
+        return results
+    
+    def validate_repair_with_tests(self, original_code: str, fixed_code: str, 
+                                   language: str, bug_id: str = None) -> dict:
+        """Generate tests and provide a validation report for the repair.
+        
+        This method combines test generation with a validation assessment.
+        
+        Args:
+            original_code: The original buggy code
+            fixed_code: The repaired code
+            language: Programming language
+            bug_id: Optional bug identifier
+            
+        Returns:
+            dict with 'tests', 'validation_summary', and 'confidence_score'
+        """
+        # First generate tests for the fixed code
+        tests = self.generate_tests(fixed_code, language, bug_id)
+        
+        # Execute the generated tests using the RuntimeEvaluationPipeline
+        from runtime_evaluator import RuntimeEvaluationPipeline
+        pipeline = RuntimeEvaluationPipeline()
+        
+        # Use the pipeline to evaluate
+        eval_result = pipeline.evaluate(
+            bug_id=bug_id or "unknown_bug",
+            original_code=original_code,
+            repaired_code=fixed_code,
+            test_code=tests.get('test_code', ''),
+            language=language
+        )
+        
+        execution_results = eval_result["execution"]
+        
+        # Then generate a validation summary
+        prompt = f"""
+You are a code quality expert.
+
+Compare the original buggy code with the fixed code, considering the generated tests.
+
+**Original Code:**
+```{language}
+{original_code}
+```
+
+**Fixed Code:**
+```{language}
+{fixed_code}
+```
+
+**Generated Tests:**
+```{language}
+{tests.get('test_code', '')}
+```
+
+
+**Test Execution Results:**
+Error Analysis: {eval_result.get('failure_analysis', {})}
+{execution_results}
+
+**Your Task:**
+1. Assess whether the generated tests adequately validate the fix
+2. Identify any missing test cases or edge cases not covered
+3. Assign a confidence score (0-100) for the repair quality based on:
+   - How well the fix addresses the original bug
+   - Test coverage completeness
+   - Potential remaining issues
+
+**Output Format (JSON):**
+{{
+  "validation_summary": "Brief assessment of the repair and test coverage",
+  "confidence_score": 85,
+  "missing_tests": ["Any important test cases that should be added"],
+  "concerns": ["Any remaining issues or risks"]
+}}
+
+Return ONLY the JSON object.
+"""
+        
+        raw = call_llm(self.model_name, prompt, temp=0.3)
+        
+        try:
+            validation = self._extract_json(raw)
+        except ValueError:
+            validation = {
+                "validation_summary": "Could not generate validation assessment",
+                "confidence_score": 50,
+                "missing_tests": [],
+                "concerns": ["Validation failed to parse"]
+            }
+        
+        return {
+            "tests": tests,
+            "validation": validation,
+            "execution": execution_results,
+            "analysis": eval_result.get("failure_analysis", {}),
+            "hallucinations": eval_result.get("hallucinations", [])
+        }
+
 
 if __name__ == "__main__":
     # Simple manual tests for Subtask 1 & 2 when running this file directly.

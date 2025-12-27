@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <title>AI Program Repair System</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 
@@ -32,9 +33,13 @@
               <label for="language-input" class="form-label small mb-1">
                 Source language (for planning & translation)
               </label>
-              <input id="language-input" type="text" class="form-control form-control-sm" value="Python"
-                placeholder="e.g., Python, Java" />
+              <input id="language-input" type="text" class="form-control form-control-sm" value=""
+                placeholder="Leave empty for auto-detection, or specify: Python, Java, C++, etc." />
             </div>
+            <small id="detected-language-display" class="form-text text-success fw-bold d-none"
+              style="margin-top: -10px; display: block;">
+              🔍 Detected: <span id="detected-language-name"></span>
+            </small>
             <div class="d-flex flex-wrap gap-2 align-items-center">
               <button id="analyze-btn" class="btn btn-outline-primary">
                 Analyze Issues &amp; Provide Plan
@@ -73,6 +78,12 @@
             <div class="mt-3">
               <div class="alert alert-info small py-2 mb-3" role="alert">
                 <strong>Detected:</strong> <span id="plan-detected-lang">...</span>
+              </div>
+
+              <div class="mb-3">
+                <label for="plan-feedback" class="form-label small fw-bold">Feedback / Instructions (Optional)</label>
+                <textarea class="form-control form-control-sm" id="plan-feedback" rows="2"
+                  placeholder="e.g. 'Don't use regex', 'Keep the helper class'"></textarea>
               </div>
 
               <button id="proceed-btn" class="btn btn-success w-100">
@@ -181,6 +192,75 @@
 
             <!-- Transparency Notes -->
             <div id="transparency-notes" class="small text-muted mt-3"></div>
+          </div>
+        </div>
+
+        <!-- Test Validation Card (from TestGeneratorAgent) -->
+        <div id="test-validation-card" class="card shadow-sm mb-4 d-none border-primary">
+          <div class="card-header bg-light border-bottom border-primary">
+            <h6 class="mb-0">
+              <i class="bi bi-check2-circle me-2 text-primary"></i>🧪 Generated Unit Tests
+            </h6>
+          </div>
+          <div class="card-body">
+            <!-- Validation Summary -->
+            <div id="test-summary" class="alert alert-info small mb-3"></div>
+
+            <!-- Confidence Score -->
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <strong class="small">Test Confidence Score:</strong>
+                <span id="test-confidence-score" class="badge bg-success"></span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div id="test-confidence-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%">
+                </div>
+              </div>
+            </div>
+
+            <!-- Generated Tests Code -->
+            <div class="mb-3">
+              <strong class="small d-block mb-2">Generated Test Code:</strong>
+              <pre id="test-code" class="bg-dark text-light p-3 rounded small"
+                style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;"></pre>
+            </div>
+
+            <!-- Test Descriptions -->
+            <div id="test-descriptions-section" class="mb-3">
+              <strong class="small d-block mb-2">📝 Test Descriptions:</strong>
+              <ul id="test-descriptions-list" class="small list-unstyled"></ul>
+            </div>
+
+            <!-- Test Execution Results (NEW!) -->
+            <div id="test-execution-section" class="mb-3">
+              <strong class="small d-block mb-2">⚡ Test Execution Results:</strong>
+              <div id="test-execution-summary" class="alert mb-2"></div>
+              <div id="test-execution-details" class="small">
+                <ul id="test-execution-list" class="list-unstyled"></ul>
+              </div>
+              <details class="small">
+                <summary class="text-muted" style="cursor: pointer;">📄 Full Execution Output</summary>
+                <pre id="test-execution-output" class="bg-dark text-light p-2 rounded mt-2"
+                  style="max-height: 200px; overflow-y: auto; font-size: 0.75rem;"></pre>
+              </details>
+            </div>
+
+            <!-- Coverage Notes -->
+            <div class="alert alert-secondary small mb-0">
+              <strong>Coverage:</strong> <span id="test-coverage"></span>
+            </div>
+
+            <!-- Concerns (if any) -->
+            <div id="test-concerns" class="d-none mt-3">
+              <strong class="small text-warning">⚠️ Potential Concerns:</strong>
+              <ul id="test-concerns-list" class="small mt-2 text-warning"></ul>
+            </div>
+
+            <!-- Missing Tests (if any) -->
+            <div id="test-missing" class="d-none mt-2">
+              <strong class="small text-muted">💡 Suggested Additional Tests:</strong>
+              <ul id="test-missing-list" class="small mt-2 text-muted"></ul>
+            </div>
           </div>
         </div>
 
