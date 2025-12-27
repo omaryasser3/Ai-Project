@@ -12,15 +12,34 @@ async function callApi(path, payload) {
     const data = await response.json();
 
     if (!response.ok) {
-      statusEl.textContent = data.error || "Request failed.";
+      // Extract detailed error information
+      let errorMsg = `Error ${response.status}: `;
+
+      if (data.detail) {
+        // FastAPI returns errors in 'detail' field
+        if (typeof data.detail === 'string') {
+          errorMsg += data.detail;
+        } else {
+          errorMsg += JSON.stringify(data.detail);
+        }
+      } else if (data.error) {
+        errorMsg += data.error;
+      } else {
+        errorMsg += response.statusText || "Request failed";
+      }
+
+      statusEl.textContent = errorMsg;
+      statusEl.className = "form-text text-danger mt-2";
       return null;
     }
 
     statusEl.textContent = "Done.";
+    statusEl.className = "form-text text-success mt-2";
     return data;
   } catch (err) {
-    console.error(err);
-    statusEl.textContent = "Error calling API. See console for details.";
+    console.error("API Error:", err);
+    statusEl.textContent = `Network error: ${err.message || "Unable to connect to server"}`;
+    statusEl.className = "form-text text-danger mt-2";
     return null;
   }
 }
@@ -96,6 +115,105 @@ function renderRepairs(data) {
 
     explanationsEl.appendChild(block);
   });
+}
+
+function renderComprehensiveExplanation(comprehensiveExplanation) {
+  const card = document.getElementById("comprehensive-explanation-card");
+  const summaryEl = document.getElementById("explanation-summary");
+  const confidenceScoreEl = document.getElementById("confidence-score");
+  const confidenceBarEl = document.getElementById("confidence-bar");
+  const detailedEl = document.getElementById("detailed-explanations");
+  const risksContainer = document.getElementById("explanation-risks");
+  const risksList = document.getElementById("risks-list");
+  const notesEl = document.getElementById("transparency-notes");
+
+  if (!comprehensiveExplanation) {
+    card.classList.add("d-none");
+    return;
+  }
+
+  // Show card
+  card.classList.remove("d-none");
+
+  // Render summary
+  summaryEl.textContent = comprehensiveExplanation.summary || "No summary available.";
+
+  // Render confidence score
+  const confidence = comprehensiveExplanation.confidence_score || 0;
+  confidenceScoreEl.textContent = `${confidence}%`;
+  confidenceBarEl.style.width = `${confidence}%`;
+
+  // Color code based on confidence
+  if (confidence >= 80) {
+    confidenceBarEl.className = "progress-bar bg-success";
+  } else if (confidence >= 50) {
+    confidenceBarEl.className = "progress-bar bg-warning";
+  } else {
+    confidenceBarEl.className = "progress-bar bg-danger";
+  }
+
+  // Render detailed explanations
+  detailedEl.innerHTML = "";
+  const details = comprehensiveExplanation.detailed_explanations || [];
+
+  if (details.length > 0) {
+    details.forEach((detail) => {
+      const detailBlock = document.createElement("div");
+      detailBlock.className = "mb-3 p-3 border rounded bg-light";
+
+      const title = document.createElement("div");
+      title.className = "fw-bold mb-2 text-primary";
+      title.textContent = `${detail.repair_number}. ${detail.title}`;
+
+      const problemDiv = document.createElement("div");
+      problemDiv.className = "small mb-1";
+      problemDiv.innerHTML = `<strong>Problem:</strong> ${detail.problem}`;
+
+      const causeDiv = document.createElement("div");
+      causeDiv.className = "small mb-1";
+      causeDiv.innerHTML = `<strong>Cause:</strong> ${detail.cause}`;
+
+      const solutionDiv = document.createElement("div");
+      solutionDiv.className = "small mb-1";
+      solutionDiv.innerHTML = `<strong>Solution:</strong> ${detail.solution}`;
+
+      const impactDiv = document.createElement("div");
+      impactDiv.className = "small text-success";
+      impactDiv.innerHTML = `<strong>Impact:</strong> ${detail.impact}`;
+
+      detailBlock.appendChild(title);
+      detailBlock.appendChild(problemDiv);
+      detailBlock.appendChild(causeDiv);
+      detailBlock.appendChild(solutionDiv);
+      detailBlock.appendChild(impactDiv);
+
+      detailedEl.appendChild(detailBlock);
+    });
+  } else {
+    detailedEl.innerHTML = "<em class='text-muted'>No detailed explanations available.</em>";
+  }
+
+  // Render risks
+  const risks = comprehensiveExplanation.risks || [];
+  if (risks.length > 0 && risks[0] !== "None identified" && risks[0] !== "") {
+    risksContainer.classList.remove("d-none");
+    risksList.innerHTML = "";
+    risks.forEach((risk) => {
+      const li = document.createElement("li");
+      li.textContent = risk;
+      risksList.appendChild(li);
+    });
+  } else {
+    risksContainer.classList.add("d-none");
+  }
+
+  // Render transparency notes
+  const notes = comprehensiveExplanation.transparency_notes || "";
+  if (notes) {
+    notesEl.textContent = `Notes: ${notes}`;
+  } else {
+    notesEl.textContent = "";
+  }
 }
 
 function renderPlanAndTranslation(plan, translation) {
@@ -252,6 +370,7 @@ window.addEventListener("DOMContentLoaded", () => {
       );
       renderRepairs(data);
       renderPlanAndTranslation(data.plan, data.translation);
+      renderComprehensiveExplanation(data.comprehensive_explanation);  // Show ExplanationAgent results
 
       // Show feedback card
       showFeedbackCard(data.final_code);
@@ -291,6 +410,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       renderRepairs(data);
       renderPlanAndTranslation(data.plan, data.translation);
+      renderComprehensiveExplanation(data.comprehensive_explanation);  // Show ExplanationAgent results
       showFeedbackCard(data.final_code);
 
       // Note: The backend might return refined issues if it re-ran analysis,

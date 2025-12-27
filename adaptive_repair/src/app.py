@@ -319,6 +319,7 @@ def repair_sync(request_data: RepairRequest):
             "repairs": repairs,
             "plan": final_plan,
             "translation": translation_info,
+            "comprehensive_explanation": final_state.get("comprehensive_explanation"),  # ExplanationAgent output
             }
             
             log_api_interaction(
