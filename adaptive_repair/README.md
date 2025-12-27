@@ -70,14 +70,21 @@ python src/app.py
 Run automated evaluation on bug datasets:
 
 ```bash
-# Evaluate all bugs
+# Evaluate all Java bugs (default)
 python src/main.py
 
+# Evaluate all Python bugs
+python src/main.py --language python
+
 # Evaluate specific bug
-python src/main.py --bug_id BITCOUNT
+python src/main.py --bug_id BITCOUNT --language java
 ```
 
-**Output:** Results logged to `logs/experiment_log_java.json`
+**Arguments:**
+- `--language`: `java` or `python` (default: `java`)
+- `--bug_id`: Process specific bug ID (e.g., `BITCOUNT`)
+
+**Output:** Results logged to `logs/experiment_log_<language>.json`
 
 ### Evaluation Dashboard
 

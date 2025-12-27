@@ -80,12 +80,15 @@ def save_fix(bug_id, code, filename, language):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="APR Batch Evaluation Tool")
     parser.add_argument("--bug_id", help="Process specific bug ID (e.g., BITCOUNT)")
+    parser.add_argument("--language", choices=["java", "python"], default="java", 
+                        help="Programming language to process (default: java)")
     args = parser.parse_args()
 
-    # Process Java bugs
-    dataset = load_bugs("java")
+    # Process bugs for the specified language
+    language = args.language.lower()
+    dataset = load_bugs(language)
     
     if args.bug_id:
         dataset = [d for d in dataset if d['id'] == args.bug_id]
@@ -95,8 +98,7 @@ if __name__ == "__main__":
     log_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
     
     # Determine log file based on language
-    # Assuming 'dataset' is loaded with a specific language (here hardcoded to "java" for this block)
-    current_lang_log_file = "experiment_log_java.json"
+    current_lang_log_file = f"experiment_log_{language}.json"
     log_file = os.path.join(log_dir, current_lang_log_file)
     
     if os.path.exists(log_file):
@@ -128,7 +130,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Warning: Could not read log file to resume: {e}")
 
-    print(f"Loaded {len(dataset)} java bugs.")
+    print(f"Loaded {len(dataset)} {language} bugs.")
     print(f"Found {len(processed_bugs)} already processed bugs.")
     
     from verify_java import verify
