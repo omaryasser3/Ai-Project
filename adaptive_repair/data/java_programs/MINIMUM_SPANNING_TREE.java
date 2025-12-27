@@ -1,6 +1,5 @@
 package java_programs;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,106 +7,113 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// Define an Edge class as it's used in the MINIMUM_SPANNING_TREE method.
-// It needs to be comparable for sorting by weight.
-class Edge implements Comparable<Edge> {
-    Object node1;
-    Object node2;
-    int weight; // Assuming integer weights
-
-    public Edge(Object node1, Object node2, int weight) {
-        this.node1 = node1;
-        this.node2 = node2;
-        this.weight = weight;
-    }
-
-    // For sorting edges by weight in ascending order
-    @Override
-    public int compareTo(Edge other) {
-        return Integer.compare(this.weight, other.weight);
-    }
-
-    // Optional: Override equals and hashCode if Edge objects need to be compared by content
-    // rather than just instance identity when stored in a Set.
-    // For this problem, the Python code adds the *instance* of the edge, so default Object equals/hashCode is often sufficient.
-    // If uniqueness in the set should be based on (node1, node2, weight) regardless of instance,
-    // these methods would need to be implemented.
-}
-
-// DSU (Disjoint Set Union) data structure
-// This class is not public, so it can reside in the same file as MINIMUM_SPANNING_TREE.java
-class DSU {
-    private Map<Object, Object> parent;
-    private Map<Object, Integer> rank;
-
-    public DSU() {
-        this.parent = new HashMap<>();
-        this.rank = new HashMap<>();
-    }
-
-    public Object find(Object node) {
-        // If node is not yet in the DSU, initialize it as a new set.
-        // Each node initially is its own parent (representative of its own set) and has rank 0.
-        if (!parent.containsKey(node)) {
-            parent.put(node, node);
-            rank.put(node, 0);
-            return node;
-        }
-
-        // Path compression: set node's parent directly to the representative
-        if (parent.get(node) == node) {
-            return node;
-        }
-        // Recursively find the root and set it as the direct parent
-        Object root = find(parent.get(node));
-        parent.put(node, root);
-        return root;
-    }
-
-    public boolean union(Object node1, Object node2) {
-        Object root1 = find(node1);
-        Object root2 = find(node2);
-
-        if (!root1.equals(root2)) { // Use .equals() for object content comparison
-            // Union by rank: Attach the smaller rank tree under the root of the larger rank tree.
-            // If ranks are equal, pick one as root and increment its rank.
-            int rank1 = rank.get(root1);
-            int rank2 = rank.get(root2);
-
-            if (rank1 < rank2) {
-                parent.put(root1, root2);
-            } else if (rank2 < rank1) {
-                parent.put(root2, root1);
-            } else { // Ranks are equal
-                parent.put(root1, root2);
-                rank.put(root2, rank2 + 1); // Increment rank of the new root
-            }
-            return true; // Indicates a successful union (components were distinct)
-        }
-        return false; // Indicates nodes were already in the same component
-    }
-}
+// The Edge class is assumed to exist and implement Comparable<Edge>
+// and provide methods like getNode1(), getNode2(), and getWeight().
+// Example structure for Edge (not part of the output, but for context):
+// class Edge implements Comparable<Edge> {
+//     private Object node1;
+//     private Object node2;
+//     private int weight;
+//
+//     public Edge(Object node1, Object node2, int weight) { /* ... */ }
+//     public Object getNode1() { return node1; }
+//     public Object getNode2() { return node2; }
+//     public int getWeight() { return weight; }
+//
+//     @Override
+//     public int compareTo(Edge other) { return Integer.compare(this.weight, other.weight); }
+//     // For Set operations, if conceptual equality (e.g., (A,B,w) == (B,A,w)) is desired,
+//     // equals and hashCode must be overridden. Otherwise, default object identity is used.
+// }
 
 public class MINIMUM_SPANNING_TREE {
-    public static Set<Edge> minimum_spanning_tree(List<Edge> weightedEdges) {
-        DSU dsu = new DSU(); // Create an instance of the DSU data structure
+    /**
+     * Minimum spanning tree
+     */
+
+    // DSU structure will be managed by these static class attributes
+    // _parent maps a node to its parent node in the DSU tree.
+    // _size maps a root node to the size of the component it represents (for union by size optimization).
+    private static Map<Object, Object> _parent = new HashMap<>();
+    private static Map<Object, Integer> _size = new HashMap<>();
+
+    private static void _makeSet(Object node) {
+        /** Initializes a new set for a given node if it doesn't exist. */
+        if (!MINIMUM_SPANNING_TREE._parent.containsKey(node)) {
+            MINIMUM_SPANNING_TREE._parent.put(node, node); // Each node is initially its own parent
+            MINIMUM_SPANNING_TREE._size.put(node, 1);      // Each component initially has size 1
+        }
+    }
+
+    private static Object _find(Object node) {
+        /** Finds the representative (root) of the set containing the given node, with path compression. */
+        // If the node is its own parent, it's the root of its set
+        if (MINIMUM_SPANNING_TREE._parent.get(node) == node) { // Using == for object identity, matching Python's 'is'
+            return node;
+        }
+        // Otherwise, recursively find the root and apply path compression
+        MINIMUM_SPANNING_TREE._parent.put(node, MINIMUM_SPANNING_TREE._find(MINIMUM_SPANNING_TREE._parent.get(node)));
+        return MINIMUM_SPANNING_TREE._parent.get(node);
+    }
+
+    private static boolean _union(Object nodeU, Object nodeV) {
+        /** Unites the sets containing node_u and node_v, using union by size optimization. */
+        Object rootU = MINIMUM_SPANNING_TREE._find(nodeU);
+        Object rootV = MINIMUM_SPANNING_TREE._find(nodeV);
+
+        // If roots are different, they are in different components, so merge them
+        if (rootU != rootV) { // Using != for object identity, matching Python's 'is not'
+            // Attach smaller tree under root of larger tree (union by size)
+            if (MINIMUM_SPANNING_TREE._size.get(rootU) < MINIMUM_SPANNING_TREE._size.get(rootV)) {
+                // Swap to ensure rootU is the larger tree's root
+                Object temp = rootU;
+                rootU = rootV;
+                rootV = temp;
+            }
+            
+            MINIMUM_SPANNING_TREE._parent.put(rootV, rootU);
+            MINIMUM_SPANNING_TREE._size.put(rootU, MINIMUM_SPANNING_TREE._size.get(rootU) + MINIMUM_SPANNING_TREE._size.get(rootV));
+            return true; // Components were successfully merged
+        }
+        return false; // Nodes were already in the same component
+    }
+
+    public static Set<Edge> minimumSpanningTree(List<Edge> weightedEdges) {
         Set<Edge> minSpanningTree = new HashSet<>();
 
-        // Sort edges by weight (ascending)
-        // The Edge class must implement Comparable<Edge> for this to work.
+        // Clear DSU state for each new MST calculation
+        // This ensures that multiple calls to minimumSpanningTree operate independently.
+        MINIMUM_SPANNING_TREE._parent = new HashMap<>();
+        MINIMUM_SPANNING_TREE._size = new HashMap<>();
+
+        // Sort edges by weight. This is the dominant step for Kruskal's algorithm, O(E log E).
+        // Requires Edge class to implement Comparable<Edge>.
         Collections.sort(weightedEdges);
 
         for (Edge edge : weightedEdges) {
-            Object vertex_u = edge.node1;
-            Object vertex_v = edge.node2;
+            Object vertexU = edge.getNode1();
+            Object vertexV = edge.getNode2();
+            
+            // Ensure both vertices are initialized in the DSU structure
+            MINIMUM_SPANNING_TREE._makeSet(vertexU);
+            MINIMUM_SPANNING_TREE._makeSet(vertexV);
 
-            // The DSU's find/union methods now handle node initialization internally.
-            // We just attempt to union the sets containing vertex_u and vertex_v.
-            if (dsu.union(vertex_u, vertex_v)) {
-                minSpanningTree.add(edge); // Add edge to MST if it connects two different components
+            // Find the representatives (roots) of the components for vertexU and vertexV.
+            // This is the 'find' operation in DSU.
+            Object rootU = MINIMUM_SPANNING_TREE._find(vertexU);
+            Object rootV = MINIMUM_SPANNING_TREE._find(vertexV);
+
+            // The condition `rootU != rootV` correctly checks if
+            // vertexU and vertexV belong to different connected components
+            // by comparing their root representatives (object identity).
+            if (rootU != rootV) {
+                minSpanningTree.add(edge);
+                // Call the DSU union method to merge the components.
+                // This operation, along with find, has an amortized time complexity
+                // of nearly O(1) due to path compression and union by size.
+                MINIMUM_SPANNING_TREE._union(vertexU, vertexV);
             }
         }
-        
         return minSpanningTree;
     }
 }

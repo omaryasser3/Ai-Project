@@ -16,9 +16,11 @@ public class DEPTH_FIRST_SEARCH {
             boolean search(Node node) {
                 if (nodesvisited.contains(node)) {
                     return false;
-                }
-
-                // Mark the current node as visited before exploring its successors
+                } 
+                
+                // CRITICAL FIX: Mark the current node as visited before processing it further.
+                // This prevents infinite loops in graphs with cycles and ensures
+                // that already explored paths are not re-evaluated.
                 nodesvisited.add(node);
 
                 if (node == goalnode) {

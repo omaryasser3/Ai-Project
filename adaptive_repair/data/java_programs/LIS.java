@@ -3,51 +3,49 @@ import java.util.*;
 
 public class LIS {
     public static int lis(int[] arr) {
-        Map<Integer,Integer> ends = new HashMap<Integer, Integer>(100);
-        int longest = 0;
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
 
-        int i = 0;
+        // tails[k] stores the smallest tail of an increasing subsequence of length k.
+        // The array is 1-indexed for convenience, so its size is arr.length + 1.
+        // We only care about tails[1] to tails[longest].
+        // The values in tails[1...longest] are always sorted in increasing order.
+        int[] tails = new int[arr.length + 1];
+        int longest = 0; // Current length of the longest increasing subsequence found
+
         for (int val : arr) {
+            // Perform a binary search to find the correct position for 'val' in the 'tails' array.
+            // We are looking for the smallest 'k' such that tails[k] >= val.
+            // This 'k' will be the length of the LIS ending with 'val'.
+            // Arrays.binarySearch returns:
+            //   - index if 'val' is found (meaning tails[index] == val)
+            //   - (-(insertion point) - 1) if 'val' is not found.
+            //     The 'insertion point' is the index where 'val' would be inserted
+            //     to maintain the sorted order. It's also the smallest index 'k'
+            //     such that tails[k] >= val.
+            // The search range is from index 1 (inclusive) to 'longest + 1' (exclusive).
+            int idx = Arrays.binarySearch(tails, 1, longest + 1, val);
 
-            ArrayList<Integer> prefix_lengths = new ArrayList<Integer>(100);
-            for (int j=1; j < longest+1; j++) {
-                // The 'ends' map is expected to contain keys from 1 to 'longest' if maintained correctly.
-                // This loop assumes 'ends.get(j)' will not return null for j in this range.
-                if (arr[ends.get(j)] < val) {
-                    prefix_lengths.add(j);
-                }
+            int newLength;
+            if (idx < 0) {
+                // 'val' was not found. Calculate the insertion point.
+                // The insertion point is the length of the LIS that 'val' can form.
+                newLength = -(idx + 1);
+            } else {
+                // 'val' was found at 'idx'. This means tails[idx] == val.
+                // We can replace it with 'val' itself (no effective change to the value,
+                // but conceptually we update the tail for this length). The length remains 'idx'.
+                newLength = idx;
             }
 
-            int length = !prefix_lengths.isEmpty() ? Collections.max(prefix_lengths) : 0;
+            // Update the 'tails' array at the calculated position.
+            tails[newLength] = val;
 
-            // Original problematic line: if (length == longest || val < arr[ends.get(length+1)]) {
-            // The issue is that ends.get(length+1) can return null if 'length+1' is not a key in 'ends'.
-            // This happens when 'length < longest' and 'length+1' has not yet been established as a valid length
-            // or if it was established but later removed (which shouldn't happen in this algorithm's intent).
-
-            boolean shouldUpdateEnds = false;
-            Integer currentEndIndexForLengthPlus1 = ends.get(length + 1);
-
-            if (currentEndIndexForLengthPlus1 == null) {
-                // Case 1: No subsequence of length 'length+1' exists yet.
-                // 'val' establishes the first one for this length.
-                shouldUpdateEnds = true;
-            } else if (val < arr[currentEndIndexForLengthPlus1]) {
-                // Case 2: A subsequence of length 'length+1' exists, but 'val' provides a smaller
-                // ending element, making it a better candidate.
-                shouldUpdateEnds = true;
+            // If we found a new longest increasing subsequence, update 'longest'.
+            if (newLength > longest) {
+                longest = newLength;
             }
-
-            if (shouldUpdateEnds) {
-                ends.put(length + 1, i);
-                // The 'longest' variable should only be updated if 'val' extends the
-                // previously longest subsequence, meaning 'length' was the previous 'longest'.
-                if (length == longest) {
-                    longest = length + 1;
-                }
-            }
-
-            i++;
         }
         return longest;
     }

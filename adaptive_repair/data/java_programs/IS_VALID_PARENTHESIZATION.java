@@ -1,7 +1,7 @@
 package java_programs;
 import java.util.*;
 /*
- * To change this file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
@@ -16,7 +16,7 @@ public class IS_VALID_PARENTHESIZATION {
             Character paren = parens.charAt(i);
             if (paren.equals('(')) {
                 depth++;
-            } else {
+            } else { // Assuming only '(' and ')' characters
                 depth--;
                 if (depth < 0) { return false; }
             }

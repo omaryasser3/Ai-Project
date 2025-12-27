@@ -12,26 +12,43 @@ import java.util.*;
  */
 public class MAX_SUBLIST_SUM {
     public static int max_sublist_sum(int[] arr) {
+        // Handle empty or null array case. Consistent with original behavior where
+        // an empty array would result in max_so_far remaining 0.
         if (arr == null || arr.length == 0) {
-            return 0; // Consistent with original behavior for empty/null arrays, though problem implies non-empty.
+            return 0;
         }
 
-        int max_so_far = arr[0]; // Initialize with the first element to handle all-negative arrays correctly
-        int max_ending_here = arr[0]; // Initialize with the first element
+        int max_so_far = Integer.MIN_VALUE; // Initialize to smallest possible value to correctly track negative sums
+        int max_ending_here = 0; // Current sum ending at the current position
+        boolean all_negatives = true; // Flag to detect if all elements are negative
+        int max_single_element = Integer.MIN_VALUE; // To store the largest (least negative) single element
 
-        // Iterate from the second element
-        for (int i = 1; i < arr.length; i++) {
-            int x = arr[i];
-            // Kadane's algorithm: The maximum sum ending at the current position 'x'
-            // is either 'x' itself (starting a new sublist) or 'x' added to the
-            // maximum sum ending at the previous position (extending the current sublist).
-            // This correctly discards negative prefixes.
-            max_ending_here = Math.max(x, max_ending_here + x);
-            
+        for (int x : arr) {
+            // Track if any non-negative number is encountered
+            if (x >= 0) {
+                all_negatives = false;
+            }
+            // Keep track of the largest single element, needed if all numbers are negative
+            max_single_element = Math.max(max_single_element, x);
+
+            max_ending_here = max_ending_here + x;
+            // If max_ending_here becomes negative, it means this sublist is contributing negatively.
+            // Reset it to 0 to start a new potential sublist from the next element.
+            // This is a core part of Kadane's algorithm for positive sums.
+            if (max_ending_here < 0) {
+                max_ending_here = 0;
+            }
             // Update the overall maximum sum found so far
             max_so_far = Math.max(max_so_far, max_ending_here);
         }
 
-        return max_so_far;
+        // Special handling for arrays where all elements are negative.
+        // In such cases, max_so_far would be 0 (due to max_ending_here resets).
+        // The correct answer for an all-negative array is the largest (least negative) single element.
+        if (all_negatives) {
+            return max_single_element;
+        } else {
+            return max_so_far;
+        }
     }
 }

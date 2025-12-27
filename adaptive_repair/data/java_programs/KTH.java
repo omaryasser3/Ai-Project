@@ -1,25 +1,33 @@
 package java_programs;
-import java.util.*;
-/*
 
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class KTH {
-    public static Integer kth(ArrayList<Integer> arr, int k) {
-        // Handle the edge case of an empty or null input list.
-        // Finding the k-th element in an empty list is undefined.
+
+    public static int kth(List<Integer> arr, int k) {
+        // Handle empty array or invalid k (optional, but good practice for robustness)
         if (arr == null || arr.isEmpty()) {
-            throw new IllegalArgumentException("Cannot find k-th element in an empty or null list.");
+            throw new IllegalArgumentException("Array cannot be empty");
+        }
+        if (k < 0 || k >= arr.size()) {
+            throw new IndexOutOfBoundsException(
+                String.format("k (%d) is out of bounds for array of length %d", k, arr.size())
+            );
         }
 
-        // The rest of the QuickSelect algorithm logic
-        int pivot = arr.get(0); // This line is safe due to the check above
-        ArrayList<Integer> below, above;
-        below = new ArrayList<Integer>(arr.size()); // Preserve original style for ArrayList initialization
-        above = new ArrayList<Integer>(arr.size()); // Preserve original style for ArrayList initialization
+        // Optimize: Choose a random pivot to improve average-case time complexity
+        // and mitigate worst-case O(N^2) scenarios (e.g., sorted/reverse-sorted arrays).
+        Random rand = new Random();
+        int pivotIdx = rand.nextInt(arr.size());
+        int pivot = arr.get(pivotIdx);
 
-        // Partition elements into 'below' (less than pivot) and 'above' (greater than pivot)
-        // Elements equal to pivot are implicitly handled by their count.
-        for (Integer x : arr) {
+        List<Integer> below = new ArrayList<>();
+        List<Integer> above = new ArrayList<>();
+        // Elements equal to the pivot are implicitly handled by not being in 'below' or 'above'
+        // and are covered by the 'else' branch.
+        for (int x : arr) {
             if (x < pivot) {
                 below.add(x);
             } else if (x > pivot) {
@@ -27,28 +35,24 @@ public class KTH {
             }
         }
 
-        int num_less = below.size();
-        // num_lessoreq represents the count of elements less than or equal to the pivot.
-        // This is equivalent to below.size() + count_of_elements_equal_to_pivot.
-        // The calculation arr.size() - above.size() correctly yields this value.
-        int num_lessoreq = arr.size() - above.size();
-
-        // Bug fix: Adjust conditions for k-th element (assuming k is 1-indexed).
-        // The original code implicitly treated k as 0-indexed, leading to off-by-one errors
-        // if k is intended to be 1-indexed (e.g., 1st smallest, 2nd smallest).
-        if (k <= num_less) {
-            // The k-th element (1-indexed) is in the 'below' partition.
-            // Recurse on 'below' with the same k.
+        int numLess = below.size();
+        // num_lessoreq represents the count of elements that are less than or equal to the pivot.
+        // This includes elements in 'below' and elements equal to the pivot.
+        // It can be calculated as len(arr) - len(above).
+        int numLessOrEq = arr.size() - above.size();
+        
+        if (k < numLess) {
+            // The k-th element is in the 'below' partition.
+            // Its 0-indexed position relative to 'below' remains 'k'.
             return kth(below, k);
-        } else if (k > num_lessoreq) {
-            // The k-th element (1-indexed) is in the 'above' partition.
-            // We need to adjust k because we've skipped 'num_lessoreq' elements (those less than or equal to pivot).
-            // So, we're looking for the (k - num_lessoreq)-th element in the 'above' list.
-            return kth(above, k - num_lessoreq);
+        } else if (k >= numLessOrEq) {
+            // The k-th element is in the 'above' partition.
+            // Its 0-indexed position relative to 'above' needs to be adjusted.
+            // We subtract all elements that are less than or equal to the pivot.
+            return kth(above, k - numLessOrEq);
         } else {
-            // The k-th element (1-indexed) is the pivot itself.
-            // This condition means num_less < k <= num_lessoreq.
-            // In this range, all elements are equal to the pivot.
+            // The k-th element is one of the elements equal to the pivot.
+            // This occurs when num_less <= k < num_lessoreq.
             return pivot;
         }
     }

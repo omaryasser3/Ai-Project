@@ -14,36 +14,31 @@ public class PASCAL {
     public static ArrayList<ArrayList<Integer>> pascal(int n) {
         ArrayList<ArrayList<Integer>> rows = new ArrayList<ArrayList<Integer>>();
         
-        // Handle cases where n is non-positive, returning an empty list.
-        if (n <= 0) {
+        // Handle the case where n=0, returning an empty list of rows.
+        // The original code would return [[1]] for n=0, which is inconsistent
+        // with generating 'n' rows. If n=0, 0 rows should be generated.
+        if (n == 0) {
             return rows;
         }
 
-        // Initialize the first row (row 0) which always contains a single '1'.
         ArrayList<Integer> init = new ArrayList<Integer>();
         init.add(1);
         rows.add(init);
 
-        // Generate subsequent rows from row 1 up to n-1.
         for (int r=1; r<n; r++) {
             ArrayList<Integer> row = new ArrayList<Integer>();
-            // For the r-th row (0-indexed), there should be r+1 elements.
-            // The inner loop must iterate from c=0 to c=r (inclusive).
-            for (int c=0; c<=r; c++) { // BUG FIX: Changed loop condition from c<r to c<=r
+            // BUG FIX: The inner loop must iterate 'r+1' times for a 0-indexed row 'r'.
+            // Original: for (int c=0; c<r; c++) iterated 'r' times.
+            // Corrected: for (int c=0; c<=r; c++) iterates 'r+1' times.
+            for (int c=0; c<=r; c++) { // Changed loop condition from c<r to c<=r
                 int upleft, upright;
-                
-                // Get the 'upleft' element from the previous row (r-1).
-                // If c is 0, there is no element to the 'upleft', so it's treated as 0.
                 if (c > 0) {
                     upleft = rows.get(r-1).get(c-1);
                 } else {
                     upleft = 0;
                 }
-                
-                // Get the 'upright' element from the previous row (r-1).
-                // The previous row (r-1) has 'r' elements (indices 0 to r-1).
-                // If c is equal to r (i.e., beyond the last element of the previous row),
-                // there is no element to the 'upright', so it's treated as 0.
+                // The previous row (r-1) has 'r' elements, indexed 0 to r-1.
+                // So, 'c' must be less than 'r' to be a valid index in the previous row.
                 if (c < r) {
                     upright = rows.get(r-1).get(c);
                 } else {

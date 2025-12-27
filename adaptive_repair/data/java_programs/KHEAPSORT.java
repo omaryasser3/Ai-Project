@@ -1,43 +1,53 @@
 package java_programs;
+import java.util.*;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-
+/**
+ *
+ * @author derricklin
+ */
 public class KHEAPSORT {
+    // import heapq
+    // heap is data structure used for priority queue
+    // pq O(log n) to pull off lowest priority item
+    // heap is a type of binary tree
+    // every node its value smaller than everything below it
+    // priority queue in java is least-value first (at head)
 
-    public static List<Integer> kheapsort(int[] arr, int k) {
-        // Use PriorityQueue as a min-heap in Java
-        PriorityQueue<Integer> heap = new PriorityQueue<>();
-
-        // Initialize the heap with the first 'k' elements from the array.
-        // This part of the initial setup is preserved as per the original code's intent.
-        // Ensure we don't go out of bounds if arr.length < k
-        for (int i = 0; i < k && i < arr.length; i++) {
-            heap.offer(arr[i]);
+    public static ArrayList<Integer> kheapsort(ArrayList<Integer> arr, int k) {
+        PriorityQueue<Integer> heap = new PriorityQueue<Integer>();
+        
+        // Initialize the heap with the first 'k' elements.
+        // This loop adds elements from index 0 up to k-1 (or arr.size()-1 if arr is smaller than k).
+        for (int i = 0; i < k && i < arr.size(); i++) {
+            heap.add(arr.get(i));
         }
 
-        List<Integer> output = new ArrayList<>();
-        // The original bug was iterating over the *entire* input array 'arr' again,
-        // which caused elements arr[0] to arr[k-1] to be re-added to the heap.
-        // To fix this, we start iterating from index 'k' onwards.
-        // This ensures that each element is added to the heap exactly once.
-        for (int i = k; i < arr.length; i++) { // Start from index 'k' instead of 0
-            // Add the current element to the heap
-            heap.offer(arr[i]);
-            // Pop the smallest element from the heap and add it to the output.
-            // This maintains the heap size and extracts elements in sorted order.
-            Integer popped = heap.poll();
-            output.add(popped);
+        ArrayList<Integer> output = new ArrayList<Integer>();
+        
+        // Add the remaining elements from index 'k' onwards to the heap.
+        // The original code would add an element and immediately poll one. This approach
+        // is suitable for sorting a k-sorted array (where elements are 'k' positions away
+        // from their sorted place) but not a general unsorted array, as it doesn't guarantee
+        // the globally smallest element is always polled.
+        // To ensure a fully sorted output for any array, all elements must be added to the heap
+        // before any are extracted for the final sorted list.
+        for (int i = k; i < arr.size(); i++) {
+            heap.add(arr.get(i));
+            // The original lines 'Integer popped = heap.poll();' and 'output.add(popped);'
+            // were removed from this loop. Polling is now deferred until all elements are in the heap.
         }
 
-        // After iterating through all elements, the heap will contain the
-        // remaining 'k' elements (or fewer if len(arr) < k initially).
-        // Pop all remaining elements from the heap and append them to the output.
+        // After all elements from the input array have been added to the heap,
+        // drain the heap to get the elements in sorted order.
         while (!heap.isEmpty()) {
             output.add(heap.poll());
         }
 
         return output;
+
     }
 }

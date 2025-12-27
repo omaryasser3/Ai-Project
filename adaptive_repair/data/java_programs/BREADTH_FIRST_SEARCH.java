@@ -1,38 +1,43 @@
 package java_programs;
+import java.util.*;
+import java.util.ArrayDeque;
 
-import java.util.Queue;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-interface GraphNode<T> {
-    List<T> getSuccessors();
-}
-
+/**
+ * @author derricklin
+ */
 public class BREADTH_FIRST_SEARCH {
 
-    public static <T extends GraphNode<T>> boolean breadth_first_search(T startNode, T goalNode) {
-        Set<T> nodesVisited = new HashSet<>();
-        Queue<T> queue = new LinkedList<>();
+    public static boolean breadth_first_search(Node startnode, Node goalnode) {
+        Deque<Node> queue = new ArrayDeque<>();
+        queue.addLast(startnode);
 
-        queue.offer(startNode);
-        nodesVisited.add(startNode);
+        Set<Node> nodesvisited = new HashSet<>();
+        nodesvisited.add(startnode);
 
         while (!queue.isEmpty()) {
-            T node = queue.poll();
+            Node node = queue.removeFirst();
 
-            if (node.equals(goalNode)) {
+            if (node == goalnode) {
                 return true;
             } else {
-                for (T successorNode : node.getSuccessors()) {
-                    if (!nodesVisited.contains(successorNode)) {
-                        queue.offer(successorNode);
-                        nodesVisited.add(successorNode);
+                for (Node successor_node : node.getSuccessors()) {
+                    if (!nodesvisited.contains(successor_node)) {
+                        // For a standard Breadth-First Search, successors are added
+                        // to the end of the queue (addLast) to maintain FIFO order.
+                        queue.addLast(successor_node);
+                        nodesvisited.add(successor_node);
                     }
                 }
             }
         }
+        // If the loop finishes, it means the queue is empty and the goalnode was not found.
+        // Therefore, the goalnode is unreachable from the startnode.
         return false;
     }
+
 }

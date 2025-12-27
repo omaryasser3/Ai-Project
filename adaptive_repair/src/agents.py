@@ -172,8 +172,22 @@ def call_llm(model_name: str, prompt: str, temp: float = 0.2) -> str:
             # Loop continues with new key
             
         except Exception as e:
+            # Check for invalid API key error (400)
+            if "400" in str(e) and ("API_KEY_INVALID" in str(e) or "not valid" in str(e).lower()):
+                logger.warning(f"API key is invalid. Rotating to next key...")
+                if not _rotate_key():
+                    logger.critical("All API keys exhausted during call_llm.")
+                    raise Exception("All API keys exhausted")
+                # Loop continues with new key
+            # Check for leaked API key error (403)
+            elif "403" in str(e) and "leaked" in str(e).lower():
+                logger.warning(f"API key reported as leaked. Rotating to next key...")
+                if not _rotate_key():
+                    logger.critical("All API keys exhausted during call_llm.")
+                    raise Exception("All API keys exhausted")
+                # Loop continues with new key
             # Check for "429" in string representation if exception type isn't caught
-            if "429" in str(e) or "Resource has been exhausted" in str(e):
+            elif "429" in str(e) or "Resource has been exhausted" in str(e):
                 logger.warning(f"Quota error detected: {e}")
                 if not _rotate_key():
                     logger.critical("All API keys exhausted during call_llm.")

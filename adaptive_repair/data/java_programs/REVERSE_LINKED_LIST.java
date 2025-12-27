@@ -17,7 +17,7 @@ public class REVERSE_LINKED_LIST {
         while (node != null) {
             nextnode = node.getSuccessor();
             node.setSuccessor(prevnode);
-            prevnode = node; // CRITICAL FIX: Update prevnode to the current node BEFORE moving to the next.
+            prevnode = node; // CRITICAL FIX: Update prevnode to the current node
             node = nextnode;
         }
         return prevnode;

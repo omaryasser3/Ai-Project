@@ -13,23 +13,21 @@ import java.util.*;
 public class SUBSEQUENCES {
     public static ArrayList<ArrayList> subsequences(int a, int b, int k) {
         if (k == 0) {
-            ArrayList ret = new ArrayList();
-            ret.add(new ArrayList()); // Add one empty subsequence
-            return ret;
+            ArrayList<ArrayList> result = new ArrayList<>();
+            result.add(new ArrayList()); // Add an empty list to represent the single empty subsequence
+            return result;
         }
 
         ArrayList ret = new ArrayList(50);
-        // The loop condition was incorrect. It should allow 'i' to go up to 'b - k + 1'
-        // to ensure there are enough elements remaining (k-1) from 'i+1' to 'b'.
-        // The original 'i < b+1-k' was equivalent to 'i <= b-k', which was off by one.
-        for (int i=a; i<=b-k+1; i++) {
-            ArrayList base = new ArrayList(50);
+        // The loop condition was incorrect, causing it to miss valid starting elements.
+        // It should ensure that there are enough elements remaining (b - i) to form a subsequence of length k-1 after picking 'i'.
+        // This means b - i >= k-1, which simplifies to i <= b - k + 1.
+        // So, the loop should go up to b - k + 1 (inclusive), or i < b - k + 2.
+        for (int i=a; i<b+2-k; i++) {
             for (ArrayList rest : subsequences(i+1, b, k-1)) {
                 rest.add(0,i);
-                base.add(rest);
+                ret.add(rest);
             }
-            ret.addAll(base);
-
         }
 
         return ret;

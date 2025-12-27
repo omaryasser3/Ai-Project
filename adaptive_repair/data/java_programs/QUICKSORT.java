@@ -19,30 +19,29 @@ public class QUICKSORT {
         Integer pivot = arr.get(0);
         ArrayList<Integer> lesser = new ArrayList<Integer>();
         ArrayList<Integer> greater = new ArrayList<Integer>();
-        ArrayList<Integer> middle = new ArrayList<Integer>(); // Initialize middle list
+        ArrayList<Integer> middle = new ArrayList<Integer>(); // This list will hold the pivot and elements equal to it
 
-        // Add the chosen pivot to the middle list initially
-        middle.add(pivot);
+        middle.add(pivot); // Add the initial pivot to the middle list
 
-        // Partition the rest of the elements
+        // Iterate through the rest of the elements (excluding the first one, which is the pivot)
         for (Integer x : arr.subList(1, arr.size())) {
             if (x < pivot) {
                 lesser.add(x);
             } else if (x > pivot) {
                 greater.add(x);
             } else { // x == pivot
-                middle.add(x); // Elements equal to pivot go to the middle list
+                middle.add(x); // Add elements equal to the pivot to the middle list
             }
         }
         
-        // Recursively sort the lesser and greater partitions
         lesser = quicksort(lesser);
         greater = quicksort(greater);
         
-        // Assemble the sorted lists: lesser + middle + greater
+        // Combine the sorted lists: lesser + middle + greater
+        // The original assembly logic (middle.addAll(greater); lesser.addAll(middle);) correctly concatenates
+        // the three partitions in the right order if 'middle' contains all pivot-equal elements.
+        middle.addAll(greater);
         lesser.addAll(middle);
-        lesser.addAll(greater);
-        
         return lesser;
 
     }

@@ -11,10 +11,7 @@ import java.util.*;
  */
 public class DETECT_CYCLE {
     public static boolean detect_cycle(Node node) {
-        // Handle edge cases: an empty list or a list with only one node.
-        // In these scenarios, no cycle can exist, and attempting to access
-        // successors would lead to NullPointerExceptions.
-        if (node == null || node.getSuccessor() == null) {
+        if (node == null) { // Handle empty list
             return false;
         }
 
@@ -22,30 +19,24 @@ public class DETECT_CYCLE {
         Node tortoise = node;
 
         while (true) {
-            // Tortoise moves one step.
+            // Tortoise moves one step
             tortoise = tortoise.getSuccessor();
-            // If tortoise becomes null, it means we reached the end of the list.
-            // No cycle.
-            if (tortoise == null) {
-                return false;
-            }
 
-            // Hare moves two steps. Each step must be guarded against null.
-            // First step for hare:
+            // Hare attempts to move two steps
+            // Check if hare can move one step
             if (hare.getSuccessor() == null) {
-                return false; // Reached end of list, no cycle.
+                return false; // End of list reached, no cycle
             }
-            hare = hare.getSuccessor(); // Hare takes the first step.
-
-            // Second step for hare:
-            if (hare.getSuccessor() == null) {
-                return false; // Reached end of list, no cycle.
+            // Store the result of the first step to check the second step
+            Node hareNext = hare.getSuccessor();
+            // Check if hare can move a second step
+            if (hareNext.getSuccessor() == null) {
+                return false; // End of list reached, no cycle
             }
-            hare = hare.getSuccessor(); // Hare takes the second step.
+            hare = hareNext.getSuccessor(); // Hare moves two steps
 
-            // If hare and tortoise meet, a cycle is detected.
             if (hare == tortoise) {
-                return true;
+                return true; // Cycle detected
             }
         }
     }

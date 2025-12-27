@@ -7,6 +7,7 @@ import java.util.*;
  */
 
 /**
+ *
  * @author derricklin
  */
 public class HANOI {
@@ -21,17 +22,9 @@ public class HANOI {
             crap_set.add(3);
             crap_set.remove(start);
             crap_set.remove(end);
-            int helper = crap_set.poll(); // This is the auxiliary peg
-
-            // Step 1: Move height-1 disks from 'start' to 'helper' using 'end' as auxiliary
+            int helper = crap_set.poll();
             steps.addAll(hanoi(height-1, start, helper));
-            
-            // Step 2: Move the largest disk (height-th disk) from 'start' to 'end'
-            // BUG FIX: The largest disk should move directly from 'start' to 'end'.
-            // It was incorrectly moving from 'start' to 'helper'.
-            steps.add(new Pair<Integer,Integer>(start, end)); 
-            
-            // Step 3: Move height-1 disks from 'helper' to 'end' using 'start' as auxiliary
+            steps.add(new Pair<Integer,Integer>(start, end));
             steps.addAll(hanoi(height-1, helper, end));
         }
 

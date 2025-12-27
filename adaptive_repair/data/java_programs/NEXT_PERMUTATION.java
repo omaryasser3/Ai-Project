@@ -1,47 +1,44 @@
 package java_programs;
-import java.util.*;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- * @author derricklin
- */
 public class NEXT_PERMUTATION {
-    public static ArrayList<Integer> next_permutation(ArrayList<Integer> perm) {
-        // Step 1: Find the largest index `i` such that `perm[i] < perm[i+1]`.
-        // If no such index exists, the permutation is the last permutation.
-        for (int i = perm.size() - 2; i != -1; i--) {
-            if (perm.get(i) < perm.get(i + 1)) {
-                // Step 2: Find the largest index `j` such that `perm[j] > perm[i]`.
-                // This `j` must be in the suffix `perm[i+1...]`.
-                for (int j = perm.size() - 1; j != i; j--) {
-                    // The issue description states the condition `perm.get(j) < perm.get(i)` was incorrect.
-                    // The provided 'Buggy code' already contains the correct condition `perm.get(j) > perm.get(i)`.
-                    if (perm.get(j) > perm.get(i)) { // This condition is already correct as per the algorithm.
-                        // Step 3: Swap `perm[i]` and `perm[j]`.
-                        // The original code used `next_perm = perm;` which implies
-                        // modifying `perm` in place. We continue this behavior.
-                        int temp_i = perm.get(i);
-                        int temp_j = perm.get(j);
-                        perm.set(i, temp_j);
-                        perm.set(j, temp_i);
-
-                        // Step 4: Reverse the suffix `perm[i+1...]`.
-                        // Replaced the manual reversal with `Collections.reverse` for conciseness and efficiency.
-                        Collections.reverse(perm.subList(i + 1, perm.size()));
-
-                        return perm; // Return the modified permutation
-                    }
-                }
-            }
+    public static int[] next_permutation(int[] perm) {
+        int n = perm.length;
+        int i = n - 2;
+        while (i >= 0 && perm[i] >= perm[i + 1]) {
+            i--;
         }
 
-        // If the outer loop completes, it means no such `i` was found,
-        // indicating that the input `perm` is the last permutation.
-        // As per the original code's behavior, return an empty list.
-        return new ArrayList<Integer>();
+        if (i == -1) {
+            return null; // Equivalent to Python's [] to signal no next permutation
+        }
+
+        int j = n - 1;
+        // Find the largest index j to the right of i such that perm[j] > perm[i].
+        // Due to the descending order of perm[i+1:], this also finds the smallest value perm[j] > perm[i].
+        while (j > i) {
+            if (perm[j] > perm[i]) {
+                break;
+            }
+            j--;
+        }
+
+        // Swap perm[i] and perm[j]
+        int temp = perm[i];
+        perm[i] = perm[j];
+        perm[j] = temp;
+
+        // Reverse the suffix in-place using two pointers to avoid creating new list objects
+        int left = i + 1;
+        int right = n - 1;
+        while (left < right) {
+            // Swap perm[left] and perm[right]
+            temp = perm[left];
+            perm[left] = perm[right];
+            perm[right] = temp;
+            left++;
+            right--;
+        }
+
+        return perm;
     }
 }

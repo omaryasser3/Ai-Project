@@ -2,53 +2,56 @@ package java_programs;
 
 public class LONGEST_COMMON_SUBSEQUENCE {
 
-    public static String longestCommonSubsequence(String a, String b) {
-        int m = a.length();
-        int n = b.length();
+    private static String[][] memo;
+    private static String strA;
+    private static String strB;
+    private static int lenA;
+    private static int lenB;
 
-        // dp[i][j] will store the length of the LCS of a[:i] and b[:j]
-        // Initialize with zeros. dp[0][j] and dp[i][0] are 0 for empty prefixes.
-        // Java initializes int arrays to 0 by default.
-        int[][] dp = new int[m + 1][n + 1];
+    public static String longest_common_subsequence(String a, String b) {
+        strA = a;
+        strB = b;
+        lenA = a.length();
+        lenB = b.length();
 
-        // Fill the dp table
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (a.charAt(i - 1) == b.charAt(j - 1)) {
-                    // If characters match, extend the LCS from the diagonal
-                    dp[i][j] = 1 + dp[i - 1][j - 1];
-                } else {
-                    // If characters don't match, take the maximum LCS length from
-                    // either skipping the current character in 'a' (dp[i-1][j])
-                    // or skipping the current character in 'b' (dp[i][j-1])
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-                }
-            }
+        // Initialize memoization table.
+        // The size is (lenA + 1) x (lenB + 1) because indices go up to lenA and lenB,
+        // and we need to store results for (lenA, j) and (i, lenB) as base cases.
+        memo = new String[lenA + 1][lenB + 1];
+
+        return _lcs(0, 0);
+    }
+
+    private static String _lcs(int i, int j) {
+        // Check if the result for this subproblem (i, j) has already been computed.
+        if (memo[i][j] != null) {
+            return memo[i][j];
         }
 
-        // Reconstruct the LCS string by backtracking through the dp table
-        StringBuilder lcsChars = new StringBuilder();
-        int i = m;
-        int j = n;
-        while (i > 0 && j > 0) {
-            if (a.charAt(i - 1) == b.charAt(j - 1)) {
-                // If characters match, it means this character is part of the LCS.
-                // Add it and move diagonally up-left.
-                lcsChars.append(a.charAt(i - 1));
-                i--;
-                j--;
-            } else if (dp[i - 1][j] > dp[i][j - 1]) {
-                // If the LCS length came from dp[i-1][j], it means a[i-1] was not part of the LCS.
-                // Move up (skip a[i-1]).
-                i--;
-            } else {
-                // If the LCS length came from dp[i][j-1], it means b[j-1] was not part of the LCS.
-                // Move left (skip b[j-1]).
-                j--;
-            }
+        // Base case: if either string segment is exhausted, there's no common subsequence.
+        // Return an empty string.
+        if (i == lenA || j == lenB) {
+            return "";
         }
 
-        // The LCS was built in reverse order during backtracking, so reverse it.
-        return lcsChars.reverse().toString();
+        String result;
+        // If the current characters from both strings match, they are part of the LCS.
+        // Append the character and recurse for the rest of the strings (i+1, j+1).
+        if (strA.charAt(i) == strB.charAt(j)) {
+            result = strA.charAt(i) + _lcs(i + 1, j + 1);
+        } else {
+            // If characters don't match, explore two possibilities:
+            // 1. Skip the current character in string B (move to B[j+1])
+            // 2. Skip the current character in string A (move to A[i+1])
+            // Take the longer of the two resulting LCSs.
+            String lcs1 = _lcs(i, j + 1); // LCS when A[i] is considered, but B[j] is skipped
+            String lcs2 = _lcs(i + 1, j); // LCS when B[j] is considered, but A[i] is skipped
+            result = (lcs1.length() >= lcs2.length()) ? lcs1 : lcs2;
+        }
+
+        // Store the computed result in the memoization table before returning,
+        // so it can be reused if this subproblem is encountered again.
+        memo[i][j] = result;
+        return result;
     }
 }
