@@ -63,7 +63,8 @@ def main_node(state: GraphState):
     src_lang = state['src_lang']
     
     main_agent = MainAgent()
-    issues, plan = main_agent.analyze_and_plan(code, src_language=src_lang)
+    user_feedback = state.get('user_feedback')
+    issues, plan = main_agent.analyze_and_plan(code, src_language=src_lang, user_feedback=user_feedback)
     
     queue = construct_queue(plan, issues)
     

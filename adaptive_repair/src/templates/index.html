@@ -10,18 +10,22 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 
-<body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4">
     <div class="container">
-      <a class="navbar-brand" href="#">AI Program Repair</a>
+      <a class="navbar-brand" href="#">
+        <span style="font-size: 1.3em; margin-right: 8px;">🔧</span>
+        AI Program Repair
+      </a>
     </div>
   </nav>
 
   <main class="container mb-5">
     <div class="row">
+      <!-- LEFT COLUMN: Input & Configuration -->
       <div class="col-lg-6 mb-4">
         <div class="card shadow-sm">
-          <div class="card-header bg-white">
+          <div class="card-header">
             <h5 class="mb-0">1. Paste Buggy Code</h5>
           </div>
           <div class="card-body">
@@ -51,229 +55,282 @@
             <div id="status" class="form-text text-muted mt-2"></div>
           </div>
         </div>
-
-        <!-- Plan Review Section (Initially Hidden) -->
-        <div id="plan-review-card" class="card shadow-sm mt-4 d-none">
-          <div class="card-header bg-white border-bottom border-warning">
-            <h5 class="mb-0 text-dark">1a. Review Plan</h5>
-          </div>
-          <div class="card-body bg-light-subtle">
-            <p class="small text-muted mb-3">
-              The AI has analyzed your code. Review the plan below before proceeding.
-            </p>
-
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="form-check form-switch mt-4">
-                  <input class="form-check-input" type="checkbox" id="plan-translate-check">
-                  <label class="form-check-label fw-bold" for="plan-translate-check">Enable Translation</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label for="plan-target-lang" class="form-label small fw-bold">Target Language</label>
-                <input type="text" class="form-control form-control-sm" id="plan-target-lang" placeholder="e.g. Java">
-              </div>
-            </div>
-
-            <div class="mt-3">
-              <div class="alert alert-info small py-2 mb-3" role="alert">
-                <strong>Detected:</strong> <span id="plan-detected-lang">...</span>
-              </div>
-
-              <div class="mb-3">
-                <label for="plan-feedback" class="form-label small fw-bold">Feedback / Instructions (Optional)</label>
-                <textarea class="form-control form-control-sm" id="plan-feedback" rows="2"
-                  placeholder="e.g. 'Don't use regex', 'Keep the helper class'"></textarea>
-              </div>
-
-              <button id="proceed-btn" class="btn btn-success w-100">
-                Looks Good - Proceed to Repair <i class="bi bi-arrow-right"></i>
-              </button>
-            </div>
-
-            <div class="mt-4 border-top pt-3">
-              <h6 class="text-secondary small fw-bold text-uppercase mb-2">Proposed Execution Steps</h6>
-              <ul id="execution-steps-list" class="list-group list-group-flush list-group-numbered small">
-                <!-- Steps will be populated here -->
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="card shadow-sm mt-4">
-          <div class="card-header bg-white">
-            <h6 class="mb-0">Detected Issues</h6>
-          </div>
-          <div class="card-body">
-            <ul id="issues-list" class="list-group small"></ul>
-            <div id="no-issues" class="text-muted small d-none">
-              No issues detected yet.
-            </div>
-          </div>
-        </div>
       </div>
 
+      <!-- RIGHT COLUMN: Results & Workflow (Tabbed) -->
       <div class="col-lg-6">
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-white">
-            <h5 class="mb-0">2. Repaired Code</h5>
-          </div>
-          <div class="card-body">
-            <pre id="repaired-code" class="bg-dark text-light p-3 rounded small"
-              style="min-height: 260px; white-space: pre-wrap;"></pre>
-          </div>
-        </div>
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs mb-3" id="repairTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="analysis-tab" data-bs-toggle="tab" data-bs-target="#analysis-pane"
+              type="button" role="tab" aria-controls="analysis-pane" aria-selected="true">Analysis</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="plan-tab" data-bs-toggle="tab" data-bs-target="#plan-pane" type="button"
+              role="tab" aria-controls="plan-pane" aria-selected="false">Plan</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="repair-tab" data-bs-toggle="tab" data-bs-target="#repair-pane" type="button"
+              role="tab" aria-controls="repair-pane" aria-selected="false">Repair</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="verification-tab" data-bs-toggle="tab" data-bs-target="#verification-pane"
+              type="button" role="tab" aria-controls="verification-pane" aria-selected="false">Verification</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="feedback-tab" data-bs-toggle="tab" data-bs-target="#feedback-pane"
+              type="button" role="tab" aria-controls="feedback-pane" aria-selected="false">Feedback</button>
+          </li>
+        </ul>
 
-        <!-- Feedback Section (Initialy Hidden) -->
-        <div id="feedback-card" class="card shadow-sm mb-4 d-none border-info">
-          <div class="card-header bg-info-subtle text-dark border-bottom border-info">
-            <h6 class="mb-0 fw-bold">Feedback & Iteration</h6>
-          </div>
-          <div class="card-body">
-            <label for="user-feedback" class="form-label small text-muted">
-              Is the repair correct? If not, explain why or what's missing.
-            </label>
-            <textarea id="user-feedback" class="form-control form-control-sm mb-3" rows="3"
-              placeholder="e.g. 'You fixed the syntax but the logic is still wrong because...'"></textarea>
+        <!-- Tab Content -->
+        <div class="tab-content" id="repairTabsContent">
 
-            <div class="d-flex gap-2">
-              <button id="accept-btn" class="btn btn-sm btn-outline-success flex-grow-1">
-                <i class="bi bi-check-circle"></i> Accept (Done)
-              </button>
-              <button id="replan-btn" class="btn btn-sm btn-warning flex-grow-1">
-                <i class="bi bi-arrow-repeat"></i> Re-plan with Feedback
-              </button>
-              <button id="autofix-btn" class="btn btn-sm btn-danger flex-grow-1">
-                <i class="bi bi-magic"></i> Auto-Fix with Feedback
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card shadow-sm mb-4">
-          <div class="card-header bg-white">
-            <h6 class="mb-0">Repair Explanations</h6>
-          </div>
-          <div class="card-body">
-            <div id="repair-explanations" class="small"></div>
-          </div>
-        </div>
-
-        <!-- Comprehensive Explanation Card (from ExplanationAgent) -->
-        <div id="comprehensive-explanation-card" class="card shadow-sm mb-4 d-none border-success">
-          <div class="card-header bg-light border-bottom border-success">
-            <h6 class="mb-0">
-              <i class="bi bi-check-circle me-2 text-success"></i>Comprehensive Analysis
-            </h6>
-          </div>
-          <div class="card-body">
-            <!-- Summary -->
-            <div id="explanation-summary" class="mb-3 p-3 bg-light rounded"></div>
-
-            <!-- Confidence Score -->
-            <div class="mb-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <strong class="small">Confidence Score:</strong>
-                <span id="confidence-score" class="badge bg-primary"></span>
+          <!-- TAB 1: Analysis (Issues) -->
+          <div class="tab-pane fade show active" id="analysis-pane" role="tabpanel" aria-labelledby="analysis-tab">
+            <!-- Detected Issues (Moved from Left) -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-header">
+                <h6 class="mb-0">Detected Issues</h6>
               </div>
-              <div class="progress" style="height: 8px;">
-                <div id="confidence-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+              <div class="card-body">
+                <ul id="issues-list" class="list-group small"></ul>
+                <div id="no-issues" class="text-muted small d-none">
+                  No issues detected yet.
+                </div>
               </div>
             </div>
+          </div>
 
-            <!-- Detailed Explanations -->
-            <div id="detailed-explanations" class="mb-3"></div>
+          <!-- TAB 2: Plan (Plan Review) -->
+          <div class="tab-pane fade" id="plan-pane" role="tabpanel" aria-labelledby="plan-tab">
+            <!-- Plan Review Section (Moved from Left) -->
+            <div id="plan-review-card" class="card shadow-sm mb-4 d-none">
+              <div class="card-header border-bottom border-warning">
+                <h5 class="mb-0">1a. Review Plan</h5>
+              </div>
+              <div class="card-body">
+                <p class="small text-muted mb-3">
+                  The AI has analyzed your code. Review the plan below before proceeding.
+                </p>
 
-            <!-- Risks -->
-            <div id="explanation-risks" class="d-none">
-              <strong class="small text-danger">Potential Risks:</strong>
-              <ul id="risks-list" class="small mt-2"></ul>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="form-check form-switch mt-4">
+                      <input class="form-check-input" type="checkbox" id="plan-translate-check">
+                      <label class="form-check-label fw-bold" for="plan-translate-check">Enable Translation</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="plan-target-lang" class="form-label small fw-bold">Target Language</label>
+                    <input type="text" class="form-control form-control-sm" id="plan-target-lang"
+                      placeholder="e.g. Java">
+                  </div>
+                </div>
+
+                <div class="mt-3">
+                  <div class="alert alert-info small py-2 mb-3" role="alert">
+                    <strong>Detected:</strong> <span id="plan-detected-lang">...</span>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="plan-feedback" class="form-label small fw-bold">Feedback / Instructions
+                      (Optional)</label>
+                    <textarea class="form-control form-control-sm" id="plan-feedback" rows="2"
+                      placeholder="e.g. 'Don't use regex', 'Keep the helper class'"></textarea>
+                  </div>
+
+                  <button id="proceed-btn" class="btn btn-success w-100">
+                    Looks Good - Proceed to Repair <i class="bi bi-arrow-right"></i>
+                  </button>
+                </div>
+
+                <div class="mt-4 border-top pt-3">
+                  <h6 class="text-secondary small fw-bold text-uppercase mb-2">Proposed Execution Steps</h6>
+                  <ul id="execution-steps-list" class="list-group list-group-flush list-group-numbered small">
+                    <!-- Steps will be populated here -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Repair (Code & Explanations) -->
+          <div class="tab-pane fade" id="repair-pane" role="tabpanel" aria-labelledby="repair-tab">
+            <!-- Repaired Code -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-header">
+                <h5 class="mb-0">2. Repaired Code</h5>
+              </div>
+              <div class="card-body">
+                <pre id="repaired-code" class="bg-dark text-light p-3 rounded small"
+                  style="min-height: 260px; white-space: pre-wrap;"></pre>
+              </div>
             </div>
 
-            <!-- Transparency Notes -->
-            <div id="transparency-notes" class="small text-muted mt-3"></div>
-          </div>
-        </div>
-
-        <!-- Test Validation Card (from TestGeneratorAgent) -->
-        <div id="test-validation-card" class="card shadow-sm mb-4 d-none border-primary">
-          <div class="card-header bg-light border-bottom border-primary">
-            <h6 class="mb-0">
-              <i class="bi bi-check2-circle me-2 text-primary"></i>🧪 Generated Unit Tests
-            </h6>
-          </div>
-          <div class="card-body">
-            <!-- Validation Summary -->
-            <div id="test-summary" class="alert alert-info small mb-3"></div>
-
-            <!-- Confidence Score -->
-            <div class="mb-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <strong class="small">Test Confidence Score:</strong>
-                <span id="test-confidence-score" class="badge bg-success"></span>
+            <!-- Repair Explanations -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-header">
+                <h6 class="mb-0">Repair Explanations</h6>
               </div>
-              <div class="progress" style="height: 10px;">
-                <div id="test-confidence-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%">
+              <div class="card-body">
+                <div id="repair-explanations" class="small"></div>
+              </div>
+            </div>
+
+            <!-- Adaptive Translation (Main Agent Plan) - Moved here -->
+            <div class="card shadow-sm mb-4">
+              <div class="card-header">
+                <h6 class="mb-0">Adaptive Translation (Main Agent Plan)</h6>
+              </div>
+              <div class="card-body small">
+                <div id="plan-summary" class="mb-2 text-muted">
+                  No plan yet.
+                </div>
+                <pre id="translated-code" class="bg-light border rounded p-2 small"
+                  style="min-height: 120px; white-space: pre-wrap;"></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 4: Verification (Tests, Comprehensive, Feedback) -->
+          <div class="tab-pane fade" id="verification-pane" role="tabpanel" aria-labelledby="verification-tab">
+            <!-- Comprehensive Explanation Card -->
+            <div id="comprehensive-explanation-card" class="card shadow-sm mb-4 d-none border-success">
+              <div class="card-header border-bottom border-success">
+                <h6 class="mb-0">
+                  <i class="bi bi-check-circle me-2 text-success"></i>Comprehensive Analysis
+                </h6>
+              </div>
+              <div class="card-body">
+                <!-- Summary -->
+                <div id="explanation-summary" class="mb-3 p-3 bg-dark bg-opacity-25 rounded text-light"></div>
+
+                <!-- Confidence Score -->
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong class="small">Confidence Score:</strong>
+                    <span id="confidence-score" class="badge bg-primary"></span>
+                  </div>
+                  <div class="progress" style="height: 8px;">
+                    <div id="confidence-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                  </div>
+                </div>
+
+                <!-- Detailed Explanations -->
+                <div id="detailed-explanations" class="mb-3"></div>
+
+                <!-- Risks -->
+                <div id="explanation-risks" class="d-none">
+                  <strong class="small text-danger">Potential Risks:</strong>
+                  <ul id="risks-list" class="small mt-2"></ul>
+                </div>
+
+                <!-- Transparency Notes -->
+                <div id="transparency-notes" class="small text-muted mt-3"></div>
+              </div>
+            </div>
+
+            <!-- Test Validation Card -->
+            <div id="test-validation-card" class="card shadow-sm mb-4 d-none border-primary">
+              <div class="card-header border-bottom border-primary">
+                <h6 class="mb-0">
+                  <i class="bi bi-check2-circle me-2 text-primary"></i>🧪 Generated Unit Tests
+                </h6>
+              </div>
+              <div class="card-body">
+                <!-- Validation Summary -->
+                <div id="test-summary" class="alert alert-info small mb-3"></div>
+
+                <!-- Confidence Score -->
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <strong class="small">Test Confidence Score:</strong>
+                    <span id="test-confidence-score" class="badge bg-success"></span>
+                  </div>
+                  <div class="progress" style="height: 10px;">
+                    <div id="test-confidence-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Generated Tests Code -->
+                <div class="mb-3">
+                  <strong class="small d-block mb-2">Generated Test Code:</strong>
+                  <pre id="test-code" class="bg-dark text-light p-3 rounded small"
+                    style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;"></pre>
+                </div>
+
+                <!-- Test Descriptions -->
+                <div id="test-descriptions-section" class="mb-3">
+                  <strong class="small d-block mb-2">📝 Test Descriptions:</strong>
+                  <ul id="test-descriptions-list" class="small list-unstyled"></ul>
+                </div>
+
+                <!-- Test Execution Results -->
+                <div id="test-execution-section" class="mb-3">
+                  <strong class="small d-block mb-2">⚡ Test Execution Results:</strong>
+                  <div id="test-execution-summary" class="alert mb-2"></div>
+                  <div id="test-execution-details" class="small">
+                    <ul id="test-execution-list" class="list-unstyled"></ul>
+                  </div>
+                  <details class="small">
+                    <summary class="text-muted" style="cursor: pointer;">📄 Full Execution Output</summary>
+                    <pre id="test-execution-output" class="bg-dark text-light p-2 rounded mt-2"
+                      style="max-height: 200px; overflow-y: auto; font-size: 0.75rem;"></pre>
+                  </details>
+                </div>
+
+                <!-- Coverage Notes -->
+                <div class="alert alert-secondary small mb-0">
+                  <strong>Coverage:</strong> <span id="test-coverage"></span>
+                </div>
+
+                <!-- Concerns (if any) -->
+                <div id="test-concerns" class="d-none mt-3">
+                  <strong class="small text-warning">⚠️ Potential Concerns:</strong>
+                  <ul id="test-concerns-list" class="small mt-2 text-warning"></ul>
+                </div>
+
+                <!-- Missing Tests (if any) -->
+                <div id="test-missing" class="d-none mt-2">
+                  <strong class="small text-muted">💡 Suggested Additional Tests:</strong>
+                  <ul id="test-missing-list" class="small mt-2 text-muted"></ul>
                 </div>
               </div>
             </div>
 
-            <!-- Generated Tests Code -->
-            <div class="mb-3">
-              <strong class="small d-block mb-2">Generated Test Code:</strong>
-              <pre id="test-code" class="bg-dark text-light p-3 rounded small"
-                style="max-height: 300px; overflow-y: auto; white-space: pre-wrap;"></pre>
-            </div>
 
-            <!-- Test Descriptions -->
-            <div id="test-descriptions-section" class="mb-3">
-              <strong class="small d-block mb-2">📝 Test Descriptions:</strong>
-              <ul id="test-descriptions-list" class="small list-unstyled"></ul>
-            </div>
 
-            <!-- Test Execution Results (NEW!) -->
-            <div id="test-execution-section" class="mb-3">
-              <strong class="small d-block mb-2">⚡ Test Execution Results:</strong>
-              <div id="test-execution-summary" class="alert mb-2"></div>
-              <div id="test-execution-details" class="small">
-                <ul id="test-execution-list" class="list-unstyled"></ul>
+          </div>
+
+          <!-- TAB 5: Feedback & Iteration -->
+          <div class="tab-pane fade" id="feedback-pane" role="tabpanel" aria-labelledby="feedback-tab">
+            <!-- Feedback Section (Moved here) -->
+            <div id="feedback-card" class="card shadow-sm mb-4 d-none border-info">
+              <div class="card-header border-bottom border-info">
+                <h6 class="mb-0">Feedback & Iteration</h6>
               </div>
-              <details class="small">
-                <summary class="text-muted" style="cursor: pointer;">📄 Full Execution Output</summary>
-                <pre id="test-execution-output" class="bg-dark text-light p-2 rounded mt-2"
-                  style="max-height: 200px; overflow-y: auto; font-size: 0.75rem;"></pre>
-              </details>
-            </div>
+              <div class="card-body">
+                <label for="user-feedback" class="form-label small text-muted">
+                  Is the repair correct? If not, explain why or what's missing.
+                </label>
+                <textarea id="user-feedback" class="form-control form-control-sm mb-3" rows="3"
+                  placeholder="e.g. 'You fixed the syntax but the logic is still wrong because...'"></textarea>
 
-            <!-- Coverage Notes -->
-            <div class="alert alert-secondary small mb-0">
-              <strong>Coverage:</strong> <span id="test-coverage"></span>
+                <div class="d-flex gap-2">
+                  <button id="accept-btn" class="btn btn-sm btn-outline-success flex-grow-1">
+                    <i class="bi bi-check-circle"></i> Accept (Done)
+                  </button>
+                  <button id="replan-btn" class="btn btn-sm btn-warning flex-grow-1">
+                    <i class="bi bi-arrow-repeat"></i> Re-plan with Feedback
+                  </button>
+                  <button id="autofix-btn" class="btn btn-sm btn-danger flex-grow-1">
+                    <i class="bi bi-magic"></i> Auto-Fix with Feedback
+                  </button>
+                </div>
+              </div>
             </div>
-
-            <!-- Concerns (if any) -->
-            <div id="test-concerns" class="d-none mt-3">
-              <strong class="small text-warning">⚠️ Potential Concerns:</strong>
-              <ul id="test-concerns-list" class="small mt-2 text-warning"></ul>
-            </div>
-
-            <!-- Missing Tests (if any) -->
-            <div id="test-missing" class="d-none mt-2">
-              <strong class="small text-muted">💡 Suggested Additional Tests:</strong>
-              <ul id="test-missing-list" class="small mt-2 text-muted"></ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="card shadow-sm">
-          <div class="card-header bg-white">
-            <h6 class="mb-0">Adaptive Translation (Main Agent Plan)</h6>
-          </div>
-          <div class="card-body small">
-            <div id="plan-summary" class="mb-2 text-muted">
-              No plan yet.
-            </div>
-            <pre id="translated-code" class="bg-light border rounded p-2 small"
-              style="min-height: 120px; white-space: pre-wrap;"></pre>
           </div>
         </div>
       </div>

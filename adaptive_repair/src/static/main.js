@@ -159,7 +159,7 @@ function renderComprehensiveExplanation(comprehensiveExplanation) {
   if (details.length > 0) {
     details.forEach((detail) => {
       const detailBlock = document.createElement("div");
-      detailBlock.className = "mb-3 p-3 border rounded bg-light";
+      detailBlock.className = "mb-3 p-3 border rounded bg-dark bg-opacity-25";
 
       const title = document.createElement("div");
       title.className = "fw-bold mb-2 text-primary";
@@ -442,6 +442,15 @@ window.addEventListener("DOMContentLoaded", () => {
     userFeedbackInput.value = ""; // Clear previous feedback
   }
 
+  // Helper to switch tabs
+  function switchTab(tabId) {
+    const tabEl = document.getElementById(tabId + '-tab');
+    if (tabEl) {
+      const tab = new bootstrap.Tab(tabEl);
+      tab.show();
+    }
+  }
+
   analyzeBtn.addEventListener("click", async () => {
     const code = codeInput.value;
     const language = langInput.value || "";
@@ -507,6 +516,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // Also show plan summary in bottom card just for info
       renderPlanAndTranslation(data.plan, null);
+
+      // Auto-switch to Plan tab
+      switchTab('plan');
     }
   });
 
@@ -541,6 +553,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // Show feedback card
       showFeedbackCard(data.final_code);
+
+      // Auto-switch to Repair tab to see the code first
+      switchTab('repair');
     }
   });
 
@@ -582,6 +597,9 @@ window.addEventListener("DOMContentLoaded", () => {
       renderComprehensiveExplanation(data.comprehensive_explanation);  // Show ExplanationAgent results
       renderTestValidation(data.test_validation);  // Show TestGeneratorAgent results
       showFeedbackCard(data.final_code);
+
+      // Auto-switch to Repair tab to see the code first
+      switchTab('repair');
 
       // Note: The backend might return refined issues if it re-ran analysis,
       // but our current logic bypasses analysis if plan provided.
@@ -665,6 +683,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       planReviewCard.classList.remove("d-none");
       renderPlanAndTranslation(data.plan, null);
+      switchTab('plan');
     }
   });
 
@@ -697,6 +716,7 @@ window.addEventListener("DOMContentLoaded", () => {
       renderRepairs(data);
       renderPlanAndTranslation(data.plan, data.translation);
       showFeedbackCard(data.final_code);
+      switchTab('repair');
     }
   });
 });
