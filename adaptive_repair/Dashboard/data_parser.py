@@ -132,10 +132,23 @@ class APRResultParser:
                         f"{r['algorithm']}: {r['tests_failed']} test(s) failed out of {r['tests_run']}"
                     )
             
+            # Get test case counts from summary (prioritize summary section if available)
+            test_cases_passed = summary.get('test_cases_passed', 0)
+            test_cases_failed = summary.get('test_cases_failed', 0)
+            
+            # If summary section not found, calculate from parsed data
+            if test_cases_passed == 0 and test_cases_failed == 0 and total_tests > 0:
+                # Fallback to calculated values
+                test_cases_passed = total_tests - tests_failed
+                test_cases_failed = tests_failed
+            
+            # Calculate success rate based on test cases
+            success_rate = (test_cases_passed / total_tests * 100) if total_tests > 0 else 0.0
+            
             return {
                 'total_tests': total_tests,
-                'passed': passed,  # Algorithms passed
-                'failed': failed,  # Algorithms failed
+                'passed': test_cases_passed,  # Test cases passed (not files)
+                'failed': test_cases_failed,  # Test cases failed (not files)
                 'skipped': 0,
                 'errors': summary.get('compile_errors', 0),
                 'success_rate': success_rate,
@@ -143,7 +156,11 @@ class APRResultParser:
                 'error_messages': error_messages[:50],  # Limit to 50
                 'language': 'Java',
                 'total_algorithms': total_algorithms,
+                'files_passed': passed,  # Store file counts separately
+                'files_failed': failed,
                 'tests_failed': tests_failed,
+                'test_cases_passed': test_cases_passed,  # Also store explicitly
+                'test_cases_failed': test_cases_failed,
                 'compilation_failed': summary.get('compilation_failed', 0),
                 'has_data': total_algorithms > 0
             }
@@ -153,6 +170,18 @@ class APRResultParser:
     def _parse_verification_results(self):
         """Parse verification results file - custom format for APR Java tests"""
         text = self.java_file.read_text(encoding='utf-8', errors='ignore')
+        
+        # First, try to extract summary section for accurate counts
+        summary_match = re.search(
+            r'VERIFICATION SUMMARY\s*={30}\s*'
+            r'Total Files:\s*(\d+)\s*'
+            r'Files Passed:\s*(\d+)\s*'
+            r'Files Failed:\s*(\d+)\s*\s*'
+            r'Total Test Cases:\s*(\d+)\s*'
+            r'Tests Passed:\s*(\d+)\s*'
+            r'Tests Failed:\s*(\d+)',
+            text
+        )
         
         # Split by verification blocks
         blocks = re.split(r'-{3,}\s*--- Verifying ', text)[1:]
@@ -216,6 +245,21 @@ class APRResultParser:
             
             results.append(record)
             summary['total_algorithms'] += 1
+        
+        # If summary section was found, use those counts for accuracy
+        if summary_match:
+            summary['total_files'] = int(summary_match.group(1))
+            summary['files_passed'] = int(summary_match.group(2))
+            summary['files_failed'] = int(summary_match.group(3))
+            summary['total_test_cases'] = int(summary_match.group(4))
+            summary['test_cases_passed'] = int(summary_match.group(5))
+            summary['test_cases_failed'] = int(summary_match.group(6))
+            
+            # Override the parsed values with summary values for consistency
+            summary['total_algorithms'] = summary['total_files']
+            summary['passed'] = summary['files_passed']
+            summary['failed'] = summary['files_failed']
+            summary['tests_run'] = summary['total_test_cases']
         
         return results, summary
     
@@ -332,8 +376,13 @@ def get_parser(python_file: str = None, java_file: str = None) -> APRResultParse
         APRResultParser instance
     """
     if python_file is None:
-        python_file = '../results.txt'
+        # Get the directory where this script is located (Dashboard/)
+        script_dir = Path(__file__).parent
+        # Go up one level to project root and find results_python.txt
+        python_file = script_dir.parent / 'results_python.txt'
     if java_file is None:
-        java_file = '../verification_results.txt'
+        script_dir = Path(__file__).parent
+        # Go up one level to project root and find verification_results.txt
+        java_file = script_dir.parent / 'verification_results.txt'
     
     return APRResultParser(python_file, java_file)

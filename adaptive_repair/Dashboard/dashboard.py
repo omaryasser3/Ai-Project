@@ -146,12 +146,20 @@ def render_comparison_charts(data):
         return
     
     # Show Java algorithm info
+    total_files = data['java'].get('total_algorithms', 0)
+    files_passed = data['java']['passed']
+    files_failed = data['java']['failed']
+    compilation_failed = data['java'].get('compilation_failed', 0)
+    total_test_cases = data['java']['total_tests']
+    
+    # Check if we have the new detailed test case stats
+    test_cases_passed = data['java'].get('test_cases_passed', total_test_cases)
+    test_cases_failed = data['java'].get('test_cases_failed', 0)
+    
     st.info(
-        f"📌 **Java Results**: {data['java'].get('total_algorithms', 0)} algorithms tested | "
-        f"{data['java']['passed']} passed | "
-        f"{data['java']['failed']} failed | "
-        f"{data['java'].get('compilation_failed', 0)} compilation errors | "
-        f"{data['java']['total_tests']} total test cases"
+        f"📌 **Java Results**:\n\n"
+        f"**Files**: {total_files} total | {files_passed} passed | {files_failed} failed | {compilation_failed} compilation errors\n\n"
+        f"**Test Cases**: {total_test_cases} total | {test_cases_passed} passed | {test_cases_failed} failed"
     )
     
     col1, col2 = st.columns(2)

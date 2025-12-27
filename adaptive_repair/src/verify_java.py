@@ -131,9 +131,14 @@ def run_batch(bug_type="fixed"):
         f.write(f"Batch Verification started at {time.ctime()}\n\n")
     
     java_files = glob.glob(os.path.join(DATA_DIR, "java_programs", "*.java"))
-    total = 0
-    passed = 0
+    total_files = 0
+    passed_files = 0
     failed_files = []
+    
+    # Track individual test cases
+    total_tests = 0
+    total_tests_passed = 0
+    total_tests_failed = 0
     
     print(f"Found {len(java_files)} files to verify.")
     
@@ -146,14 +151,32 @@ def run_batch(bug_type="fixed"):
             continue
             
         print(f"Verifying {bug_id}...", end="", flush=True)
-        total += 1
+        total_files += 1
         success, output = verify(bug_id, bug_type)
         
         log_to_file(output)
         log_to_file("-" * 40)
         
+        # Parse test counts from output
+        import re
+        tests_run_match = re.search(r'Tests run:\s*(\d+)', output)
+        failures_match = re.search(r'Failures:\s*(\d+)', output)
+        ok_match = re.search(r'OK \((\d+) tests?\)', output)
+        
+        if tests_run_match:
+            tests_run = int(tests_run_match.group(1))
+            failures = int(failures_match.group(1)) if failures_match else 0
+            total_tests += tests_run
+            total_tests_passed += (tests_run - failures)
+            total_tests_failed += failures
+        elif ok_match:
+            # Handle "OK (N tests)" format
+            tests_run = int(ok_match.group(1))
+            total_tests += tests_run
+            total_tests_passed += tests_run
+        
         if success:
-            passed += 1
+            passed_files += 1
             print(" PASS")
         else:
             failed_files.append(bug_id)
@@ -162,9 +185,13 @@ def run_batch(bug_type="fixed"):
     summary = "\n" + "="*30 + "\n"
     summary += "VERIFICATION SUMMARY\n"
     summary += "="*30 + "\n"
-    summary += f"Total Tests: {total}\n"
-    summary += f"Passed:      {passed}\n"
-    summary += f"Failed:      {total - passed}\n"
+    summary += f"Total Files:        {total_files}\n"
+    summary += f"Files Passed:       {passed_files}\n"
+    summary += f"Files Failed:       {total_files - passed_files}\n"
+    summary += "\n"
+    summary += f"Total Test Cases:   {total_tests}\n"
+    summary += f"Tests Passed:       {total_tests_passed}\n"
+    summary += f"Tests Failed:       {total_tests_failed}\n"
     
     if failed_files:
         summary += "\nFailed Files:\n"
