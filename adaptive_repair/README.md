@@ -61,6 +61,59 @@ python src/app.py
 - View repair plans and feedback
 - Receive fixed code with explanations
 
+### API Testing with Swagger UI
+
+The application provides interactive API documentation via Swagger UI:
+
+```bash
+# Access the API documentation
+http://localhost:5000/docs     # Interactive Swagger UI
+http://localhost:5000/redoc    # Alternative ReDoc interface
+```
+
+**Testing the Analyze Endpoint (`/api/analyze`):**
+
+Detect issues and create a repair plan:
+
+```json
+{
+  "code": "def add(a, b):\n    return a - b",
+  "language": "Python"
+}
+```
+
+**Testing Auto Language Detection:**
+
+Leave language empty to test auto-detection:
+
+```json
+{
+  "code": "def add(a, b):\n    return a - b",
+  "language": ""
+}
+```
+
+The system will automatically detect Python and set `"language_match": false` in the response.
+
+**Testing the Repair Endpoint (`/api/repair`):**
+
+Execute repairs based on analysis:
+
+```json
+{
+  "code": "def add(a, b):\n    return a - b",
+  "language": "Python",
+  "plan": null,
+  "issues": null
+}
+```
+
+**Swagger UI Features:**
+- Click "Try it out" to test endpoints interactively
+- View request/response schemas automatically
+- See example payloads and responses
+- Download OpenAPI specification at `/openapi.json`
+
 ---
 
 ## Evaluation & Testing

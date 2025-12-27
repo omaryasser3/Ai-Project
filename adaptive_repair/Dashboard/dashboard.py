@@ -147,14 +147,15 @@ def render_comparison_charts(data):
     
     # Show Java algorithm info
     total_files = data['java'].get('total_algorithms', 0)
-    files_passed = data['java']['passed']
-    files_failed = data['java']['failed']
+    # Use file counts, not test case counts
+    files_passed = data['java'].get('files_passed', 0)
+    files_failed = data['java'].get('files_failed', 0)
     compilation_failed = data['java'].get('compilation_failed', 0)
     total_test_cases = data['java']['total_tests']
     
-    # Check if we have the new detailed test case stats
-    test_cases_passed = data['java'].get('test_cases_passed', total_test_cases)
-    test_cases_failed = data['java'].get('test_cases_failed', 0)
+    # Get test case stats
+    test_cases_passed = data['java'].get('test_cases_passed', data['java']['passed'])
+    test_cases_failed = data['java'].get('test_cases_failed', data['java']['failed'])
     
     st.info(
         f"📌 **Java Results**:\n\n"
@@ -264,7 +265,10 @@ def render_test_details(data, view_mode, java_has_data):
                            else "Java verification file does not contain test results."))
             continue
         
-        with st.expander(f"📝 {lang_name} Test Details ({len(lang_data['test_details'])} tests)", 
+        # Get the total test count for the header
+        total_test_count = lang_data.get('total_tests', len(lang_data['test_details']))
+        
+        with st.expander(f"📝 {lang_name} Test Details ({total_test_count} tests)", 
                         expanded=False):
             
             if not lang_data['test_details']:

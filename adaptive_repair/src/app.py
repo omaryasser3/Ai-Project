@@ -89,10 +89,21 @@ async def index(request: Request):
 
 
 
-@app.post("/api/analyze")
+@app.post("/api/analyze", tags=["Code Analysis"])
 def analyze_sync(request_data: AnalyzeRequest):
     """
-    Runs the 'Analysis' phase of the graph.
+    Analyze code to identify bugs and issues.
+    
+    This endpoint performs the initial analysis phase:
+    - Detects programming language
+    - Identifies syntax errors, logic bugs, and performance issues
+    - Creates a repair plan
+    - Returns execution steps for fixes
+    
+    **Returns:**
+    - List of detected issues with descriptions and locations
+    - Repair plan including language translation strategy
+    - Ordered execution steps for repair process
     """
     code = request_data.code
     language = request_data.language
@@ -198,11 +209,26 @@ def analyze_sync(request_data: AnalyzeRequest):
         logger.exception("Error during analysis")
         raise HTTPException(status_code=500, detail=str(exc))
 
-@app.post("/api/repair")
+@app.post("/api/repair", tags=["Code Repair"])
 def repair_sync(request_data: RepairRequest):
     """
-    Runs the 'Repair' phase.
-    It takes the plan/issues (potentially modified) and runs the graph to completion.
+    Execute code repair based on analysis results.
+    
+    This endpoint performs the repair phase:
+    - Applies fixes using specialized AI agents (Syntax, Logic, Optimization)
+    - Handles language translation if needed
+    - Generates test cases for validation
+    - Provides comprehensive explanations
+    
+    **Input:**
+    - Original code and detected issues/plan from analysis
+    - Optional user feedback to guide repair process
+    
+    **Returns:**
+    - Repaired code
+    - Detailed explanation of all changes
+    - Generated test cases
+    - Translation information (if applicable)
     """
     original_code = request_data.code
     src_language = request_data.language
